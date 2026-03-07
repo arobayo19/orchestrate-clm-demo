@@ -47,7 +47,7 @@ const cases = [
     riskScore: 63,
     riskNarrative: "Risk is elevated by industry profile and expected transaction activity, but partially mitigated by domestic formation, complete tax documentation, and a currently understandable ownership structure.",
     riskFactors: ["Crypto services", "Moderate geography risk", "OTC activity", "Incomplete registry evidence"],
-    activity: [
+    activityLog: [
       ["11:08 UTC", "Application received", "Case created from onboarding portal payload."],
       ["11:09 UTC", "Document Classification Agent", "Classified 4 uploaded files and routed them for extraction."],
       ["11:11 UTC", "Ownership Mapping Agent", "Mapped beneficial ownership from operating agreement."],
@@ -100,7 +100,7 @@ const cases = [
     riskScore: 74,
     riskNarrative: "Preliminary risk is higher due to offshore jurisdiction and fund structure complexity. Case may require EDD after missing materials are received.",
     riskFactors: ["Offshore entity", "Fund structure", "Layered ownership"],
-    activity: [
+    activityLog: [
       ["09:44 UTC", "Application received", "Case created from client onboarding submission."],
       ["09:47 UTC", "Completeness Review Agent", "Detected missing director ID and stale address evidence."],
       ["09:50 UTC", "Deficiency Notice Agent", "Generated client request with missing items list."]
@@ -149,7 +149,7 @@ const cases = [
     riskScore: 86,
     riskNarrative: "High risk driven by cross-border activity, complex ownership, and unresolved screening findings. Senior approval likely required even if screening is cleared.",
     riskFactors: ["Cross-border trading", "Complex ownership", "Screening uncertainty", "Adverse media"],
-    activity: [
+    activityLog: [
       ["08:11 UTC", "Screening Agent", "Returned uncertain match on associated entity."],
       ["08:16 UTC", "Adverse Media Agent", "Compiled regulatory inquiry references and categorized severity."],
       ["08:25 UTC", "Orchestration Agent", "Escalated case into pending human review."]
@@ -199,7 +199,7 @@ const cases = [
     riskScore: 52,
     riskNarrative: "Moderate operational risk due to transaction profile, but otherwise mitigated by straightforward structure and complete onboarding data.",
     riskFactors: ["Investment advisory", "Domestic entity", "Low ownership complexity"],
-    activity: [
+    activityLog: [
       ["10:18 UTC", "CDD Review started", "Case entered standard CDD workflow."],
       ["10:24 UTC", "Entity Verification Agent", "Verified formation and address records."],
       ["10:31 UTC", "Screening Agent", "Submitted sanctions and adverse media screening requests."]
@@ -218,8 +218,8 @@ const cases = [
 ];
 
 function getLastAction(caseObj) {
-  if (!caseObj.activity || !caseObj.activity.length) return ["No activity", ""];
-  const [time, title] = caseObj.activity[caseObj.activity.length - 1];
+  if (!caseObj.activityLog || !caseObj.activityLog.length) return ["No activity", ""];
+  const [time, title] = caseObj.activityLog[caseObj.activityLog.length - 1];
   return [title, time];
 }
 
@@ -232,21 +232,19 @@ function getRiskBadge(score) {
 function parseAgingHours(agingText) {
   const lower = agingText.toLowerCase();
   let total = 0;
-
   const dayMatch = lower.match(/(\d+)d/);
   const hourMatch = lower.match(/(\d+)h/);
   const minMatch = lower.match(/(\d+)m/);
-
   if (dayMatch) total += Number(dayMatch[1]) * 24;
   if (hourMatch) total += Number(hourMatch[1]);
   if (minMatch) total += Number(minMatch[1]) / 60;
-
   return total;
 }
 
 function isSLARisk(caseObj) {
   return caseObj.priority === "Escalated" || parseAgingHours(caseObj.aging) >= 4;
 }
+
 const priorityList = document.getElementById("priorityList");
 const queueBody = document.getElementById("queueBody");
 const caseSearch = document.getElementById("caseSearch");
@@ -258,9 +256,6 @@ const assigneeFilter = document.getElementById("assigneeFilter");
 const resetFiltersBtn = document.getElementById("resetFiltersBtn");
 const sortAgingBtn = document.getElementById("sortAgingBtn");
 const queueChips = document.querySelectorAll(".queue-chip");
-
-let activeStatusChip = "all";
-let sortByAgingDesc = true;
 
 const pageEyebrow = document.getElementById("pageEyebrow");
 const pageTitle = document.getElementById("pageTitle");
@@ -291,8 +286,11 @@ const auditTimeline = document.getElementById("auditTimeline");
 const agentFeed = document.getElementById("agentFeed");
 
 let currentCase = cases[0];
+let activeStatusChip = "all";
+let sortByAgingDesc = true;
 
 function renderPriorityList() {
+  if (!priorityList) return;
   priorityList.innerHTML = "";
   cases.forEach((item) => {
     const row = document.createElement("div");
@@ -309,25 +307,106 @@ function renderPriorityList() {
   });
 }
 
-function renderQueue(filter = "") {
+function renderQueueCounts() {
+  const counts = {
+    all: cases.length,
+    completeness: cases.filter(c => c.status === "Completeness Review").length,
+    pendingClient: cases.filter(c => c.status === "Pending Client Response").length,
+    cdd: cases.filter(c => c.status === "In CDD Review").length,
+    screening: cases.filter(c => c.status === "Pending Screening").length,
+    human: cases.filter(c => c.status === "Pending Human Review").length,
+    sla: cases.filter(c => isSLARisk(c)).length
+  };
+
+  const byId = (id) => document.getElementById(id);
+  if (byId("countAll")) byId("countAll").textContent = counts.all;
+  if (byId("countCompleteness")) byId("countCompleteness").textContent = counts.completeness;
+  if (byId("countPendingClient")) byId("countPendingClient").textContent = counts.pendingClient;
+  if (byId("countCDD")) byId("countCDD").textContent = counts.cdd;
+  if (byId("countScreening")) byId("countScreening").textContent = counts.screening;
+  if (byId("countHuman")) byId("countHuman").textContent = counts.human;
+  if (byId("countSLA")) byId("countSLA").textContent = counts.sla;
+}
+
+function renderQueue() {
+  if (!queueBody) return;
   queueBody.innerHTML = "";
-  const visibleCases = cases.filter((item) => {
-    const text = `${item.client} ${item.id}`.toLowerCase();
-    return text.includes(filter.toLowerCase());
+
+  const searchValue = (caseSearch?.value || "").toLowerCase().trim();
+  const statusValue = statusFilter?.value || "all";
+  const pipelineValue = pipelineFilter?.value || "all";
+  const priorityValue = priorityFilter?.value || "all";
+  const jurisdictionValue = jurisdictionFilter?.value || "all";
+  const assigneeValue = assigneeFilter?.value || "all";
+
+  let visibleCases = [...cases].filter((item) => {
+    const searchable = `${item.client} ${item.id} ${item.activity} ${item.jurisdiction}`.toLowerCase();
+
+    const matchesSearch = !searchValue || searchable.includes(searchValue);
+    const matchesStatus = statusValue === "all" ? true : item.status === statusValue;
+    const matchesPipeline = pipelineValue === "all" ? true : item.pipeline === pipelineValue;
+    const matchesPriority = priorityValue === "all" ? true : item.priority === priorityValue;
+    const matchesJurisdiction = jurisdictionValue === "all" ? true : item.jurisdiction === jurisdictionValue;
+    const matchesAssignee = assigneeValue === "all" ? true : item.assignee === assigneeValue;
+    const matchesChip =
+      activeStatusChip === "all"
+        ? true
+        : activeStatusChip === "sla-risk"
+        ? isSLARisk(item)
+        : item.status === activeStatusChip;
+
+    return (
+      matchesSearch &&
+      matchesStatus &&
+      matchesPipeline &&
+      matchesPriority &&
+      matchesJurisdiction &&
+      matchesAssignee &&
+      matchesChip
+    );
+  });
+
+  visibleCases.sort((a, b) => {
+    const aHours = parseAgingHours(a.aging);
+    const bHours = parseAgingHours(b.aging);
+    return sortByAgingDesc ? bHours - aHours : aHours - bHours;
   });
 
   visibleCases.forEach((item) => {
+    const risk = getRiskBadge(item.riskScore);
+    const [lastActionLabel, lastActionTime] = getLastAction(item);
+
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>
-        <div class="client-name">${item.client}</div>
-        <div class="client-sub">${item.id}</div>
+        <div class="client-cell">
+          <div class="client-name">${item.client}</div>
+          <div class="client-sub">${item.id}</div>
+          <div class="client-meta">${item.activity}</div>
+        </div>
       </td>
       <td><span class="badge ${item.statusClass}">${item.status}</span></td>
       <td><span class="badge ${item.pipelineClass}">${item.pipeline}</span></td>
-      <td>${item.aging}</td>
-      <td><span class="badge ${item.priorityClass}">${item.priority}</span></td>
+      <td>
+        <div class="risk-cell">
+          <span class="badge ${risk.className}">${risk.label}</span>
+          <div class="table-note">Score ${item.riskScore}</div>
+        </div>
+      </td>
+      <td>${item.jurisdiction}</td>
+      <td>
+        <div>${item.aging}</div>
+        <div class="${isSLARisk(item) ? "sla-flag" : "sla-safe"}" style="margin-top:8px;">
+          ${isSLARisk(item) ? "SLA Risk" : "On Track"}
+        </div>
+      </td>
       <td>${item.assignee}</td>
+      <td>
+        <div class="last-action">
+          ${lastActionLabel}
+          <span>${lastActionTime}</span>
+        </div>
+      </td>
       <td><button class="open-link" data-case="${item.id}">Open</button></td>
     `;
     queueBody.appendChild(tr);
@@ -336,6 +415,8 @@ function renderQueue(filter = "") {
   document.querySelectorAll(".open-link").forEach((btn) => {
     btn.addEventListener("click", () => openCase(btn.dataset.case));
   });
+
+  renderQueueCounts();
 }
 
 function setActiveView(viewKey) {
@@ -345,108 +426,126 @@ function setActiveView(viewKey) {
   const target = views[viewKey];
   if (!target) return;
 
-  document.getElementById(target.id).classList.add("active");
+  document.getElementById(target.id)?.classList.add("active");
   document.querySelector(`.nav-item[data-view="${viewKey}"]`)?.classList.add("active");
-  pageEyebrow.textContent = target.eyebrow;
-  pageTitle.textContent = target.title;
+  if (pageEyebrow) pageEyebrow.textContent = target.eyebrow;
+  if (pageTitle) pageTitle.textContent = target.title;
 }
 
 function renderCase(caseObj) {
   currentCase = caseObj;
 
-  caseId.textContent = caseObj.id;
-  caseClientName.textContent = caseObj.client;
+  if (caseId) caseId.textContent = caseObj.id;
+  if (caseClientName) caseClientName.textContent = caseObj.client;
 
-  caseStatus.className = `badge ${caseObj.statusClass}`;
-  caseStatus.textContent = caseObj.status;
+  if (caseStatus) {
+    caseStatus.className = `badge ${caseObj.statusClass}`;
+    caseStatus.textContent = caseObj.status;
+  }
 
-  casePipeline.className = `badge ${caseObj.pipelineClass}`;
-  casePipeline.textContent = caseObj.pipeline;
+  if (casePipeline) {
+    casePipeline.className = `badge ${caseObj.pipelineClass}`;
+    casePipeline.textContent = caseObj.pipeline;
+  }
 
-  casePriority.className = `badge ${caseObj.priorityClass}`;
-  casePriority.textContent = caseObj.priority;
+  if (casePriority) {
+    casePriority.className = `badge ${caseObj.priorityClass}`;
+    casePriority.textContent = caseObj.priority;
+  }
 
-  ovEntityType.textContent = caseObj.entityType;
-  ovJurisdiction.textContent = caseObj.jurisdiction;
-  ovActivity.textContent = caseObj.activity;
-  ovExpected.textContent = caseObj.expected;
-  overviewSummary.textContent = caseObj.summary;
+  if (ovEntityType) ovEntityType.textContent = caseObj.entityType;
+  if (ovJurisdiction) ovJurisdiction.textContent = caseObj.jurisdiction;
+  if (ovActivity) ovActivity.textContent = caseObj.activity;
+  if (ovExpected) ovExpected.textContent = caseObj.expected;
+  if (overviewSummary) overviewSummary.textContent = caseObj.summary;
 
-  overviewChecks.innerHTML = "";
-  caseObj.checks.forEach(([label, result, cls]) => {
-    const li = document.createElement("li");
-    li.innerHTML = `<span>${label}</span><span class="badge ${cls}">${result}</span>`;
-    overviewChecks.appendChild(li);
-  });
+  if (overviewChecks) {
+    overviewChecks.innerHTML = "";
+    caseObj.checks.forEach(([label, result, cls]) => {
+      const li = document.createElement("li");
+      li.innerHTML = `<span>${label}</span><span class="badge ${cls}">${result}</span>`;
+      overviewChecks.appendChild(li);
+    });
+  }
 
-  documentsList.innerHTML = "";
-  caseObj.documents.forEach(([name, meta, cls]) => {
-    const item = document.createElement("div");
-    item.className = "doc-item";
-    item.innerHTML = `
-      <div class="doc-meta">
+  if (documentsList) {
+    documentsList.innerHTML = "";
+    caseObj.documents.forEach(([name, meta, cls]) => {
+      const item = document.createElement("div");
+      item.className = "doc-item";
+      item.innerHTML = `
+        <div class="doc-meta">
+          <strong>${name}</strong>
+          <span>${meta}</span>
+        </div>
+        <span class="badge ${cls}">${cls === "green" ? "Verified" : cls === "gold" ? "Review" : "In Progress"}</span>
+      `;
+      documentsList.appendChild(item);
+    });
+  }
+
+  if (ownershipEntity) ownershipEntity.textContent = caseObj.client;
+  if (ownershipNotes) ownershipNotes.textContent = caseObj.ownershipNotes;
+  if (screenSanctions) screenSanctions.textContent = caseObj.sanctions;
+  if (screenPep) screenPep.textContent = caseObj.pep;
+  if (screenMedia) screenMedia.textContent = caseObj.media;
+  if (riskScore) riskScore.textContent = caseObj.riskScore;
+  if (riskNarrative) riskNarrative.textContent = caseObj.riskNarrative;
+
+  if (riskFactors) {
+    riskFactors.innerHTML = "";
+    caseObj.riskFactors.forEach((factor) => {
+      const chip = document.createElement("span");
+      chip.className = "chip";
+      chip.textContent = factor;
+      riskFactors.appendChild(chip);
+    });
+  }
+
+  if (activityTimeline) {
+    activityTimeline.innerHTML = "";
+    caseObj.activityLog.forEach(([time, title, text]) => {
+      const item = document.createElement("div");
+      item.className = "timeline-item";
+      item.innerHTML = `
+        <div class="timeline-time">${time}</div>
+        <div class="timeline-body">
+          <strong>${title}</strong>
+          <span>${text}</span>
+        </div>
+      `;
+      activityTimeline.appendChild(item);
+    });
+  }
+
+  if (auditTimeline) {
+    auditTimeline.innerHTML = "";
+    caseObj.audit.forEach(([time, actor, text]) => {
+      const item = document.createElement("div");
+      item.className = "timeline-item";
+      item.innerHTML = `
+        <div class="timeline-time">${time}</div>
+        <div class="timeline-body">
+          <strong>${actor}</strong>
+          <span>${text}</span>
+        </div>
+      `;
+      auditTimeline.appendChild(item);
+    });
+  }
+
+  if (agentFeed) {
+    agentFeed.innerHTML = "";
+    caseObj.agents.forEach(([name, text]) => {
+      const card = document.createElement("div");
+      card.className = "agent-card";
+      card.innerHTML = `
         <strong>${name}</strong>
-        <span>${meta}</span>
-      </div>
-      <span class="badge ${cls}">${cls === "green" ? "Verified" : cls === "gold" ? "Review" : "In Progress"}</span>
-    `;
-    documentsList.appendChild(item);
-  });
-
-  ownershipEntity.textContent = caseObj.client;
-  ownershipNotes.textContent = caseObj.ownershipNotes;
-  screenSanctions.textContent = caseObj.sanctions;
-  screenPep.textContent = caseObj.pep;
-  screenMedia.textContent = caseObj.media;
-  riskScore.textContent = caseObj.riskScore;
-  riskNarrative.textContent = caseObj.riskNarrative;
-
-  riskFactors.innerHTML = "";
-  caseObj.riskFactors.forEach((factor) => {
-    const chip = document.createElement("span");
-    chip.className = "chip";
-    chip.textContent = factor;
-    riskFactors.appendChild(chip);
-  });
-
-  activityTimeline.innerHTML = "";
-  caseObj.activity.forEach(([time, title, text]) => {
-    const item = document.createElement("div");
-    item.className = "timeline-item";
-    item.innerHTML = `
-      <div class="timeline-time">${time}</div>
-      <div class="timeline-body">
-        <strong>${title}</strong>
         <span>${text}</span>
-      </div>
-    `;
-    activityTimeline.appendChild(item);
-  });
-
-  auditTimeline.innerHTML = "";
-  caseObj.audit.forEach(([time, actor, text]) => {
-    const item = document.createElement("div");
-    item.className = "timeline-item";
-    item.innerHTML = `
-      <div class="timeline-time">${time}</div>
-      <div class="timeline-body">
-        <strong>${actor}</strong>
-        <span>${text}</span>
-      </div>
-    `;
-    auditTimeline.appendChild(item);
-  });
-
-  agentFeed.innerHTML = "";
-  caseObj.agents.forEach(([name, text]) => {
-    const card = document.createElement("div");
-    card.className = "agent-card";
-    card.innerHTML = `
-      <strong>${name}</strong>
-      <span>${text}</span>
-    `;
-    agentFeed.appendChild(card);
-  });
+      `;
+      agentFeed.appendChild(card);
+    });
+  }
 }
 
 function openCase(caseIdValue) {
@@ -467,11 +566,46 @@ document.querySelectorAll(".tab").forEach((tab) => {
     document.querySelectorAll(".tab").forEach((t) => t.classList.remove("active"));
     document.querySelectorAll(".tab-content").forEach((c) => c.classList.remove("active"));
     tab.classList.add("active");
-    document.getElementById(`tab-${tab.dataset.tab}`).classList.add("active");
+    document.getElementById(`tab-${tab.dataset.tab}`)?.classList.add("active");
   });
 });
 
-caseSearch?.addEventListener("input", (e) => renderQueue(e.target.value));
+caseSearch?.addEventListener("input", renderQueue);
+statusFilter?.addEventListener("change", renderQueue);
+pipelineFilter?.addEventListener("change", renderQueue);
+priorityFilter?.addEventListener("change", renderQueue);
+jurisdictionFilter?.addEventListener("change", renderQueue);
+assigneeFilter?.addEventListener("change", renderQueue);
+
+resetFiltersBtn?.addEventListener("click", () => {
+  if (caseSearch) caseSearch.value = "";
+  if (statusFilter) statusFilter.value = "all";
+  if (pipelineFilter) pipelineFilter.value = "all";
+  if (priorityFilter) priorityFilter.value = "all";
+  if (jurisdictionFilter) jurisdictionFilter.value = "all";
+  if (assigneeFilter) assigneeFilter.value = "all";
+
+  activeStatusChip = "all";
+  queueChips.forEach((chip) => chip.classList.remove("active"));
+  document.querySelector('.queue-chip[data-status-filter="all"]')?.classList.add("active");
+
+  renderQueue();
+});
+
+sortAgingBtn?.addEventListener("click", () => {
+  sortByAgingDesc = !sortByAgingDesc;
+  sortAgingBtn.textContent = sortByAgingDesc ? "Sort by Aging" : "Sort by Aging ↑";
+  renderQueue();
+});
+
+queueChips.forEach((chip) => {
+  chip.addEventListener("click", () => {
+    queueChips.forEach((c) => c.classList.remove("active"));
+    chip.classList.add("active");
+    activeStatusChip = chip.dataset.statusFilter;
+    renderQueue();
+  });
+});
 
 renderPriorityList();
 renderQueue();
