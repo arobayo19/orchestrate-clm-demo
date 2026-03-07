@@ -29,7 +29,17 @@
 }
 
 *{box-sizing:border-box}
-html,body{margin:0;padding:0;background:linear-gradient(90deg,#031117 0%,#032029 100%);color:var(--text);font-family:"Inter",system-ui,sans-serif}
+
+html,body{
+  margin:0;
+  padding:0;
+  background:
+    radial-gradient(circle at top center, rgba(46,164,99,.08), transparent 30%),
+    linear-gradient(180deg,#050505 0%,#080606 100%);
+  color:var(--text);
+  font-family:"Inter",system-ui,sans-serif;
+}
+
 button,input{font:inherit}
 
 .app-shell{
