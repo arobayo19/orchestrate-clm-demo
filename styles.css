@@ -176,8 +176,8 @@ h3{
 }
 
 .metric-card,.panel,.snapshot-card,.detail-card{
-  background:linear-gradient(180deg,var(--panel),var(--bg-2));
-  border:1px solid rgba(111,170,188,.16);
+  background:linear-gradient(180deg, rgba(20,17,17,.96), rgba(16,13,13,.96));
+  border:1px solid rgba(255,255,255,.08);
   box-shadow:var(--shadow);
 }
 
