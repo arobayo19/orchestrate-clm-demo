@@ -636,15 +636,15 @@ function setActiveView(viewKey) {
   }
 
   if (viewKey === "monitoring") {
-    renderQueueForTarget(monitoringQueueBody, "periodic");
+    renderQueueForTarget("monitoringQueueBody", "periodic");
   }
 
   if (viewKey === "triggers") {
-    renderQueueForTarget(triggersQueueBody, "trigger");
+    renderQueueForTarget("triggersQueueBody", "trigger");
   }
 
   if (viewKey === "screening") {
-    renderQueueForTarget(screeningQueueBody, "screening");
+    renderQueueForTarget("screeningQueueBody", "screening");
   }
 }
 
@@ -842,8 +842,10 @@ queueChips.forEach((chip) => {
     renderQueue();
   });
 });
-function renderQueueForTarget(targetBody, queueType) {
+function renderQueueForTarget(targetId, queueType) {
+  const targetBody = document.getElementById(targetId);
   if (!targetBody) return;
+
   targetBody.innerHTML = "";
 
   const visibleCases = cases.filter((item) => item.queueType === queueType);
