@@ -424,25 +424,27 @@
 <section class="view" id="screening-view">
   <div class="panel">
     <div class="panel-head"><h2>Screening</h2></div>
-    <p class="body-copy">Ongoing sanctions, PEP, adverse media, and rescreening activity across active customers.</p>
+    <p class="body-copy">
+      Monitoring of sanctions, PEP, and adverse media alerts across active customers.
+    </p>
 
-    <div class="snapshot-grid" style="margin-top:16px;">
+    <div class="snapshot-grid">
       <div class="snapshot-card">
         <div class="snapshot-title">Active Alerts</div>
         <div class="snapshot-big">5</div>
-        <div class="snapshot-meta">Across sanctions, PEP, and adverse media</div>
+        <div class="snapshot-meta">Across sanctions and adverse media</div>
       </div>
 
       <div class="snapshot-card">
         <div class="snapshot-title">Likely False Positives</div>
         <div class="snapshot-big">3</div>
-        <div class="snapshot-meta">AI confidence above 90%</div>
+        <div class="snapshot-meta">AI triage confidence above 90%</div>
       </div>
 
       <div class="snapshot-card">
         <div class="snapshot-title">Escalated Matches</div>
         <div class="snapshot-big">2</div>
-        <div class="snapshot-meta">Pending analyst review</div>
+        <div class="snapshot-meta">Pending analyst disposition</div>
       </div>
 
       <div class="snapshot-card">
@@ -453,22 +455,29 @@
     </div>
   </div>
 </section>
-      <section class="view" id="agents-view">
-        <div class="panel">
-          <div class="panel-head"><h2>Automation Activity</h2></div>
-          <p class="body-copy">Live orchestration view across extraction, ownership mapping, screening, risk, and review scheduling agents.</p>
-        </div>
-      </section>
 
-      <section class="view" id="audit-view">
-        <div class="panel">
-          <div class="panel-head"><h2>Audit Trail</h2></div>
-          <p class="body-copy">Immutable regulator-ready action logs searchable by case, actor, source, and timestamp.</p>
-        </div>
-      </section>
-    </main>
+<section class="view" id="agents-view">
+  <div class="panel">
+    <div class="panel-head"><h2>Automation Activity</h2></div>
+    <p class="body-copy">
+      Live orchestration view across extraction, ownership mapping, screening, risk,
+      and review scheduling agents.
+    </p>
   </div>
+</section>
 
-  <script src="app.js"></script>
+<section class="view" id="audit-view">
+  <div class="panel">
+    <div class="panel-head"><h2>Audit Trail</h2></div>
+    <p class="body-copy">
+      Immutable regulator-ready action logs searchable by case, actor, source, and timestamp.
+    </p>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>
