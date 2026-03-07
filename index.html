@@ -88,33 +88,60 @@
 
       <section class="view active" id="dashboard-view">
         <div class="content-grid">
-          <div class="panel">
-            <div class="panel-head">
-              <h2>Operational Snapshot</h2>
-            </div>
-            <div class="snapshot-grid">
-              <div class="snapshot-card">
-                <div class="snapshot-title">Pending Human Review</div>
-                <div class="snapshot-big">9</div>
-                <div class="snapshot-meta">4 over SLA target</div>
-              </div>
-              <div class="snapshot-card">
-                <div class="snapshot-title">EDD Cases</div>
-                <div class="snapshot-big">11</div>
-                <div class="snapshot-meta">3 awaiting senior approval</div>
-              </div>
-              <div class="snapshot-card">
-                <div class="snapshot-title">Overdue Reviews</div>
-                <div class="snapshot-big">6</div>
-                <div class="snapshot-meta">Periodic or trigger-driven</div>
-              </div>
-              <div class="snapshot-card">
-                <div class="snapshot-title">Screening Alerts</div>
-                <div class="snapshot-big">5</div>
-                <div class="snapshot-meta">2 likely true positives</div>
-              </div>
-            </div>
+          <div class="dashboard-grid-2">
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Live Queue & Aging</h2>
+    </div>
+    <div class="queue-live-list" id="liveQueueList"></div>
+  </div>
+
+  <div class="stack-col">
+    <div class="panel">
+      <div class="panel-head">
+        <h2>Client Risk Ranking</h2>
+      </div>
+      <div class="risk-tier-card">
+        <div class="risk-tier-label">Client-provided risk tier</div>
+        <div class="risk-tier-badge high">HIGH</div>
+        <div class="risk-tier-reason">
+          Based on: FATF grey-list exposure, entity type (Trust), complex ownership chain
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <h2>SLA Status</h2>
+      </div>
+      <div class="sla-list">
+        <div class="sla-item">
+          <div class="sla-row">
+            <span>Intake → CDD Completion</span>
+            <span>68%</span>
           </div>
+          <div class="sla-bar"><div class="sla-fill green" style="width:68%"></div></div>
+        </div>
+
+        <div class="sla-item">
+          <div class="sla-row">
+            <span>Pending Human Review</span>
+            <span>84%</span>
+          </div>
+          <div class="sla-bar"><div class="sla-fill gold" style="width:84%"></div></div>
+        </div>
+
+        <div class="sla-item">
+          <div class="sla-row">
+            <span>Periodic Review Completion</span>
+            <span>104%</span>
+          </div>
+          <div class="sla-bar"><div class="sla-fill red" style="width:100%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
           <div class="panel">
             <div class="panel-head">
