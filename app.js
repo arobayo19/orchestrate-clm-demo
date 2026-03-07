@@ -7,6 +7,7 @@ const views = {
   edd: { id: "edd-view", eyebrow: "Risk", title: "EDD Pipeline" },
   monitoring: { id: "monitoring-view", eyebrow: "Monitoring", title: "Periodic Reviews" },
   triggers: { id: "triggers-view", eyebrow: "Monitoring", title: "Trigger Reviews" },
+  screening: { id: "screening-view", eyebrow: "Monitoring", title: "Screening" },
   agents: { id: "agents-view", eyebrow: "AI Agents", title: "Automation Activity" },
   audit: { id: "audit-view", eyebrow: "System", title: "Audit Trail" }
 };
