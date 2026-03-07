@@ -338,12 +338,32 @@ const caseStatus = document.getElementById("caseStatus");
 const casePipeline = document.getElementById("casePipeline");
 const casePriority = document.getElementById("casePriority");
 
+const ovLegalName = document.getElementById("ovLegalName");
 const ovEntityType = document.getElementById("ovEntityType");
 const ovJurisdiction = document.getElementById("ovJurisdiction");
-const ovActivity = document.getElementById("ovActivity");
+const ovFormationDate = document.getElementById("ovFormationDate");
+const ovRegistrationNumber = document.getElementById("ovRegistrationNumber");
+const ovTaxId = document.getElementById("ovTaxId");
+const ovRegisteredAddress = document.getElementById("ovRegisteredAddress");
+const ovBusinessDescription = document.getElementById("ovBusinessDescription");
+const ovIndustry = document.getElementById("ovIndustry");
+const ovPurpose = document.getElementById("ovPurpose");
 const ovExpected = document.getElementById("ovExpected");
+const ovSourceOfFunds = document.getElementById("ovSourceOfFunds");
+
+const ovBeneficialOwners = document.getElementById("ovBeneficialOwners");
+const ovControlPerson = document.getElementById("ovControlPerson");
+const ovAuthorizedUsers = document.getElementById("ovAuthorizedUsers");
+const ovOwnershipStructure = document.getElementById("ovOwnershipStructure");
+const ovComplexityFlag = document.getElementById("ovComplexityFlag");
+
 const overviewChecks = document.getElementById("overviewChecks");
 const overviewSummary = document.getElementById("overviewSummary");
+
+const ovRiskScoreSummary = document.getElementById("ovRiskScoreSummary");
+const ovRiskTier = document.getElementById("ovRiskTier");
+const ovEddTriggered = document.getElementById("ovEddTriggered");
+const ovMainRiskFactors = document.getElementById("ovMainRiskFactors");
 const documentsList = document.getElementById("documentsList");
 const ownershipEntity = document.getElementById("ownershipEntity");
 const ownershipNotes = document.getElementById("ownershipNotes");
