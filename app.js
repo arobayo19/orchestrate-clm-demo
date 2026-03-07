@@ -423,6 +423,9 @@ function isSLARisk(caseObj) {
 
 const priorityList = document.getElementById("priorityList");
 const queueBody = document.getElementById("queueBody");
+const monitoringQueueBody = document.getElementById("monitoringQueueBody");
+const triggersQueueBody = document.getElementById("triggersQueueBody");
+const screeningQueueBody = document.getElementById("screeningQueueBody");
 const caseSearch = document.getElementById("caseSearch");
 const statusFilter = document.getElementById("statusFilter");
 const pipelineFilter = document.getElementById("pipelineFilter");
@@ -822,7 +825,59 @@ queueChips.forEach((chip) => {
     renderQueue();
   });
 });
+function renderQueueForTarget(targetBody, queueType) {
+  if (!targetBody) return;
+  targetBody.innerHTML = "";
 
+  const visibleCases = cases.filter((item) => item.queueType === queueType);
+
+  visibleCases.forEach((item) => {
+    const risk = getRiskBadge(item.riskScore);
+    const [lastActionLabel, lastActionTime] = getLastAction(item);
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>
+        <div class="client-cell">
+          <div class="client-name">${item.client}</div>
+          <div class="client-sub">${item.id}</div>
+          <div class="client-meta">${item.activity}</div>
+        </div>
+      </td>
+      <td><span class="badge ${item.statusClass}">${item.status}</span></td>
+      <td><span class="badge ${item.pipelineClass}">${item.pipeline}</span></td>
+      <td>
+        <div class="risk-cell">
+          <span class="badge ${risk.className}">${risk.label}</span>
+          <div class="table-note">Score ${item.riskScore}</div>
+        </div>
+      </td>
+      <td>${item.jurisdiction}</td>
+      <td>
+        <div>${item.aging}</div>
+        <div class="${isSLARisk(item) ? "sla-flag" : "sla-safe"}" style="margin-top:8px;">
+          ${isSLARisk(item) ? "SLA Risk" : "On Track"}
+        </div>
+      </td>
+      <td>${item.assignee}</td>
+      <td>
+        <div class="last-action">
+          ${lastActionLabel}
+          <span>${lastActionTime}</span>
+        </div>
+      </td>
+      <td><button class="open-link" data-case="${item.id}">Open</button></td>
+    `;
+    targetBody.appendChild(tr);
+  });
+
+  targetBody.querySelectorAll(".open-link").forEach((btn) => {
+    btn.addEventListener("click", () => openCase(btn.dataset.case));
+  });
+}
 renderPriorityList();
 renderQueue();
+renderQueueForTarget(monitoringQueueBody, "periodic");
+renderQueueForTarget(triggersQueueBody, "trigger");
+renderQueueForTarget(screeningQueueBody, "screening");
 renderCase(currentCase);
