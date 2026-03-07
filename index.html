@@ -215,185 +215,522 @@
 </section>
 
       <section class="view" id="workspace-view">
-        <div class="workspace-layout">
-          <div class="workspace-main">
-            <div class="panel case-header">
-              <div>
-                <div class="eyebrow" id="caseId">CASE-2026-00128</div>
-                <h2 id="caseClientName">Apex Digital LLC</h2>
-                <div class="case-meta">
-                  <span class="badge blue" id="caseStatus">Completeness Review</span>
-                  <span class="badge gray" id="casePipeline">Standard CDD</span>
-                  <span class="badge gold" id="casePriority">Escalated</span>
-                </div>
-              </div>
-              <div class="decision-actions">
-                <button class="ghost-btn">Request Info</button>
-                <button class="ghost-btn">Escalate</button>
-                <button class="primary-btn">Approve</button>
-              </div>
-            </div>
-
-            <div class="panel tabs-panel">
-              <div class="tabs">
-                <button class="tab active" data-tab="overview">Overview</button>
-                <button class="tab" data-tab="documents">Documents</button>
-                <button class="tab" data-tab="ownership">Ownership</button>
-                <button class="tab" data-tab="screening">Screening</button>
-                <button class="tab" data-tab="risk">Risk</button>
-                <button class="tab" data-tab="activity">Activity</button>
-                <button class="tab" data-tab="audit">Audit</button>
-              </div>
-
-              <div class="tab-content active" id="tab-overview">
-  <div class="detail-grid">
-    <article class="detail-card">
-      <div class="section-head">
-        <h3>Business Details</h3>
-        <span class="badge green">Verified</span>
-      </div>
-      <dl class="kv">
-        <div><dt>Legal Entity Name</dt><dd id="ovLegalName">Apex Digital LLC</dd></div>
-        <div><dt>Entity Type</dt><dd id="ovEntityType">LLC</dd></div>
-        <div><dt>Jurisdiction of Formation</dt><dd id="ovJurisdiction">Delaware, US</dd></div>
-        <div><dt>Date of Formation</dt><dd id="ovFormationDate">2020-07-14</dd></div>
-        <div><dt>Registration Number</dt><dd id="ovRegistrationNumber">REG-2020-88421</dd></div>
-        <div><dt>EIN / Tax ID</dt><dd id="ovTaxId">12-3456789</dd></div>
-        <div><dt>Registered Address</dt><dd id="ovRegisteredAddress">244 Harbor Avenue, Boston, MA, United States</dd></div>
-        <div><dt>Business Description</dt><dd id="ovBusinessDescription">Digital asset exchange and institutional settlement services.</dd></div>
-        <div><dt>Industry / NAICS</dt><dd id="ovIndustry">Crypto Services</dd></div>
-        <div><dt>Purpose of Account</dt><dd id="ovPurpose">Brokerage & Custody</dd></div>
-        <div><dt>Expected Activity</dt><dd id="ovExpected">OTC trading, custody, settlement</dd></div>
-        <div><dt>Source of Funds</dt><dd id="ovSourceOfFunds">Operating Revenue</dd></div>
-      </dl>
-    </article>
-
-    <article class="detail-card">
-      <div class="section-head">
-        <h3>Ownership & Control</h3>
-        <span class="badge gold">Pending Review</span>
-      </div>
-      <dl class="kv">
-        <div><dt>Beneficial Owners</dt><dd id="ovBeneficialOwners">2 identified</dd></div>
-        <div><dt>Control Person</dt><dd id="ovControlPerson">1 identified</dd></div>
-        <div><dt>Authorized Users</dt><dd id="ovAuthorizedUsers">2 identified</dd></div>
-        <div><dt>Ownership Structure</dt><dd id="ovOwnershipStructure">Direct ownership, no layered entities</dd></div>
-        <div><dt>Complexity Flag</dt><dd id="ovComplexityFlag">None</dd></div>
-      </dl>
-    </article>
-
-    <article class="detail-card">
-      <div class="section-head">
-        <h3>Verification Results</h3>
-        <span class="badge blue">In Progress</span>
-      </div>
-      <ul class="status-list" id="overviewChecks"></ul>
-    </article>
-
-    <article class="detail-card">
-      <div class="section-head">
-        <h3>Risk Snapshot</h3>
-        <span class="badge gray">Client Provided</span>
-      </div>
-      <dl class="kv">
-        <div><dt>Client Risk Score</dt><dd id="ovRiskScoreSummary">63</dd></div>
-        <div><dt>Risk Tier</dt><dd id="ovRiskTier">Moderate</dd></div>
-        <div><dt>EDD Triggered</dt><dd id="ovEddTriggered">No</dd></div>
-        <div><dt>Main Risk Factors</dt><dd id="ovMainRiskFactors">Crypto services, OTC activity</dd></div>
-      </dl>
-    </article>
-
-    <article class="detail-card full">
-      <div class="section-head">
-        <h3>Case Summary</h3>
-        <span class="badge gray">Generated</span>
-      </div>
-      <p class="body-copy" id="overviewSummary"></p>
-    </article>
-  </div>
-</div>
-
-              <div class="tab-content" id="tab-documents">
-                <div class="doc-list" id="documentsList"></div>
-              </div>
-
-              <div class="tab-content" id="tab-ownership">
-                <div class="ownership-box">
-                  <div class="ownership-node top">Sarah Kim — 45%</div>
-                  <div class="ownership-node top">James Park — 30%</div>
-                  <div class="ownership-lines"></div>
-                  <div class="ownership-node center" id="ownershipEntity">Apex Digital LLC</div>
-                </div>
-                <div class="detail-card">
-                  <h3>Ownership Notes</h3>
-                  <p class="body-copy" id="ownershipNotes"></p>
-                </div>
-              </div>
-
-              <div class="tab-content" id="tab-screening">
-                <div class="detail-grid">
-                  <article class="detail-card">
-                    <h3>Sanctions</h3>
-                    <p class="body-copy" id="screenSanctions"></p>
-                  </article>
-                  <article class="detail-card">
-                    <h3>PEP</h3>
-                    <p class="body-copy" id="screenPep"></p>
-                  </article>
-                  <article class="detail-card full">
-                    <h3>Adverse Media</h3>
-                    <p class="body-copy" id="screenMedia"></p>
-                  </article>
-                </div>
-              </div>
-
-              <div class="tab-content" id="tab-risk">
-                <div class="risk-layout">
-                  <div class="risk-score-box">
-                    <div class="risk-ring">
-                      <span id="riskScore">63</span>
-                    </div>
-                    <div class="risk-label">Client Risk Score</div>
-                  </div>
-                  <div class="detail-card">
-                    <h3>Risk Narrative</h3>
-                    <p class="body-copy" id="riskNarrative"></p>
-                    <div class="chip-row" id="riskFactors"></div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="tab-content" id="tab-activity">
-                <div class="timeline" id="activityTimeline"></div>
-              </div>
-
-              <div class="tab-content" id="tab-audit">
-                <div class="timeline audit" id="auditTimeline"></div>
-              </div>
-            </div>
+  <div class="workspace-layout">
+    <div class="workspace-main">
+      <div class="panel case-header">
+        <div>
+          <div class="eyebrow" id="caseId">CASE-2026-00128</div>
+          <h2 id="caseClientName">Apex Digital LLC</h2>
+          <div class="case-meta">
+            <span class="badge blue" id="caseStatus">Completeness Review</span>
+            <span class="badge gray" id="casePipeline">Standard CDD</span>
+            <span class="badge gold" id="casePriority">Escalated</span>
           </div>
+        </div>
+        <div class="decision-actions">
+          <button class="ghost-btn">Request Info</button>
+          <button class="ghost-btn">Escalate</button>
+          <button class="primary-btn">Approve</button>
+        </div>
+      </div>
 
-          <aside class="workspace-side">
-            <div class="panel">
-              <div class="panel-head">
-                <h2>AI Agent Activity</h2>
-              </div>
-              <div class="agent-feed" id="agentFeed"></div>
-            </div>
+      <div class="panel tabs-panel">
+        <div class="tabs">
+          <button class="tab active" data-tab="overview">Overview</button>
+          <button class="tab" data-tab="business">Business Details</button>
+          <button class="tab" data-tab="ownership">Ownership & Control</button>
+          <button class="tab" data-tab="contacts">Contacts</button>
+          <button class="tab" data-tab="purpose">Purpose of Account</button>
+          <button class="tab" data-tab="screening">PEP / Screening</button>
+          <button class="tab" data-tab="documents">Documents</button>
+          <button class="tab" data-tab="risk">Risk</button>
+          <button class="tab" data-tab="audit">Audit</button>
+        </div>
 
-            <div class="panel">
-              <div class="panel-head">
-                <h2>Decision Guidance</h2>
+        <div class="tab-content active" id="tab-overview">
+          <div class="detail-grid">
+            <article class="detail-card">
+              <div class="section-head">
+                <h3>Case Snapshot</h3>
+                <span class="badge blue">In Progress</span>
               </div>
-              <ul class="guidance-list">
-                <li>Resolve missing corporate registry evidence.</li>
-                <li>Confirm ownership percentages reconcile to operating agreement.</li>
-                <li>Review screening disposition before approval.</li>
-              </ul>
-            </div>
-          </aside>
+              <dl class="kv">
+                <div><dt>Legal Entity Name</dt><dd id="ovLegalName">Apex Digital LLC</dd></div>
+                <div><dt>Entity Type</dt><dd id="ovEntityType">LLC</dd></div>
+                <div><dt>Jurisdiction</dt><dd id="ovJurisdiction">Delaware, US</dd></div>
+                <div><dt>Risk Tier</dt><dd id="ovRiskTier">Moderate</dd></div>
+                <div><dt>EDD Triggered</dt><dd id="ovEddTriggered">No</dd></div>
+                <div><dt>Assigned Queue</dt><dd id="ovAssignedQueue">Onboarding Queue</dd></div>
+              </dl>
+            </article>
+
+            <article class="detail-card">
+              <div class="section-head">
+                <h3>Review Summary</h3>
+                <span class="badge gold">Pending Review</span>
+              </div>
+              <ul class="status-list" id="overviewChecks"></ul>
+            </article>
+
+            <article class="detail-card full">
+              <div class="section-head">
+                <h3>Case Summary</h3>
+                <span class="badge gray">Generated</span>
+              </div>
+              <p class="body-copy" id="overviewSummary"></p>
+            </article>
+          </div>
+        </div>
+
+        <div class="tab-content" id="tab-business">
+          <div class="detail-grid">
+            <article class="detail-card full">
+              <div class="section-head">
+                <h3>Business Details</h3>
+                <span class="badge green">Verified</span>
+              </div>
+              <dl class="kv">
+                <div><dt>Legal Entity Name</dt><dd id="bizLegalName">Apex Digital LLC</dd></div>
+                <div><dt>Trading Name / DBA</dt><dd id="bizTradingName">Apex Digital</dd></div>
+                <div><dt>Legal Entity Type</dt><dd id="bizEntityType">LLC</dd></div>
+                <div><dt>Date of Incorporation / Formation</dt><dd id="bizFormationDate">2020-07-14</dd></div>
+                <div><dt>Country of Incorporation</dt><dd id="bizCountry">United States</dd></div>
+                <div><dt>State / Province</dt><dd id="bizState">Delaware</dd></div>
+                <div><dt>Registration Number</dt><dd id="bizRegistrationNumber">REG-2020-88421</dd></div>
+                <div><dt>Operating Address</dt><dd id="bizOperatingAddress">244 Harbor Avenue, Boston, MA, United States</dd></div>
+                <div><dt>Business Description</dt><dd id="bizDescription">Digital asset exchange and institutional settlement services.</dd></div>
+                <div><dt>Industry / Sector</dt><dd id="bizIndustry">Crypto Services</dd></div>
+              </dl>
+            </article>
+          </div>
+        </div>
+
+        <div class="tab-content" id="tab-ownership">
+          <div class="detail-grid">
+            <article class="detail-card">
+              <div class="section-head">
+                <h3>Ownership Summary</h3>
+                <span class="badge gold">Pending Review</span>
+              </div>
+              <dl class="kv">
+                <div><dt>25%+ Beneficial Owners</dt><dd id="ownHasUbo">Yes</dd></div>
+                <div><dt>Ownership Structure</dt><dd id="ovOwnershipStructure">Direct ownership, no layered entities</dd></div>
+                <div><dt>Complexity Flag</dt><dd id="ovComplexityFlag">None</dd></div>
+                <div><dt>Individuals with Control</dt><dd id="ownHasControl">Yes</dd></div>
+              </dl>
+            </article>
+
+            <article class="detail-card">
+              <div class="section-head">
+                <h3>Beneficial Owners</h3>
+                <span class="badge gold">2 Identified</span>
+              </div>
+              <div class="doc-list">
+                <div class="doc-item">
+                  <div class="doc-meta">
+                    <strong>Sarah Kim</strong>
+                    <span>DOB: 1987-03-11 · Nationality: US · Residence: US · Ownership: Direct · 45%</span>
+                  </div>
+                  <span class="badge green">ID Verified</span>
+                </div>
+                <div class="doc-item">
+                  <div class="doc-meta">
+                    <strong>James Park</strong>
+                    <span>DOB: 1984-09-28 · Nationality: US · Residence: US · Ownership: Direct · 30%</span>
+                  </div>
+                  <span class="badge gold">POA Pending</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="detail-card full">
+              <div class="section-head">
+                <h3>Controllers / Significant Control</h3>
+                <span class="badge blue">1 Identified</span>
+              </div>
+              <div class="doc-list">
+                <div class="doc-item">
+                  <div class="doc-meta">
+                    <strong>Sarah Kim</strong>
+                    <span>Role: CEO / Authorized Signatory · Residence: Boston, MA, United States · PEP: No</span>
+                  </div>
+                  <span class="badge green">Verified</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="detail-card full">
+              <div class="section-head">
+                <h3>Ownership Notes</h3>
+                <span class="badge gray">Analyst Review</span>
+              </div>
+              <p class="body-copy" id="ownershipNotes"></p>
+            </article>
+          </div>
+        </div>
+
+        <div class="tab-content" id="tab-contacts">
+          <div class="detail-grid">
+            <article class="detail-card">
+              <div class="section-head">
+                <h3>Primary Contact</h3>
+                <span class="badge green">Complete</span>
+              </div>
+              <dl class="kv">
+                <div><dt>Full Name</dt><dd id="contactPrimaryName">Sarah Kim</dd></div>
+                <div><dt>Title / Role</dt><dd id="contactPrimaryRole">CEO</dd></div>
+                <div><dt>Email</dt><dd id="contactPrimaryEmail">sarah.kim@apexdigital.com</dd></div>
+                <div><dt>Phone</dt><dd id="contactPrimaryPhone">+1 617 555 0144</dd></div>
+              </dl>
+            </article>
+
+            <article class="detail-card">
+              <div class="section-head">
+                <h3>Compliance Contact</h3>
+                <span class="badge blue">Optional</span>
+              </div>
+              <dl class="kv">
+                <div><dt>Full Name</dt><dd id="contactComplianceName">Marcus Lee</dd></div>
+                <div><dt>Title</dt><dd id="contactComplianceRole">Compliance Officer</dd></div>
+                <div><dt>Email</dt><dd id="contactComplianceEmail">compliance@apexdigital.com</dd></div>
+                <div><dt>Phone</dt><dd id="contactCompliancePhone">+1 617 555 0177</dd></div>
+              </dl>
+            </article>
+
+            <article class="detail-card full">
+              <div class="section-head">
+                <h3>Authorized Signatory</h3>
+                <span class="badge green">Required</span>
+              </div>
+              <dl class="kv">
+                <div><dt>Primary Contact is Authorized Signatory</dt><dd id="contactIsSignatory">Yes</dd></div>
+                <div><dt>Validation</dt><dd id="contactValidation">At least one authorized signatory present</dd></div>
+              </dl>
+            </article>
+          </div>
+        </div>
+
+        <div class="tab-content" id="tab-purpose">
+          <div class="detail-grid">
+            <article class="detail-card">
+              <div class="section-head">
+                <h3>Purpose of Account</h3>
+                <span class="badge green">Client Provided</span>
+              </div>
+              <dl class="kv">
+                <div><dt>Primary Purpose</dt><dd id="purposePrimary">Crypto trading / custody</dd></div>
+                <div><dt>Nature of Business</dt><dd id="purposeNature">Digital asset exchange and institutional settlement services.</dd></div>
+                <div><dt>Industry / Sector</dt><dd id="purposeIndustry">Crypto Services</dd></div>
+                <div><dt>Source of Funds</dt><dd id="ovSourceOfFunds">Operating Revenue</dd></div>
+              </dl>
+            </article>
+
+            <article class="detail-card">
+              <div class="section-head">
+                <h3>Expected Activity</h3>
+                <span class="badge gold">Review Needed</span>
+              </div>
+              <dl class="kv">
+                <div><dt>Monthly Deposit Amount</dt><dd id="expectedDeposits">$50,001 – $100,000</dd></div>
+                <div><dt>Monthly Transaction Volume</dt><dd id="expectedVolume">51 – 100 transactions</dd></div>
+                <div><dt>Monthly Transaction Value</dt><dd id="expectedValue">Over $100,000</dd></div>
+                <div><dt>International Activity</dt><dd id="expectedInternational">Yes</dd></div>
+                <div><dt>Countries Involved</dt><dd id="expectedCountries">US, UK, Singapore</dd></div>
+              </dl>
+            </article>
+          </div>
+        </div>
+
+        <div class="tab-content" id="tab-screening">
+          <div class="detail-grid">
+            <article class="detail-card">
+              <div class="section-head">
+                <h3>Sanctions</h3>
+                <span class="badge green">Cleared</span>
+              </div>
+              <p class="body-copy" id="screenSanctions"></p>
+            </article>
+
+            <article class="detail-card">
+              <div class="section-head">
+                <h3>PEP</h3>
+                <span class="badge gold">Review</span>
+              </div>
+              <p class="body-copy" id="screenPep"></p>
+            </article>
+
+            <article class="detail-card">
+              <div class="section-head">
+                <h3>Adverse Media</h3>
+                <span class="badge gold">Review</span>
+              </div>
+              <p class="body-copy" id="screenMedia"></p>
+            </article>
+
+            <article class="detail-card">
+              <div class="section-head">
+                <h3>PEP Declaration</h3>
+                <span class="badge blue">Client Provided</span>
+              </div>
+              <dl class="kv">
+                <div><dt>PEP / Associate / Family</dt><dd id="pepDeclared">No</dd></div>
+                <div><dt>Country</dt><dd id="pepCountry">-</dd></div>
+                <div><dt>Position Held</dt><dd id="pepPosition">-</dd></div>
+              </dl>
+            </article>
+          </div>
+        </div>
+
+        <div class="tab-content" id="tab-documents">
+          <div class="detail-grid">
+            <article class="detail-card">
+              <div class="section-head">
+                <h3>Entity Verification</h3>
+                <span class="badge gold">1 Missing</span>
+              </div>
+              <div class="doc-list" id="documentsList"></div>
+            </article>
+
+            <article class="detail-card">
+              <div class="section-head">
+                <h3>Ownership & Control</h3>
+                <span class="badge gold">Pending</span>
+              </div>
+              <div class="doc-list">
+                <div class="doc-item">
+                  <div class="doc-meta">
+                    <strong>Ownership Structure Chart</strong>
+                    <span>Not uploaded</span>
+                  </div>
+                  <span class="badge gold">Missing</span>
+                </div>
+                <div class="doc-item">
+                  <div class="doc-meta">
+                    <strong>Register of Members</strong>
+                    <span>Ownership extracted from operating agreement</span>
+                  </div>
+                  <span class="badge blue">Derived</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="detail-card">
+              <div class="section-head">
+                <h3>Individual Verification</h3>
+                <span class="badge gold">Review</span>
+              </div>
+              <div class="doc-list">
+                <div class="doc-item">
+                  <div class="doc-meta">
+                    <strong>Government ID — Sarah Kim</strong>
+                    <span>Passport uploaded and verified</span>
+                  </div>
+                  <span class="badge green">Verified</span>
+                </div>
+                <div class="doc-item">
+                  <div class="doc-meta">
+                    <strong>Proof of Address — James Park</strong>
+                    <span>Awaiting upload</span>
+                  </div>
+                  <span class="badge gold">Pending</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="detail-card">
+              <div class="section-head">
+                <h3>Authority</h3>
+                <span class="badge blue">In Review</span>
+              </div>
+              <div class="doc-list">
+                <div class="doc-item">
+                  <div class="doc-meta">
+                    <strong>Proof of Signing Authority</strong>
+                    <span>Operating agreement references signing authority</span>
+                  </div>
+                  <span class="badge blue">In Review</span>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="tab-content" id="tab-risk">
+          <div class="detail-grid">
+            <article class="detail-card">
+              <div class="section-head">
+                <h3>Risk Snapshot</h3>
+                <span class="badge gray">Client Provided</span>
+              </div>
+              <dl class="kv">
+                <div><dt>Client Risk Score</dt><dd id="riskScoreSummary">63</dd></div>
+                <div><dt>Risk Tier</dt><dd id="riskTierSummary">Moderate</dd></div>
+                <div><dt>EDD Triggered</dt><dd id="riskEddSummary">No</dd></div>
+              </dl>
+            </article>
+
+            <article class="detail-card">
+              <div class="section-head">
+                <h3>Risk Narrative</h3>
+                <span class="badge gold">Analyst Review</span>
+              </div>
+              <p class="body-copy" id="riskNarrative"></p>
+              <div class="chip-row" id="riskFactors"></div>
+            </article>
+
+            <article class="detail-card full">
+              <div class="section-head">
+                <h3>Decision Recommendation</h3>
+                <span class="badge blue">AI Assisted</span>
+              </div>
+              <p class="body-copy">
+                Proceed after missing registry evidence is resolved and related-party screening review is completed.
+              </p>
+            </article>
+          </div>
+        </div>
+
+        <div class="tab-content" id="tab-audit">
+          <div class="timeline audit" id="auditTimeline"></div>
+        </div>
+      </div>
+    </div>
+
+    <aside class="workspace-side">
+      <div class="panel">
+        <div class="panel-head">
+          <h2>AI Agent Activity</h2>
+        </div>
+        <div class="agent-feed" id="agentFeed"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Decision Guidance</h2>
+        </div>
+        <ul class="guidance-list">
+          <li>Resolve missing corporate registry evidence.</li>
+          <li>Confirm ownership percentages reconcile to operating agreement.</li>
+          <li>Review screening disposition before approval.</li>
+          <li>Confirm purpose of account aligns with expected activity.</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</section>
+      <section class="view" id="escalations-view">
+        <div class="panel">
+          <div class="panel-head"><h2>Escalations</h2></div>
+          <p class="body-copy">Cases requiring senior reviewer, BSA officer, or policy override approval.</p>
         </div>
       </section>
+
+      <section class="view" id="risk-view">
+        <div class="panel">
+          <div class="panel-head"><h2>Risk Overview</h2></div>
+          <p class="body-copy">Firm-wide risk segmentation, active high-risk cases, and policy-driven routing outcomes.</p>
+        </div>
+      </section>
+
+      <section class="view" id="edd-view">
+        <div class="panel">
+          <div class="panel-head"><h2>EDD Pipeline</h2></div>
+          <p class="body-copy">Enhanced Due Diligence queue for high-risk cases requiring source of wealth, jurisdiction review, and deeper screening analysis.</p>
+        </div>
+      </section>
+
+      <section class="view" id="monitoring-view">
+  <div class="panel intake-panel">
+    <div class="panel-head panel-head-spread">
+      <div>
+        <h2>Periodic Reviews Queue</h2>
+        <p class="panel-subtext">Scheduled lifecycle refresh reviews across active customers.</p>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table class="queue-table enterprise">
+        <thead>
+          <tr>
+            <th>Client</th>
+            <th>Status</th>
+            <th>Pipeline</th>
+            <th>Risk</th>
+            <th>Jurisdiction</th>
+            <th>Aging</th>
+            <th>Assignee</th>
+            <th>Last Action</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="monitoringQueueBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+      <section class="view" id="triggers-view">
+  <div class="panel intake-panel">
+    <div class="panel-head panel-head-spread">
+      <div>
+        <h2>Trigger Reviews Queue</h2>
+        <p class="panel-subtext">Event-driven reviews initiated by ownership changes, alerts, or profile updates.</p>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table class="queue-table enterprise">
+        <thead>
+          <tr>
+            <th>Client</th>
+            <th>Status</th>
+            <th>Pipeline</th>
+            <th>Risk</th>
+            <th>Jurisdiction</th>
+            <th>Aging</th>
+            <th>Assignee</th>
+            <th>Last Action</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="triggersQueueBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+      <section class="view" id="screening-view">
+  <div class="panel intake-panel">
+    <div class="panel-head panel-head-spread">
+      <div>
+        <h2>Screening Queue</h2>
+        <p class="panel-subtext">Sanctions, PEP, and adverse media cases awaiting review.</p>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table class="queue-table enterprise">
+        <thead>
+          <tr>
+            <th>Client</th>
+            <th>Status</th>
+            <th>Pipeline</th>
+            <th>Risk</th>
+            <th>Jurisdiction</th>
+            <th>Aging</th>
+            <th>Assignee</th>
+            <th>Last Action</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="screeningQueueBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
 
       <section class="view" id="escalations-view">
         <div class="panel">
