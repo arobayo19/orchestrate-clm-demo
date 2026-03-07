@@ -738,3 +738,10 @@ h3{
   background:rgba(69,219,137,.12);
   color:#8ff2b8;
 }
+.section-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:14px;
+}
