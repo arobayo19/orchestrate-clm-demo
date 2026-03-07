@@ -49,6 +49,10 @@ button,input{font:inherit}
   display:grid;
   grid-template-columns:320px 1fr;
   min-height:100vh;
+
+  transform:scale(.88);
+  transform-origin:top left;
+  width:108%;
 }
 
 .sidebar{
