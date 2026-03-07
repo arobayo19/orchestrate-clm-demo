@@ -248,28 +248,72 @@
               </div>
 
               <div class="tab-content active" id="tab-overview">
-                <div class="detail-grid">
-                  <article class="detail-card">
-                    <h3>Customer Profile</h3>
-                    <dl class="kv">
-                      <div><dt>Entity Type</dt><dd id="ovEntityType">LLC</dd></div>
-                      <div><dt>Jurisdiction</dt><dd id="ovJurisdiction">Delaware, US</dd></div>
-                      <div><dt>Business Activity</dt><dd id="ovActivity">Digital asset exchange</dd></div>
-                      <div><dt>Expected Activity</dt><dd id="ovExpected">OTC trading, custody, settlement</dd></div>
-                    </dl>
-                  </article>
+  <div class="detail-grid">
+    <article class="detail-card">
+      <div class="section-head">
+        <h3>Business Details</h3>
+        <span class="badge green">Verified</span>
+      </div>
+      <dl class="kv">
+        <div><dt>Legal Entity Name</dt><dd id="ovLegalName">Apex Digital LLC</dd></div>
+        <div><dt>Entity Type</dt><dd id="ovEntityType">LLC</dd></div>
+        <div><dt>Jurisdiction of Formation</dt><dd id="ovJurisdiction">Delaware, US</dd></div>
+        <div><dt>Date of Formation</dt><dd id="ovFormationDate">2020-07-14</dd></div>
+        <div><dt>Registration Number</dt><dd id="ovRegistrationNumber">REG-2020-88421</dd></div>
+        <div><dt>EIN / Tax ID</dt><dd id="ovTaxId">12-3456789</dd></div>
+        <div><dt>Registered Address</dt><dd id="ovRegisteredAddress">244 Harbor Avenue, Boston, MA, United States</dd></div>
+        <div><dt>Business Description</dt><dd id="ovBusinessDescription">Digital asset exchange and institutional settlement services.</dd></div>
+        <div><dt>Industry / NAICS</dt><dd id="ovIndustry">Crypto Services</dd></div>
+        <div><dt>Purpose of Account</dt><dd id="ovPurpose">Brokerage & Custody</dd></div>
+        <div><dt>Expected Activity</dt><dd id="ovExpected">OTC trading, custody, settlement</dd></div>
+        <div><dt>Source of Funds</dt><dd id="ovSourceOfFunds">Operating Revenue</dd></div>
+      </dl>
+    </article>
 
-                  <article class="detail-card">
-                    <h3>Verification Results</h3>
-                    <ul class="status-list" id="overviewChecks"></ul>
-                  </article>
+    <article class="detail-card">
+      <div class="section-head">
+        <h3>Ownership & Control</h3>
+        <span class="badge gold">Pending Review</span>
+      </div>
+      <dl class="kv">
+        <div><dt>Beneficial Owners</dt><dd id="ovBeneficialOwners">2 identified</dd></div>
+        <div><dt>Control Person</dt><dd id="ovControlPerson">1 identified</dd></div>
+        <div><dt>Authorized Users</dt><dd id="ovAuthorizedUsers">2 identified</dd></div>
+        <div><dt>Ownership Structure</dt><dd id="ovOwnershipStructure">Direct ownership, no layered entities</dd></div>
+        <div><dt>Complexity Flag</dt><dd id="ovComplexityFlag">None</dd></div>
+      </dl>
+    </article>
 
-                  <article class="detail-card full">
-                    <h3>Case Summary</h3>
-                    <p class="body-copy" id="overviewSummary"></p>
-                  </article>
-                </div>
-              </div>
+    <article class="detail-card">
+      <div class="section-head">
+        <h3>Verification Results</h3>
+        <span class="badge blue">In Progress</span>
+      </div>
+      <ul class="status-list" id="overviewChecks"></ul>
+    </article>
+
+    <article class="detail-card">
+      <div class="section-head">
+        <h3>Risk Snapshot</h3>
+        <span class="badge gray">Client Provided</span>
+      </div>
+      <dl class="kv">
+        <div><dt>Client Risk Score</dt><dd id="ovRiskScoreSummary">63</dd></div>
+        <div><dt>Risk Tier</dt><dd id="ovRiskTier">Moderate</dd></div>
+        <div><dt>EDD Triggered</dt><dd id="ovEddTriggered">No</dd></div>
+        <div><dt>Main Risk Factors</dt><dd id="ovMainRiskFactors">Crypto services, OTC activity</dd></div>
+      </dl>
+    </article>
+
+    <article class="detail-card full">
+      <div class="section-head">
+        <h3>Case Summary</h3>
+        <span class="badge gray">Generated</span>
+      </div>
+      <p class="body-copy" id="overviewSummary"></p>
+    </article>
+  </div>
+</div>
 
               <div class="tab-content" id="tab-documents">
                 <div class="doc-list" id="documentsList"></div>
