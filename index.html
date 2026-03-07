@@ -1,205 +1,348 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OrchestrateKYC CLM Demo</title>
-
-<link rel="stylesheet" href="styles.css">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orchestrate KYC — CLM Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-
-<div class="app">
-
-<!-- SIDEBAR -->
-
-<div class="sidebar">
-
-<div class="logo">O</div>
-
-<div class="workspace">
-CLM Product Demo
-</div>
-
-<div class="nav">
-
-<button onclick="showView('queue')" class="nav-item active">
-Intake Queue
-</button>
-
-<button onclick="showView('workspace')" class="nav-item">
-Case Workspace
-</button>
-
-<button onclick="showView('edd')" class="nav-item">
-EDD Pipeline
-</button>
-
-<button onclick="showView('risk')" class="nav-item">
-Risk Summary
-</button>
-
-<button onclick="showView('lifecycle')" class="nav-item">
-Lifecycle
-</button>
-
-<button onclick="showView('audit')" class="nav-item">
-Audit Trail
-</button>
-
-</div>
-
-</div>
-
-
-<!-- MAIN CONTENT -->
-
-<div class="main">
-
-
-<!-- METRICS -->
-
-<div class="metrics">
-
-<div class="metric">
-<div class="metric-title">OPEN CASES</div>
-<div class="metric-value">128</div>
-</div>
-
-<div class="metric">
-<div class="metric-title">NEW APPLICATIONS</div>
-<div class="metric-value">32</div>
-</div>
-
-<div class="metric">
-<div class="metric-title">PERIODIC REVIEWS</div>
-<div class="metric-value">14</div>
-</div>
-
-<div class="metric">
-<div class="metric-title">TRIGGER REVIEWS</div>
-<div class="metric-value">3</div>
-</div>
-
-</div>
-
-
-<!-- INTAKE QUEUE -->
-
-<div id="queue" class="view active">
-
-<h2>Intake Cases</h2>
-
-<div id="caseList"></div>
-
-</div>
-
-
-<!-- CASE WORKSPACE -->
-
-<div id="workspace" class="view">
-
-<h2 id="caseTitle">Case Workspace</h2>
-
-<div class="panel">
-
-<h3>Customer Profile</h3>
-
-<p id="customerInfo"></p>
-
-</div>
-
-<div class="panel">
-
-<h3>Documents</h3>
-
-<ul id="documentList"></ul>
-
-</div>
-
-<div class="panel">
-
-<h3>Risk Summary</h3>
-
-<p id="riskSummary"></p>
-
-</div>
-
-</div>
-
-
-<!-- EDD -->
-
-<div id="edd" class="view">
-
-<h2>EDD Pipeline</h2>
-
-<div class="panel">
-
-Meridian Capital Partners  
-Solstice Exchange Ltd
-
-</div>
-
-</div>
-
-
-<!-- RISK SUMMARY -->
-
-<div id="risk" class="view">
-
-<h2>Risk Overview</h2>
-
-<div class="panel">
-
-Customer profile  
-Risk factors  
-Mitigants  
-Recommendation
-
-</div>
-
-</div>
-
-
-<!-- LIFECYCLE -->
-
-<div id="lifecycle" class="view">
-
-<h2>Lifecycle Monitoring</h2>
-
-<div class="panel">
-
-Periodic Reviews  
-Trigger Events  
-Monitoring Alerts
-
-</div>
-
-</div>
-
-
-<!-- AUDIT -->
-
-<div id="audit" class="view">
-
-<h2>Audit Trail</h2>
-
-<div class="panel">
-
-All actions logged for regulators.
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-
-<script src="app.js"></script>
-
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">O</div>
+        <div>
+          <div class="brand-name">Orchestrate KYC</div>
+          <div class="brand-sub">CLM Product Demo</div>
+        </div>
+      </div>
+
+      <nav class="side-nav">
+        <div class="nav-group-title">Overview</div>
+        <button class="nav-item active" data-view="dashboard">Dashboard</button>
+
+        <div class="nav-group-title">Onboarding</div>
+        <button class="nav-item" data-view="intake">Intake Queue</button>
+
+        <div class="nav-group-title">Case Management</div>
+        <button class="nav-item" data-view="workspace">Case Workspace</button>
+        <button class="nav-item" data-view="escalations">Escalations</button>
+
+        <div class="nav-group-title">Risk</div>
+        <button class="nav-item" data-view="risk">Risk Overview</button>
+        <button class="nav-item" data-view="edd">EDD Pipeline</button>
+
+        <div class="nav-group-title">Monitoring</div>
+        <button class="nav-item" data-view="monitoring">Periodic Reviews</button>
+        <button class="nav-item" data-view="triggers">Trigger Reviews</button>
+
+        <div class="nav-group-title">AI Agents</div>
+        <button class="nav-item" data-view="agents">Automation Activity</button>
+
+        <div class="nav-group-title">System</div>
+        <button class="nav-item" data-view="audit">Audit Trail</button>
+      </nav>
+
+      <div class="sidebar-footer">
+        AI-first compliance engine for onboarding, review, escalation, and lifecycle monitoring.
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow" id="pageEyebrow">Overview</div>
+          <h1 id="pageTitle">Dashboard</h1>
+        </div>
+        <div class="topbar-actions">
+          <button class="ghost-btn">Export</button>
+          <button class="primary-btn">New Review</button>
+        </div>
+      </header>
+
+      <section class="metrics-grid">
+        <article class="metric-card">
+          <div class="metric-label">Open Cases</div>
+          <div class="metric-value">128</div>
+          <div class="metric-note">All active onboarding, review, and exception cases.</div>
+        </article>
+        <article class="metric-card">
+          <div class="metric-label">New Applications</div>
+          <div class="metric-value">32</div>
+          <div class="metric-note">Fresh submissions received from the onboarding portal.</div>
+        </article>
+        <article class="metric-card">
+          <div class="metric-label">Periodic Reviews</div>
+          <div class="metric-value">14</div>
+          <div class="metric-note">Upcoming or in-progress scheduled refresh cycles.</div>
+        </article>
+        <article class="metric-card">
+          <div class="metric-label">Trigger Reviews</div>
+          <div class="metric-value">3</div>
+          <div class="metric-note">Event-driven reviews opened from alerts or profile changes.</div>
+        </article>
+      </section>
+
+      <section class="view active" id="dashboard-view">
+        <div class="content-grid">
+          <div class="panel">
+            <div class="panel-head">
+              <h2>Operational Snapshot</h2>
+            </div>
+            <div class="snapshot-grid">
+              <div class="snapshot-card">
+                <div class="snapshot-title">Pending Human Review</div>
+                <div class="snapshot-big">9</div>
+                <div class="snapshot-meta">4 over SLA target</div>
+              </div>
+              <div class="snapshot-card">
+                <div class="snapshot-title">EDD Cases</div>
+                <div class="snapshot-big">11</div>
+                <div class="snapshot-meta">3 awaiting senior approval</div>
+              </div>
+              <div class="snapshot-card">
+                <div class="snapshot-title">Overdue Reviews</div>
+                <div class="snapshot-big">6</div>
+                <div class="snapshot-meta">Periodic or trigger-driven</div>
+              </div>
+              <div class="snapshot-card">
+                <div class="snapshot-title">Screening Alerts</div>
+                <div class="snapshot-big">5</div>
+                <div class="snapshot-meta">2 likely true positives</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <h2>Top Priority Cases</h2>
+            </div>
+            <div class="simple-list" id="priorityList"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="intake-view">
+        <div class="panel">
+          <div class="panel-head panel-head-spread">
+            <h2>Intake Queue</h2>
+            <div class="panel-actions">
+              <input class="search-input" id="caseSearch" placeholder="Search client or case ID" />
+              <button class="ghost-btn">Filter</button>
+              <button class="ghost-btn">Sort by aging</button>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="queue-table">
+              <thead>
+                <tr>
+                  <th>Client</th>
+                  <th>Status</th>
+                  <th>Pipeline</th>
+                  <th>Aging</th>
+                  <th>Priority</th>
+                  <th>Assignee</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="queueBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="workspace-view">
+        <div class="workspace-layout">
+          <div class="workspace-main">
+            <div class="panel case-header">
+              <div>
+                <div class="eyebrow" id="caseId">CASE-2026-00128</div>
+                <h2 id="caseClientName">Apex Digital LLC</h2>
+                <div class="case-meta">
+                  <span class="badge blue" id="caseStatus">Completeness Review</span>
+                  <span class="badge gray" id="casePipeline">Standard CDD</span>
+                  <span class="badge gold" id="casePriority">Escalated</span>
+                </div>
+              </div>
+              <div class="decision-actions">
+                <button class="ghost-btn">Request Info</button>
+                <button class="ghost-btn">Escalate</button>
+                <button class="primary-btn">Approve</button>
+              </div>
+            </div>
+
+            <div class="panel tabs-panel">
+              <div class="tabs">
+                <button class="tab active" data-tab="overview">Overview</button>
+                <button class="tab" data-tab="documents">Documents</button>
+                <button class="tab" data-tab="ownership">Ownership</button>
+                <button class="tab" data-tab="screening">Screening</button>
+                <button class="tab" data-tab="risk">Risk</button>
+                <button class="tab" data-tab="activity">Activity</button>
+                <button class="tab" data-tab="audit">Audit</button>
+              </div>
+
+              <div class="tab-content active" id="tab-overview">
+                <div class="detail-grid">
+                  <article class="detail-card">
+                    <h3>Customer Profile</h3>
+                    <dl class="kv">
+                      <div><dt>Entity Type</dt><dd id="ovEntityType">LLC</dd></div>
+                      <div><dt>Jurisdiction</dt><dd id="ovJurisdiction">Delaware, US</dd></div>
+                      <div><dt>Business Activity</dt><dd id="ovActivity">Digital asset exchange</dd></div>
+                      <div><dt>Expected Activity</dt><dd id="ovExpected">OTC trading, custody, settlement</dd></div>
+                    </dl>
+                  </article>
+
+                  <article class="detail-card">
+                    <h3>Verification Results</h3>
+                    <ul class="status-list" id="overviewChecks"></ul>
+                  </article>
+
+                  <article class="detail-card full">
+                    <h3>Case Summary</h3>
+                    <p class="body-copy" id="overviewSummary"></p>
+                  </article>
+                </div>
+              </div>
+
+              <div class="tab-content" id="tab-documents">
+                <div class="doc-list" id="documentsList"></div>
+              </div>
+
+              <div class="tab-content" id="tab-ownership">
+                <div class="ownership-box">
+                  <div class="ownership-node top">Sarah Kim — 45%</div>
+                  <div class="ownership-node top">James Park — 30%</div>
+                  <div class="ownership-lines"></div>
+                  <div class="ownership-node center" id="ownershipEntity">Apex Digital LLC</div>
+                </div>
+                <div class="detail-card">
+                  <h3>Ownership Notes</h3>
+                  <p class="body-copy" id="ownershipNotes"></p>
+                </div>
+              </div>
+
+              <div class="tab-content" id="tab-screening">
+                <div class="detail-grid">
+                  <article class="detail-card">
+                    <h3>Sanctions</h3>
+                    <p class="body-copy" id="screenSanctions"></p>
+                  </article>
+                  <article class="detail-card">
+                    <h3>PEP</h3>
+                    <p class="body-copy" id="screenPep"></p>
+                  </article>
+                  <article class="detail-card full">
+                    <h3>Adverse Media</h3>
+                    <p class="body-copy" id="screenMedia"></p>
+                  </article>
+                </div>
+              </div>
+
+              <div class="tab-content" id="tab-risk">
+                <div class="risk-layout">
+                  <div class="risk-score-box">
+                    <div class="risk-ring">
+                      <span id="riskScore">63</span>
+                    </div>
+                    <div class="risk-label">Client Risk Score</div>
+                  </div>
+                  <div class="detail-card">
+                    <h3>Risk Narrative</h3>
+                    <p class="body-copy" id="riskNarrative"></p>
+                    <div class="chip-row" id="riskFactors"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tab-content" id="tab-activity">
+                <div class="timeline" id="activityTimeline"></div>
+              </div>
+
+              <div class="tab-content" id="tab-audit">
+                <div class="timeline audit" id="auditTimeline"></div>
+              </div>
+            </div>
+          </div>
+
+          <aside class="workspace-side">
+            <div class="panel">
+              <div class="panel-head">
+                <h2>AI Agent Activity</h2>
+              </div>
+              <div class="agent-feed" id="agentFeed"></div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-head">
+                <h2>Decision Guidance</h2>
+              </div>
+              <ul class="guidance-list">
+                <li>Resolve missing corporate registry evidence.</li>
+                <li>Confirm ownership percentages reconcile to operating agreement.</li>
+                <li>Review screening disposition before approval.</li>
+              </ul>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="view" id="escalations-view">
+        <div class="panel">
+          <div class="panel-head"><h2>Escalations</h2></div>
+          <p class="body-copy">Cases requiring senior reviewer, BSA officer, or policy override approval.</p>
+        </div>
+      </section>
+
+      <section class="view" id="risk-view">
+        <div class="panel">
+          <div class="panel-head"><h2>Risk Overview</h2></div>
+          <p class="body-copy">Firm-wide risk segmentation, active high-risk cases, and policy-driven routing outcomes.</p>
+        </div>
+      </section>
+
+      <section class="view" id="edd-view">
+        <div class="panel">
+          <div class="panel-head"><h2>EDD Pipeline</h2></div>
+          <p class="body-copy">Enhanced Due Diligence queue for high-risk cases requiring source of wealth, jurisdiction review, and deeper screening analysis.</p>
+        </div>
+      </section>
+
+      <section class="view" id="monitoring-view">
+        <div class="panel">
+          <div class="panel-head"><h2>Periodic Reviews</h2></div>
+          <p class="body-copy">Scheduled refresh cycles based on customer risk tier and lifecycle review cadence.</p>
+        </div>
+      </section>
+
+      <section class="view" id="triggers-view">
+        <div class="panel">
+          <div class="panel-head"><h2>Trigger Reviews</h2></div>
+          <p class="body-copy">Ad hoc reviews initiated by sanctions alerts, ownership changes, adverse media, or profile updates.</p>
+        </div>
+      </section>
+
+      <section class="view" id="agents-view">
+        <div class="panel">
+          <div class="panel-head"><h2>Automation Activity</h2></div>
+          <p class="body-copy">Live orchestration view across extraction, ownership mapping, screening, risk, and review scheduling agents.</p>
+        </div>
+      </section>
+
+      <section class="view" id="audit-view">
+        <div class="panel">
+          <div class="panel-head"><h2>Audit Trail</h2></div>
+          <p class="body-copy">Immutable regulator-ready action logs searchable by case, actor, source, and timestamp.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>
