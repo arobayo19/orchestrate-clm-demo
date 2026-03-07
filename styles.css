@@ -892,3 +892,14 @@ h3{
   font-size:12px;
   letter-spacing:.01em;
 }
+.panel{
+  padding:16px;
+}
+
+.metric-card{
+  padding:16px 18px;
+}
+
+.queue-table td{
+  padding:14px 10px;
+}
