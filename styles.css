@@ -955,3 +955,95 @@ h3{
 .workflow-line.active{
   background:rgba(79,157,255,.45);
 }
+.case-header{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+.case-header-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:18px;
+}
+
+.workflow-banner{
+  border:1px solid rgba(255,255,255,.06);
+  background:rgba(255,255,255,.02);
+  border-radius:18px;
+  padding:16px 18px 18px;
+}
+
+.workflow-banner-title{
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  color:#8fb0bc;
+  font-weight:800;
+  margin-bottom:14px;
+}
+
+.workflow-banner-track{
+  display:grid;
+  grid-template-columns:repeat(4, minmax(0,1fr));
+  gap:10px;
+}
+
+.workflow-banner-step{
+  position:relative;
+  min-height:64px;
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  font-weight:700;
+  font-size:13px;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.03);
+  color:var(--muted);
+  overflow:hidden;
+}
+
+.workflow-banner-step.done{
+  background:rgba(208,168,92,.20);
+  border-color:rgba(208,168,92,.28);
+  color:#f0d2a0;
+}
+
+.workflow-banner-step.active{
+  background:rgba(46,164,99,.18);
+  border-color:rgba(46,164,99,.30);
+  color:#b7f3cf;
+}
+
+.workflow-banner-step.pending{
+  background:rgba(255,255,255,.04);
+  border-color:rgba(255,255,255,.08);
+  color:#938983;
+}
+
+.workflow-banner-step:not(:last-child)::after{
+  content:"";
+  position:absolute;
+  right:-18px;
+  top:0;
+  width:36px;
+  height:100%;
+  background:inherit;
+  border-top:inherit;
+  border-right:inherit;
+  transform:skewX(-24deg);
+  z-index:2;
+}
+
+.workflow-banner-step:not(:last-child){
+  margin-right:10px;
+}
+
+.workflow-banner-label{
+  position:relative;
+  z-index:3;
+  padding:0 12px;
+}
