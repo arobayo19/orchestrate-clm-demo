@@ -907,3 +907,51 @@ h3{
 .queue-table td{
   padding:14px 10px;
 }
+.case-workflow{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:14px 0 14px;
+  flex-wrap:wrap;
+}
+
+.workflow-step{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:92px;
+  padding:8px 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:700;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.03);
+  color:var(--muted);
+}
+
+.workflow-step.done{
+  background:rgba(46,164,99,.12);
+  border-color:rgba(46,164,99,.25);
+  color:#8ff2b8;
+}
+
+.workflow-step.active{
+  background:rgba(79,157,255,.12);
+  border-color:rgba(79,157,255,.24);
+  color:#9bc4ff;
+}
+
+.workflow-line{
+  width:28px;
+  height:2px;
+  background:rgba(255,255,255,.12);
+  border-radius:999px;
+}
+
+.workflow-line.done{
+  background:rgba(46,164,99,.45);
+}
+
+.workflow-line.active{
+  background:rgba(79,157,255,.45);
+}
