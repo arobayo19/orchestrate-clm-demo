@@ -737,3 +737,25 @@ h3{
   background:rgba(69,219,137,.12);
   color:#8ff2b8;
 }
+
+/* ORCHESTRATE FINTECH DASHBOARD STYLES */
+
+:root{
+  --bg:#060606;
+  --bg-2:#0b0909;
+  --panel:#121010;
+  --panel-2:#171313;
+  --border:#2c2424;
+  --text:#f4f1ed;
+  --muted:#b7a9a0;
+
+  --green:#2ea463;
+  --green-2:#228a52;
+  --green-soft:rgba(46,164,99,.12);
+
+  --blue:#70a9ff;
+  --gold:#d0a85c;
+  --red:#d96b6b;
+
+  --shadow:0 16px 40px rgba(0,0,0,.30);
+}
