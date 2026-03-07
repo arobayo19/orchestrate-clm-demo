@@ -1,761 +1,469 @@
-:root{
-
-  /* base backgrounds */
-  --bg:#050505;
-  --bg-2:#0b0909;
-  --panel:#141111;
-  --panel-2:#191515;
-
-  /* borders */
-  --border:#2a2323;
-
-  /* text */
-  --text:#f3f1ee;
-  --muted:#b7a9a0;
-
-  /* brand */
-  --green:#2ea463;
-  --green-2:#228a52;
-  --green-soft:rgba(46,164,99,.14);
-
-  /* semantic */
-  --blue:#4f9dff;
-  --gold:#d0a85c;
-  --red:#d96b6b;
-
-  /* shadow */
-  --shadow:0 10px 30px rgba(0,0,0,.28);
-
-}
-
-*{box-sizing:border-box}
-
-html,body{
-  margin:0;
-  padding:0;
-  background:
-    radial-gradient(circle at top center, rgba(46,164,99,.08), transparent 30%),
-    linear-gradient(180deg,#050505 0%,#080606 100%);
-  color:var(--text);
-  font-family:"Inter",system-ui,sans-serif;
-}
-
-button,input{font:inherit}
-
-.app-shell{
-  display:grid;
-  grid-template-columns:320px 1fr;
-  min-height:100vh;
-}
-
-.sidebar{
-  background:#090808;
-  border-right:1px solid rgba(255,255,255,.05);
-  padding:22px 18px;
-  display:flex;
-  flex-direction:column;
-  gap:18px;
-}
-
-.brand{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  padding:12px 8px 4px;
-}
-
-.brand-mark{
-  width:48px;height:48px;border-radius:14px;background:var(--green);
-  color:#031117;font-weight:800;display:flex;align-items:center;justify-content:center;
-  font-size:24px;
-}
-
-.brand-name{font-size:28px;font-weight:800;letter-spacing:-.03em}
-.brand-sub{color:var(--muted);margin-top:4px}
-
-.side-nav{display:flex;flex-direction:column;gap:8px}
-.nav-group-title{
-  color:#7fa0ad;
-  text-transform:uppercase;
-  letter-spacing:.12em;
-  font-size:11px;
-  font-weight:800;
-  margin:16px 10px 2px;
-}
-
-.nav-item{
-  width:100%;
-  border:1px solid transparent;
-  background:transparent;
-  color:var(--text);
-  padding:14px 14px;
-  border-radius:14px;
-  text-align:left;
-  cursor:pointer;
-  transition:.18s ease;
-}
-
-.nav-item:hover{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.05)}
-.nav-item.active{
-  background:rgba(46,164,99,.16);
-  border-color:rgba(46,164,99,.30);
-}
-
-.sidebar-footer{
-  margin-top:auto;
-  color:var(--muted);
-  font-size:13px;
-  line-height:1.55;
-  border:1px solid rgba(255,255,255,.06);
-  background:rgba(20,17,17,.92);
-  border-radius:16px;
-  padding:14px;
-}
-
-.main{
-  padding:28px;
-  display:flex;
-  flex-direction:column;
-  gap:22px;
-}
-
-.topbar{
-  display:flex;
-  align-items:flex-end;
-  justify-content:space-between;
-  gap:16px;
-}
-
-.eyebrow{
-  font-size:12px;
-  text-transform:uppercase;
-  letter-spacing:.14em;
-  color:#81a7b5;
-  font-weight:800;
-  margin-bottom:8px;
-}
-
-h1{
-  margin:0;
-  font-size:40px;
-  line-height:1;
-  letter-spacing:-.04em;
-}
-
-h2{
-  margin:0;
-  font-size:24px;
-  letter-spacing:-.03em;
-}
-
-h3{
-  margin:0 0 14px;
-  font-size:16px;
-  letter-spacing:-.02em;
-}
-
-.topbar-actions{display:flex;gap:10px}
-.primary-btn,.ghost-btn{
-  border-radius:14px;
-  padding:12px 16px;
-  cursor:pointer;
-  border:1px solid var(--border);
-}
-.primary-btn{
-  background:var(--green);
-  color:#f3f1ee;
-  border-color:transparent;
-  font-weight:800;
-}
-.ghost-btn{
-  background:rgba(255,255,255,.02);
-  color:var(--text);
-}
-
-.metrics-grid{
-  display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:18px;
-}
-
-.metric-card,.panel,.snapshot-card,.detail-card{
-  background:linear-gradient(180deg, rgba(20,17,17,.96), rgba(16,13,13,.96));
-  border:1px solid rgba(255,255,255,.08);
-  box-shadow:var(--shadow);
-}
-
-.metric-card{
-  border-radius:18px;
-  padding:20px 22px;
-}
-
-.metric-label{
-  font-size:12px;
-  color:#9db6c0;
-  text-transform:uppercase;
-  letter-spacing:.14em;
-  font-weight:800;
-}
-
-.metric-value{
-  font-size:44px;
-  line-height:1;
-  font-weight:800;
-  margin:6px 0 10px;
-  letter-spacing:-.04em;
-}
-
-.metric-note{
-  color:var(--muted);
-  line-height:1.45;
-}
-
-.view{display:none}
-.view.active{display:block}
-
-.content-grid{
-  display:grid;
-  grid-template-columns:1.2fr .8fr;
-  gap:18px;
-}
-
-.panel{
-  border-radius:22px;
-  padding:20px;
-}
-
-.panel-head{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  margin-bottom:18px;
-}
-.panel-head-spread{justify-content:space-between}
-
-.panel-actions{display:flex;gap:10px;align-items:center}
-
-.search-input{
-  background:#082029;
-  color:var(--text);
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:11px 14px;
-  min-width:220px;
-}
-
-.snapshot-grid{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:14px;
-}
-
-.snapshot-card,.detail-card{
-  border-radius:18px;
-  padding:18px;
-}
-
-.snapshot-title{color:var(--muted);font-size:14px;margin-bottom:10px}
-.snapshot-big{font-size:34px;font-weight:800;letter-spacing:-.04em}
-.snapshot-meta{color:#8db0bd;margin-top:8px}
-
-.simple-list{display:flex;flex-direction:column;gap:12px}
-.simple-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-  padding:14px 16px;
-  border-radius:16px;
-  background:rgba(255,255,255,.02);
-  border:1px solid rgba(255,255,255,.05);
-}
-.simple-row .left strong{display:block}
-.simple-row .left span{color:var(--muted);font-size:14px}
-.simple-row .right{color:#dbe9ed;font-family:"JetBrains Mono",monospace;font-size:13px}
-
-.table-wrap{overflow:auto}
-.queue-table{
-  width:100%;
-  border-collapse:separate;
-  border-spacing:0 12px;
-}
-.queue-table th{
-  color:#9db7c1;
-  font-size:12px;
-  text-transform:uppercase;
-  letter-spacing:.12em;
-  text-align:left;
-  padding:0 12px 6px;
-}
-.queue-table td{
-  background:rgba(255,255,255,.015);
-  border-top:1px solid rgba(255,255,255,.05);
-  border-bottom:1px solid rgba(255,255,255,.05);
-  padding:18px 12px;
-  vertical-align:middle;
-}
-.queue-table td:first-child{
-  border-left:1px solid rgba(255,255,255,.05);
-  border-top-left-radius:16px;
-  border-bottom-left-radius:16px;
-}
-.queue-table td:last-child{
-  border-right:1px solid rgba(255,255,255,.05);
-  border-top-right-radius:16px;
-  border-bottom-right-radius:16px;
-}
-.client-name{font-size:18px;font-weight:800;line-height:1.15}
-.client-sub{color:var(--muted);margin-top:6px;font-family:"JetBrains Mono",monospace}
-.open-link{
-  background:rgba(255,255,255,.03);
-  color:var(--text);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:14px;
-  padding:11px 16px;
-  cursor:pointer;
-}
-
-.badge{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:8px 12px;
-  border-radius:999px;
-  font-size:13px;
-  font-weight:700;
-  white-space:nowrap;
-}
-.badge.blue{background:rgba(79,157,255,.12);color:#9bc4ff;border:1px solid rgba(79,157,255,.22)}
-.badge.gray{background:rgba(255,255,255,.05);color:#e4ddd8;border:1px solid rgba(255,255,255,.08)}
-.badge.gold{background:rgba(208,168,92,.14);color:#e1bc77;border:1px solid rgba(208,168,92,.24)}
-.badge.green{background:rgba(46,164,99,.14);color:#7fdaaa;border:1px solid rgba(46,164,99,.24)}
-.badge.red{background:rgba(217,107,107,.14);color:#eaa2a2;border:1px solid rgba(217,107,107,.22)}
-
-.workspace-layout{
-  display:grid;
-  grid-template-columns:minmax(0,1.35fr) 360px;
-  gap:18px;
-}
-
-.case-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:18px;
-}
-
-.case-meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-.decision-actions{display:flex;gap:10px;flex-wrap:wrap}
-
-.tabs-panel{padding-top:0}
-.tabs{
-  display:flex;
-  gap:8px;
-  padding:18px 0 16px;
-  border-bottom:1px solid rgba(255,255,255,.06);
-  margin-bottom:18px;
-  overflow:auto;
-}
-.tab{
-  border:1px solid rgba(255,255,255,.08);
-  background:rgba(255,255,255,.02);
-  color:var(--text);
-  border-radius:12px;
-  padding:10px 14px;
-  cursor:pointer;
-  white-space:nowrap;
-}
-.tab.active{
-  background:rgba(69,219,137,.14);
-  border-color:rgba(69,219,137,.25);
-}
-
-.tab-content{display:none}
-.tab-content.active{display:block}
-
-.detail-grid{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:16px;
-}
-.detail-card.full{grid-column:1 / -1}
-
-.kv{
-  display:grid;
-  gap:12px;
-  margin:0;
-}
-.kv div{
-  display:flex;
-  justify-content:space-between;
-  gap:14px;
-  border-bottom:1px solid rgba(255,255,255,.05);
-  padding-bottom:10px;
-}
-.kv dt{color:var(--muted)}
-.kv dd{margin:0;text-align:right;font-weight:600}
-
-.status-list{
-  list-style:none;
-  padding:0;
-  margin:0;
-  display:grid;
-  gap:12px;
-}
-.status-list li{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-  padding:12px 14px;
-  border-radius:14px;
-  background:rgba(255,255,255,.02);
-  border:1px solid rgba(255,255,255,.05);
-}
-
-.body-copy{color:var(--muted);line-height:1.65}
-
-.doc-list{
-  display:grid;
-  gap:12px;
-}
-.doc-item{
-  padding:16px;
-  border-radius:16px;
-  background:rgba(255,255,255,.02);
-  border:1px solid rgba(255,255,255,.06);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:16px;
-}
-.doc-meta strong{display:block}
-.doc-meta span{
-  display:block;
-  color:var(--muted);
-  margin-top:5px;
-  font-size:14px;
-}
-
-.ownership-box{
-  position:relative;
-  border-radius:20px;
-  min-height:280px;
-  padding:28px;
-  background:rgba(255,255,255,.015);
-  border:1px solid rgba(255,255,255,.06);
-  margin-bottom:16px;
-}
-.ownership-node{
-  position:absolute;
-  padding:16px 18px;
-  border-radius:18px;
-  border:1px solid rgba(69,219,137,.35);
-  background:rgba(69,219,137,.08);
-  font-weight:700;
-}
-.ownership-node.top:first-of-type{top:34px;left:14%}
-.ownership-node.top:nth-of-type(2){top:34px;right:14%}
-.ownership-node.center{
-  left:50%;
-  transform:translateX(-50%);
-  bottom:36px;
-  background:#08161c;
-  border-color:rgba(255,255,255,.08);
-}
-.ownership-lines{
-  position:absolute;left:50%;top:108px;width:2px;height:86px;background:rgba(69,219,137,.4);transform:translateX(-50%);
-}
-.ownership-lines::before,.ownership-lines::after{
-  content:"";
-  position:absolute;
-  top:-18px;
-  width:110px;
-  height:2px;
-  background:rgba(69,219,137,.4);
-}
-.ownership-lines::before{right:0;transform:rotate(42deg);transform-origin:right center}
-.ownership-lines::after{left:0;transform:rotate(-42deg);transform-origin:left center}
-
-.risk-layout{
-  display:grid;
-  grid-template-columns:220px 1fr;
-  gap:18px;
-  align-items:start;
-}
-.risk-score-box{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:14px;
-  padding:18px;
-  border-radius:18px;
-  background:rgba(255,255,255,.02);
-  border:1px solid rgba(255,255,255,.06);
-}
-.risk-ring{
-  width:130px;height:130px;border-radius:50%;
-  border:10px solid rgba(69,219,137,.18);
-  border-top-color:var(--green);
-  display:flex;align-items:center;justify-content:center;
-  font-size:36px;font-weight:800;
-}
-.risk-label{color:var(--muted)}
-
-.chip-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
-.chip{
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:999px;
-  padding:8px 12px;
-  color:#dbe7eb;
-  background:rgba(255,255,255,.03);
-  font-size:13px;
-}
-
-.timeline{
-  display:flex;
-  flex-direction:column;
-  gap:14px;
-}
-.timeline-item{
-  display:grid;
-  grid-template-columns:120px 1fr;
-  gap:14px;
-  padding:14px 0;
-  border-bottom:1px solid rgba(255,255,255,.05);
-}
-.timeline-time{
-  color:#8eb1be;
-  font-family:"JetBrains Mono",monospace;
-  font-size:12px;
-}
-.timeline-body strong{display:block;margin-bottom:6px}
-.timeline-body span{color:var(--muted);line-height:1.55}
-
-.agent-feed{display:flex;flex-direction:column;gap:12px}
-.agent-card{
-  border-radius:16px;
-  padding:14px;
-  background:rgba(255,255,255,.02);
-  border:1px solid rgba(255,255,255,.05);
-}
-.agent-card strong{display:block;margin-bottom:6px}
-.agent-card span{display:block;color:var(--muted);line-height:1.5}
-
-.guidance-list{
-  margin:0;
-  padding-left:18px;
-  color:var(--muted);
-  line-height:1.7;
-}
-
-@media (max-width: 1320px){
-  .workspace-layout{grid-template-columns:1fr}
-  .metrics-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-}
-
-@media (max-width: 1080px){
-  .app-shell{grid-template-columns:1fr}
-  .sidebar{display:none}
-  .content-grid{grid-template-columns:1fr}
-}
-
-@media (max-width: 760px){
-  .main{padding:18px}
-  .metrics-grid{grid-template-columns:1fr}
-  .topbar{flex-direction:column;align-items:flex-start}
-  .detail-grid,.risk-layout{grid-template-columns:1fr}
-  .queue-table{min-width:900px}
-}
-.panel-subtext{
-  margin:8px 0 0;
-  color:var(--muted);
-  font-size:14px;
-  line-height:1.5;
-}
-
-.intake-panel{
-  padding-bottom:24px;
-}
-
-.queue-status-bar{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  margin:4px 0 18px;
-}
-
-.queue-chip{
-  border:1px solid rgba(255,255,255,.08);
-  background:rgba(255,255,255,.025);
-  color:var(--text);
-  border-radius:999px;
-  padding:10px 14px;
-  cursor:pointer;
-  font-weight:700;
-  display:inline-flex;
-  align-items:center;
-  gap:10px;
-  transition:.18s ease;
-}
-
-.queue-chip span{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  min-width:26px;
-  height:26px;
-  padding:0 8px;
-  border-radius:999px;
-  background:rgba(255,255,255,.06);
-  color:#dce8ec;
-  font-size:12px;
-  font-weight:800;
-}
-
-.queue-chip:hover{
-  background:rgba(255,255,255,.05);
-  border-color:rgba(255,255,255,.12);
-}
-
-.queue-chip.active{
-  background:rgba(69,219,137,.14);
-  border-color:rgba(69,219,137,.28);
-}
-
-.queue-chip.active span{
-  background:rgba(69,219,137,.2);
-  color:#91f3ba;
-}
-
-.queue-toolbar{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:16px;
-  margin-bottom:8px;
-}
-
-.queue-filters{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  width:100%;
-}
-
-.queue-select{
-  background:#082029;
-  color:var(--text);
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:11px 14px;
-  min-width:160px;
-}
-
-.queue-table.enterprise{
-  min-width:1200px;
-}
-
-.queue-table.enterprise td{
-  padding:16px 12px;
-}
-
-.client-cell{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-}
-
-.client-name{
-  font-size:18px;
-  font-weight:800;
-  line-height:1.1;
-  letter-spacing:-.02em;
-}
-
-.client-sub{
-  color:var(--muted);
-  font-size:12px;
-  font-family:"JetBrains Mono",monospace;
-}
-
-.client-meta{
-  color:#a8c0c8;
-  font-size:13px;
-  line-height:1.45;
-}
-
-.table-note{
-  color:var(--muted);
-  font-size:13px;
-  line-height:1.4;
-}
-
-.risk-cell{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-}
-
-.last-action{
-  color:#dce7ea;
-  font-size:13px;
-  line-height:1.45;
-}
-
-.last-action span{
-  display:block;
-  color:var(--muted);
-  font-family:"JetBrains Mono",monospace;
-  font-size:12px;
-  margin-top:4px;
-}
-
-.sla-flag{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:999px;
-  padding:7px 10px;
-  font-size:12px;
-  font-weight:800;
-  border:1px solid rgba(255,126,126,.24);
-  background:rgba(255,126,126,.14);
-  color:#ffb0b0;
-}
-
-.sla-safe{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:999px;
-  padding:7px 10px;
-  font-size:12px;
-  font-weight:800;
-  border:1px solid rgba(69,219,137,.24);
-  background:rgba(69,219,137,.12);
-  color:#8ff2b8;
-}
-
-/* ORCHESTRATE FINTECH DASHBOARD STYLES */
-
-:root{
-  --bg:#060606;
-  --bg-2:#0b0909;
-  --panel:#121010;
-  --panel-2:#171313;
-  --border:#2c2424;
-  --text:#f4f1ed;
-  --muted:#b7a9a0;
-
-  --green:#2ea463;
-  --green-2:#228a52;
-  --green-soft:rgba(46,164,99,.12);
-
-  --blue:#70a9ff;
-  --gold:#d0a85c;
-  --red:#d96b6b;
-
-  --shadow:0 16px 40px rgba(0,0,0,.30);
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orchestrate KYC — CLM Demo</title>
+
+  <link rel="preconnect" href="https://api.fontshare.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,700,800&f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">O</div>
+        <div>
+          <div class="brand-name">Orchestrate KYC</div>
+          <div class="brand-sub">CLM Product Demo</div>
+        </div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-title">Overview</div>
+        <button class="nav-item active" data-view="dashboard">Dashboard</button>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-title">Onboarding</div>
+        <button class="nav-item" data-view="intake">Intake Queue</button>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-title">Case Management</div>
+        <button class="nav-item" data-view="workspace">Case Workspace</button>
+        <button class="nav-item" data-view="escalations">Escalations</button>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-title">Risk</div>
+        <button class="nav-item" data-view="risk">Risk Overview</button>
+        <button class="nav-item" data-view="edd">EDD Pipeline</button>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-title">Monitoring</div>
+        <button class="nav-item" data-view="monitoring">Periodic Reviews</button>
+        <button class="nav-item" data-view="triggers">Trigger Reviews</button>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-title">AI Agents</div>
+        <button class="nav-item" data-view="agents">Automation Activity</button>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-title">System</div>
+        <button class="nav-item" data-view="audit">Audit Trail</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <section class="view active" id="dashboard-view">
+        <div class="page-head">
+          <div>
+            <div class="eyebrow">Overview</div>
+            <h1>Dashboard</h1>
+          </div>
+          <div class="page-actions">
+            <button class="ghost-btn">Export</button>
+            <button class="primary-btn">New Review</button>
+          </div>
+        </div>
+
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-label">Open Cases</div>
+            <div class="metric-value">128</div>
+            <div class="metric-note">All active onboarding, review, and exception cases.</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">New Applications</div>
+            <div class="metric-value">32</div>
+            <div class="metric-note">Fresh submissions received from the onboarding portal.</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">Periodic Reviews</div>
+            <div class="metric-value">14</div>
+            <div class="metric-note">Upcoming or in-progress scheduled refresh cycles.</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">Trigger Reviews</div>
+            <div class="metric-value">3</div>
+            <div class="metric-note">Event-driven reviews opened from alerts or profile changes.</div>
+          </div>
+        </div>
+
+        <div class="dashboard-simple-grid">
+          <div class="panel dashboard-panel">
+            <div class="panel-head panel-head-spread">
+              <h2>Operational Snapshot</h2>
+              <span class="mini-badge green">Live</span>
+            </div>
+
+            <div class="snapshot-clean">
+              <div class="snapshot-clean-row">
+                <div>
+                  <div class="snapshot-clean-label">Cases at SLA Risk</div>
+                  <div class="snapshot-clean-meta">Across all active queues</div>
+                </div>
+                <div class="snapshot-clean-value">7</div>
+              </div>
+
+              <div class="snapshot-clean-row">
+                <div>
+                  <div class="snapshot-clean-label">Pending Human Review</div>
+                  <div class="snapshot-clean-meta">4 over 4h SLA target</div>
+                </div>
+                <div class="snapshot-clean-value">9</div>
+              </div>
+
+              <div class="snapshot-clean-row">
+                <div>
+                  <div class="snapshot-clean-label">EDD Cases</div>
+                  <div class="snapshot-clean-meta">3 awaiting senior approval</div>
+                </div>
+                <div class="snapshot-clean-value">11</div>
+              </div>
+
+              <div class="snapshot-clean-row">
+                <div>
+                  <div class="snapshot-clean-label">Overdue Reviews</div>
+                  <div class="snapshot-clean-meta">Periodic + trigger-driven</div>
+                </div>
+                <div class="snapshot-clean-value">6</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel dashboard-panel">
+            <div class="panel-head panel-head-spread">
+              <h2>Top Priority Cases</h2>
+              <span class="mini-badge gold">Attention</span>
+            </div>
+
+            <div class="priority-clean-list">
+              <button class="priority-clean-card" onclick="openCase('CASE-2026-00128')">
+                <div>
+                  <div class="priority-clean-name">Apex Digital LLC</div>
+                  <div class="priority-clean-meta">Completeness Review · Standard CDD</div>
+                </div>
+                <div class="priority-clean-id">CASE-2026-00128</div>
+              </button>
+
+              <button class="priority-clean-card" onclick="openCase('CASE-2026-00127')">
+                <div>
+                  <div class="priority-clean-name">North Harbor Ventures LP</div>
+                  <div class="priority-clean-meta">Pending Client Response · Standard CDD</div>
+                </div>
+                <div class="priority-clean-id">CASE-2026-00127</div>
+              </button>
+
+              <button class="priority-clean-card" onclick="openCase('CASE-2026-00126')">
+                <div>
+                  <div class="priority-clean-name">Solstice Exchange Ltd</div>
+                  <div class="priority-clean-meta">Pending Human Review · EDD Review</div>
+                </div>
+                <div class="priority-clean-id">CASE-2026-00126</div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="intake-view">
+        <div class="page-head">
+          <div>
+            <div class="eyebrow">Onboarding</div>
+            <h1>Intake Queue</h1>
+          </div>
+          <div class="page-actions">
+            <button class="ghost-btn" id="sortAgingBtn">Sort by Aging</button>
+            <button class="ghost-btn">Export Queue</button>
+          </div>
+        </div>
+
+        <div class="panel intake-panel">
+          <div class="panel-head panel-head-spread">
+            <div>
+              <h2>Queue</h2>
+              <p class="panel-subtext">New onboarding submissions, deficiencies, screening holds, and cases awaiting analyst action.</p>
+            </div>
+          </div>
+
+          <div class="queue-toolbar">
+            <div class="queue-filters">
+              <button class="filter-pill active">All Intake <span>4</span></button>
+              <button class="filter-pill">Completeness <span>1</span></button>
+              <button class="filter-pill">Pending Client <span>1</span></button>
+              <button class="filter-pill">CDD Review <span>1</span></button>
+              <button class="filter-pill">Human Review <span>1</span></button>
+            </div>
+
+            <div class="queue-searchbar">
+              <input type="text" placeholder="Search client, case ID, or entity" />
+              <select>
+                <option>All Statuses</option>
+              </select>
+              <select>
+                <option>All Pipelines</option>
+              </select>
+              <select>
+                <option>All Priorities</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="queue-table" id="queueTable"></div>
+        </div>
+      </section>
+
+      <section class="view" id="workspace-view">
+        <div class="page-head">
+          <div>
+            <div class="eyebrow">Case Management</div>
+            <h1>Case Workspace</h1>
+          </div>
+        </div>
+
+        <div class="workspace-layout">
+          <div class="workspace-main">
+            <div class="panel case-header">
+              <div>
+                <div class="eyebrow" id="caseId">CASE-2026-00128</div>
+                <h2 id="caseClientName">Apex Digital LLC</h2>
+                <div class="case-meta">
+                  <span class="badge blue" id="caseStatus">Completeness Review</span>
+                  <span class="badge gray" id="casePipeline">Standard CDD</span>
+                  <span class="badge gold" id="casePriority">Escalated</span>
+                </div>
+              </div>
+              <div class="decision-actions">
+                <button class="ghost-btn">Request Info</button>
+                <button class="ghost-btn">Escalate</button>
+                <button class="primary-btn">Approve</button>
+              </div>
+            </div>
+
+            <div class="panel tabs-panel">
+              <div class="tabs">
+                <button class="tab active" data-tab="overview">Overview</button>
+                <button class="tab" data-tab="documents">Documents</button>
+                <button class="tab" data-tab="ownership">Ownership</button>
+                <button class="tab" data-tab="screening">Screening</button>
+                <button class="tab" data-tab="risk">Risk</button>
+                <button class="tab" data-tab="activity">Activity</button>
+                <button class="tab" data-tab="audit">Audit</button>
+              </div>
+
+              <div class="tab-content active" id="tab-overview">
+                <div class="detail-grid">
+                  <article class="detail-card">
+                    <h3>Customer Profile</h3>
+                    <dl class="kv">
+                      <div><dt>Entity Type</dt><dd id="ovEntityType">LLC</dd></div>
+                      <div><dt>Jurisdiction</dt><dd id="ovJurisdiction">Delaware, US</dd></div>
+                      <div><dt>Business Activity</dt><dd id="ovActivity">Digital asset exchange</dd></div>
+                      <div><dt>Expected Activity</dt><dd id="ovExpected">OTC trading, custody, settlement</dd></div>
+                    </dl>
+                  </article>
+
+                  <article class="detail-card">
+                    <h3>Verification Results</h3>
+                    <ul class="status-list" id="overviewChecks"></ul>
+                  </article>
+
+                  <article class="detail-card full">
+                    <h3>Case Summary</h3>
+                    <p class="body-copy" id="overviewSummary"></p>
+                  </article>
+                </div>
+              </div>
+
+              <div class="tab-content" id="tab-documents">
+                <div class="doc-list" id="documentsList"></div>
+              </div>
+
+              <div class="tab-content" id="tab-ownership">
+                <div class="ownership-box">
+                  <div class="ownership-node top">Sarah Kim — 45%</div>
+                  <div class="ownership-node top">James Park — 30%</div>
+                  <div class="ownership-lines"></div>
+                  <div class="ownership-node center" id="ownershipEntity">Apex Digital LLC</div>
+                </div>
+                <div class="detail-card">
+                  <h3>Ownership Notes</h3>
+                  <p class="body-copy" id="ownershipNotes"></p>
+                </div>
+              </div>
+
+              <div class="tab-content" id="tab-screening">
+                <div class="detail-grid">
+                  <article class="detail-card">
+                    <h3>Sanctions</h3>
+                    <p class="body-copy" id="screenSanctions"></p>
+                  </article>
+                  <article class="detail-card">
+                    <h3>PEP</h3>
+                    <p class="body-copy" id="screenPep"></p>
+                  </article>
+                  <article class="detail-card full">
+                    <h3>Adverse Media</h3>
+                    <p class="body-copy" id="screenMedia"></p>
+                  </article>
+                </div>
+              </div>
+
+              <div class="tab-content" id="tab-risk">
+                <div class="risk-layout">
+                  <div class="risk-score-box">
+                    <div class="risk-ring">
+                      <span id="riskScore">63</span>
+                    </div>
+                    <div class="risk-label">Client Risk Score</div>
+                  </div>
+                  <div class="detail-card">
+                    <h3>Risk Narrative</h3>
+                    <p class="body-copy" id="riskNarrative"></p>
+                    <div class="chip-row" id="riskFactors"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tab-content" id="tab-activity">
+                <div class="timeline" id="activityTimeline"></div>
+              </div>
+
+              <div class="tab-content" id="tab-audit">
+                <div class="timeline audit" id="auditTimeline"></div>
+              </div>
+            </div>
+          </div>
+
+          <aside class="workspace-side">
+            <div class="panel">
+              <div class="panel-head">
+                <h2>AI Agent Activity</h2>
+              </div>
+              <div class="agent-feed" id="agentFeed"></div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-head">
+                <h2>Decision Guidance</h2>
+              </div>
+              <ul class="guidance-list">
+                <li>Resolve missing corporate registry evidence.</li>
+                <li>Confirm ownership percentages reconcile to operating agreement.</li>
+                <li>Review screening disposition before approval.</li>
+              </ul>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="view" id="escalations-view">
+        <div class="page-head">
+          <div>
+            <div class="eyebrow">Case Management</div>
+            <h1>Escalations</h1>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>Escalations</h2></div>
+          <p class="body-copy">Cases requiring senior reviewer, BSA officer, or policy override approval.</p>
+        </div>
+      </section>
+
+      <section class="view" id="risk-view">
+        <div class="page-head">
+          <div>
+            <div class="eyebrow">Risk</div>
+            <h1>Risk Overview</h1>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>Risk Overview</h2></div>
+          <p class="body-copy">Firm-wide risk segmentation, active high-risk cases, and policy-driven routing outcomes.</p>
+        </div>
+      </section>
+
+      <section class="view" id="edd-view">
+        <div class="page-head">
+          <div>
+            <div class="eyebrow">Risk</div>
+            <h1>EDD Pipeline</h1>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>EDD Pipeline</h2></div>
+          <p class="body-copy">Enhanced Due Diligence queue for high-risk cases requiring source of wealth, jurisdiction review, and deeper screening analysis.</p>
+        </div>
+      </section>
+
+      <section class="view" id="monitoring-view">
+        <div class="page-head">
+          <div>
+            <div class="eyebrow">Monitoring</div>
+            <h1>Periodic Reviews</h1>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>Periodic Reviews</h2></div>
+          <p class="body-copy">Scheduled refresh cycles based on customer risk tier and lifecycle review cadence.</p>
+        </div>
+      </section>
+
+      <section class="view" id="triggers-view">
+        <div class="page-head">
+          <div>
+            <div class="eyebrow">Monitoring</div>
+            <h1>Trigger Reviews</h1>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>Trigger Reviews</h2></div>
+          <p class="body-copy">Ad hoc reviews initiated by sanctions alerts, ownership changes, adverse media, or profile updates.</p>
+        </div>
+      </section>
+
+      <section class="view" id="agents-view">
+        <div class="page-head">
+          <div>
+            <div class="eyebrow">AI Agents</div>
+            <h1>Automation Activity</h1>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>Automation Activity</h2></div>
+          <p class="body-copy">Live orchestration view across extraction, ownership mapping, screening, risk, and review scheduling agents.</p>
+        </div>
+      </section>
+
+      <section class="view" id="audit-view">
+        <div class="page-head">
+          <div>
+            <div class="eyebrow">System</div>
+            <h1>Audit Trail</h1>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>Audit Trail</h2></div>
+          <p class="body-copy">Immutable regulator-ready action logs searchable by case, actor, source, and timestamp.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
