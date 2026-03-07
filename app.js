@@ -627,8 +627,25 @@ function setActiveView(viewKey) {
 
   document.getElementById(target.id)?.classList.add("active");
   document.querySelector(`.nav-item[data-view="${viewKey}"]`)?.classList.add("active");
+
   if (pageEyebrow) pageEyebrow.textContent = target.eyebrow;
   if (pageTitle) pageTitle.textContent = target.title;
+
+  if (viewKey === "intake") {
+    renderQueue();
+  }
+
+  if (viewKey === "monitoring") {
+    renderQueueForTarget(monitoringQueueBody, "periodic");
+  }
+
+  if (viewKey === "triggers") {
+    renderQueueForTarget(triggersQueueBody, "trigger");
+  }
+
+  if (viewKey === "screening") {
+    renderQueueForTarget(screeningQueueBody, "screening");
+  }
 }
 
 function renderCase(caseObj) {
@@ -877,7 +894,4 @@ function renderQueueForTarget(targetBody, queueType) {
 }
 renderPriorityList();
 renderQueue();
-renderQueueForTarget(monitoringQueueBody, "periodic");
-renderQueueForTarget(triggersQueueBody, "trigger");
-renderQueueForTarget(screeningQueueBody, "screening");
 renderCase(currentCase);
