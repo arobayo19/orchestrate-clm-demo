@@ -545,11 +545,31 @@ function renderCase(caseObj) {
     casePriority.textContent = caseObj.priority;
   }
 
-  if (ovEntityType) ovEntityType.textContent = caseObj.entityType;
-  if (ovJurisdiction) ovJurisdiction.textContent = caseObj.jurisdiction;
-  if (ovActivity) ovActivity.textContent = caseObj.activity;
-  if (ovExpected) ovExpected.textContent = caseObj.expected;
-  if (overviewSummary) overviewSummary.textContent = caseObj.summary;
+  if (ovLegalName) ovLegalName.textContent = caseObj.legalName || caseObj.client;
+if (ovEntityType) ovEntityType.textContent = caseObj.entityType || "-";
+if (ovJurisdiction) ovJurisdiction.textContent = caseObj.jurisdiction || "-";
+if (ovFormationDate) ovFormationDate.textContent = caseObj.formationDate || "-";
+if (ovRegistrationNumber) ovRegistrationNumber.textContent = caseObj.registrationNumber || "-";
+if (ovTaxId) ovTaxId.textContent = caseObj.taxId || "-";
+if (ovRegisteredAddress) ovRegisteredAddress.textContent = caseObj.registeredAddress || "-";
+if (ovBusinessDescription) ovBusinessDescription.textContent = caseObj.businessDescription || "-";
+if (ovIndustry) ovIndustry.textContent = caseObj.industry || "-";
+if (ovPurpose) ovPurpose.textContent = caseObj.purposeOfAccount || "-";
+if (ovExpected) ovExpected.textContent = caseObj.expected || "-";
+if (ovSourceOfFunds) ovSourceOfFunds.textContent = caseObj.sourceOfFunds || "-";
+
+if (ovBeneficialOwners) ovBeneficialOwners.textContent = caseObj.beneficialOwnersCount || "-";
+if (ovControlPerson) ovControlPerson.textContent = caseObj.controlPersonCount || "-";
+if (ovAuthorizedUsers) ovAuthorizedUsers.textContent = caseObj.authorizedUsersCount || "-";
+if (ovOwnershipStructure) ovOwnershipStructure.textContent = caseObj.ownershipStructureSummary || "-";
+if (ovComplexityFlag) ovComplexityFlag.textContent = caseObj.complexityFlag || "-";
+
+if (ovRiskScoreSummary) ovRiskScoreSummary.textContent = caseObj.riskScore || "-";
+if (ovRiskTier) ovRiskTier.textContent = caseObj.riskTier || "-";
+if (ovEddTriggered) ovEddTriggered.textContent = caseObj.eddTriggered || "-";
+if (ovMainRiskFactors) ovMainRiskFactors.textContent = caseObj.mainRiskFactorsSummary || "-";
+
+if (overviewSummary) overviewSummary.textContent = caseObj.summary;
 
   if (overviewChecks) {
     overviewChecks.innerHTML = "";
