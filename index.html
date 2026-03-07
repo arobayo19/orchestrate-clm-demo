@@ -1,343 +1,205 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Orchestrate KYC — CLM Product Demo</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --bg: #071114;
-      --panel: rgba(11, 23, 28, 0.92);
-      --line: rgba(120, 151, 160, 0.22);
-      --text: #edf4f3;
-      --muted: #9cb1b6;
-      --green: #38c172;
-      --green-2: #2fa25f;
-      --green-soft: rgba(56, 193, 114, 0.12);
-      --blue: #77b5ff;
-      --blue-soft: rgba(119, 181, 255, 0.12);
-      --yellow: #f0c15d;
-      --yellow-soft: rgba(240, 193, 93, 0.14);
-      --red: #ff7c7c;
-      --red-soft: rgba(255, 124, 124, 0.13);
-      --radius: 16px;
-      --radius-lg: 22px;
-      --shadow: 0 14px 34px rgba(0,0,0,.28);
-      --font-display: "Space Grotesk", system-ui, sans-serif;
-      --font-body: "Plus Jakarta Sans", system-ui, sans-serif;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { min-height: 100%; }
-    body {
-      font-family: var(--font-body);
-      background:
-        radial-gradient(1000px 520px at 10% -10%, rgba(56,193,114,.11), transparent 60%),
-        radial-gradient(900px 700px at 100% 0%, rgba(119,181,255,.07), transparent 58%),
-        linear-gradient(180deg, #061014 0%, #071114 100%);
-      color: var(--text);
-    }
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background: repeating-linear-gradient(120deg, rgba(255,255,255,.025) 0 1px, transparent 1px 34px);
-      opacity: .15;
-    }
-    .app { position: relative; z-index: 1; width: min(1480px, 100%); margin: 0 auto; padding: 20px; min-height: 100vh; display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 18px; }
-    .sidebar, .hero, .metric, .shell, .card, .row, .timeline-card, .panel-card { background: var(--panel); border: 1px solid var(--line); box-shadow: var(--shadow); backdrop-filter: blur(10px); }
-    .sidebar { border-radius: var(--radius-lg); padding: 18px 16px; display: flex; flex-direction: column; gap: 18px; }
-    .logo { display: flex; align-items: center; gap: 12px; font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; letter-spacing: -0.02em; }
-    .logo-mark { width: 34px; height: 34px; border-radius: 10px; background: linear-gradient(145deg, var(--green), var(--green-2)); color: #041008; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; }
-    .meta, .footer-note { border: 1px solid var(--line); border-radius: 16px; padding: 14px; background: rgba(255,255,255,.02); }
-    .label { font-size: .72rem; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); font-weight: 700; }
-    .value { margin-top: 8px; line-height: 1.5; font-size: .9rem; }
-    .nav-title { margin: 8px 8px 4px; font-size: .72rem; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); font-weight: 700; }
-    .nav { display: grid; gap: 6px; }
-    .nav button { border: 1px solid transparent; background: transparent; color: var(--muted); border-radius: 14px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; font: inherit; cursor: pointer; text-align: left; transition: .18s ease; }
-    .nav button:hover { background: rgba(255,255,255,.03); color: var(--text); }
-    .nav button.active { background: var(--green-soft); border-color: rgba(56,193,114,.28); color: var(--text); }
-    .footer-note { margin-top: auto; color: var(--muted); line-height: 1.55; font-size: .84rem; }
-    .pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; border: 1px solid transparent; font-size: .72rem; font-weight: 700; letter-spacing: .04em; white-space: nowrap; }
-    .good { background: var(--green-soft); color: var(--green); border-color: rgba(56,193,114,.26); }
-    .warn { background: var(--yellow-soft); color: var(--yellow); border-color: rgba(240,193,93,.28); }
-    .bad { background: var(--red-soft); color: var(--red); border-color: rgba(255,124,124,.26); }
-    .info { background: var(--blue-soft); color: var(--blue); border-color: rgba(119,181,255,.26); }
-    .neutral { background: rgba(255,255,255,.04); color: var(--muted); border-color: var(--line); }
-    .main { min-width: 0; display: grid; grid-template-rows: auto auto 1fr; gap: 16px; }
-    .hero { border-radius: var(--radius-lg); padding: 20px 22px; display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; flex-wrap: wrap; }
-    .kicker { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 999px; border: 1px solid rgba(56,193,114,.28); background: var(--green-soft); color: var(--green); font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; font-weight: 700; margin-bottom: 12px; }
-    .hero h1 { font-family: var(--font-display); font-size: clamp(1.7rem, 2vw, 2.35rem); line-height: 1.05; letter-spacing: -0.04em; max-width: 860px; }
-    .hero p { margin-top: 10px; max-width: 840px; color: var(--muted); line-height: 1.58; }
-    .actions { display: flex; gap: 10px; flex-wrap: wrap; }
-    .btn { min-height: 42px; padding: 10px 15px; border-radius: 14px; border: 1px solid transparent; background: rgba(255,255,255,.04); color: var(--text); font: inherit; font-weight: 600; cursor: pointer; transition: .18s ease; }
-    .btn:hover { transform: translateY(-1px); }
-    .btn.primary { background: linear-gradient(145deg, var(--green), var(--green-2)); color: #041108; border-color: rgba(56,193,114,.32); }
-    .btn.secondary { border-color: var(--line); }
-    .metrics { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
-    .metric { border-radius: 18px; padding: 16px; }
-    .metric-label { font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); font-weight: 700; }
-    .metric-value { margin-top: 10px; font-family: var(--font-display); font-size: 1.68rem; letter-spacing: -0.03em; }
-    .metric-note { margin-top: 8px; color: var(--muted); font-size: .82rem; line-height: 1.45; }
-    .view { display: none; min-width: 0; }
-    .view.active { display: block; }
-    .shell { border-radius: 24px; padding: 18px; min-width: 0; }
-    .head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
-    .head h2 { font-family: var(--font-display); font-size: 1.42rem; letter-spacing: -0.03em; line-height: 1.08; }
-    .head p { margin-top: 8px; max-width: 920px; color: var(--muted); line-height: 1.55; }
-    .grid-2 { display: grid; grid-template-columns: 1.25fr .95fr; gap: 16px; }
-    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; }
-    .stack { display: grid; gap: 14px; }
-    .card { border-radius: 18px; padding: 16px; }
-    .card h3 { font-family: var(--font-display); font-size: 1.02rem; letter-spacing: -0.02em; margin-bottom: 10px; }
-    .subtext { color: var(--muted); font-size: .9rem; line-height: 1.55; }
-    .table { display: grid; gap: 10px; }
-    .row { border-radius: 16px; padding: 14px 16px; display: grid; grid-template-columns: 1.5fr .9fr .9fr .9fr .9fr auto; gap: 12px; align-items: center; }
-    .row.header { background: transparent; box-shadow: none; color: var(--muted); font-size: .74rem; text-transform: uppercase; letter-spacing: .08em; font-weight: 700; }
-    .entity { display: grid; gap: 3px; min-width: 0; }
-    .entity strong { font-size: .95rem; }
-    .mono { color: var(--muted); font-size: .8rem; font-family: monospace; }
-    .fields { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
-    .field { border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,.03); padding: 12px; }
-    .field-label { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 700; margin-bottom: 7px; }
-    .field-value { line-height: 1.5; font-size: .92rem; }
-    .checks { display: grid; gap: 10px; }
-    .check { border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,.03); padding: 10px 12px; display: flex; gap: 10px; align-items: flex-start; }
-    .check i { width: 22px; height: 22px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; font-style: normal; font-weight: 800; background: var(--green-soft); color: var(--green); flex-shrink: 0; }
-    .stages { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px; }
-    .status-card { border-radius: 18px; padding: 14px; }
-    .status-card h4 { font-family: var(--font-display); font-size: .95rem; margin-bottom: 10px; }
-    .panel-card { border-radius: 14px; padding: 12px; background: rgba(255,255,255,.03); display: grid; gap: 8px; margin-top: 10px; }
-    .panel-card strong { font-size: .92rem; }
-    .panel-card p { color: var(--muted); font-size: .82rem; line-height: 1.45; }
-    .timeline { display: grid; gap: 12px; position: relative; }
-    .timeline::before { content: ""; position: absolute; left: 11px; top: 6px; bottom: 6px; width: 2px; background: rgba(255,255,255,.08); }
-    .timeline-item { display: grid; grid-template-columns: 24px 1fr; gap: 12px; position: relative; }
-    .dot { width: 24px; height: 24px; border-radius: 999px; border: 1px solid var(--line); background: rgba(255,255,255,.05); position: relative; z-index: 1; }
-    .dot.good { background: var(--green-soft); border-color: rgba(56,193,114,.28); }
-    .dot.warn { background: var(--yellow-soft); border-color: rgba(240,193,93,.28); }
-    .dot.info { background: var(--blue-soft); border-color: rgba(119,181,255,.28); }
-    .timeline-card { border-radius: 16px; padding: 12px 14px; }
-    .timeline-card strong { display: block; margin-bottom: 4px; }
-    .timeline-card p { color: var(--muted); line-height: 1.5; font-size: .88rem; }
-    .summary { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; }
-    .summary .card ul { list-style: none; display: grid; gap: 10px; margin-top: 10px; }
-    .summary .card li { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; border-top: 1px solid rgba(255,255,255,.06); padding-top: 10px; }
-    .summary .card li:first-child { border-top: 0; padding-top: 0; }
-    .banner { margin-bottom: 16px; border-radius: 16px; border: 1px solid rgba(240,193,93,.28); background: var(--yellow-soft); color: #f4d68f; padding: 14px 16px; display: flex; justify-content: space-between; gap: 14px; align-items: center; flex-wrap: wrap; }
-    .audit { display: grid; gap: 10px; }
-    .audit-row { border: 1px solid var(--line); border-radius: 16px; background: rgba(255,255,255,.03); padding: 12px 14px; display: grid; grid-template-columns: 1.1fr 1fr .85fr .95fr 1fr; gap: 12px; align-items: center; }
-    .audit-row.header { background: transparent; color: var(--muted); font-size: .74rem; text-transform: uppercase; letter-spacing: .08em; font-weight: 700; }
-    @media (max-width: 1240px) { .metrics { grid-template-columns: repeat(3, minmax(0,1fr)); } .grid-2, .summary { grid-template-columns: 1fr; } .stages { grid-template-columns: repeat(2, minmax(0,1fr)); } }
-    @media (max-width: 960px) { .app { grid-template-columns: 1fr; } .sidebar { display: none; } .metrics, .grid-3, .fields, .summary { grid-template-columns: 1fr; } .stages { grid-template-columns: 1fr; } .row, .audit-row { grid-template-columns: 1fr; } .row.header, .audit-row.header { display: none; } }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OrchestrateKYC CLM Demo</title>
+
+<link rel="stylesheet" href="styles.css">
+
 </head>
 <body>
-  <div class="app">
-    <aside class="sidebar">
-      <div class="logo"><span class="logo-mark">O</span>Orchestrate KYC</div>
-      <div class="meta"><div class="label">Workspace</div><div class="value">CLM Product Demo<br />Internal compliance engine</div></div>
-      <div>
-        <div class="nav-title">Views</div>
-        <div class="nav">
-          <button class="active" data-view="queue">Intake Queue <span class="pill neutral">12</span></button>
-          <button data-view="case">Case Workspace <span class="pill neutral">1</span></button>
-          <button data-view="edd">EDD Pipeline <span class="pill neutral">4</span></button>
-          <button data-view="summary">Risk Summary <span class="pill neutral">1</span></button>
-          <button data-view="monitoring">Monitoring <span class="pill neutral">6</span></button>
-          <button data-view="lifecycle">Lifecycle <span class="pill neutral">28</span></button>
-          <button data-view="audit">Audit Trail <span class="pill neutral">∞</span></button>
-        </div>
-      </div>
-      <div>
-        <div class="nav-title">Agents</div>
-        <div class="nav">
-          <button><span>Document Classification</span><span class="pill good">AI</span></button>
-          <button><span>Extraction</span><span class="pill good">AI</span></button>
-          <button><span>Verification</span><span class="pill good">AI</span></button>
-          <button><span>Screening</span><span class="pill good">AI</span></button>
-          <button><span>Summary Generation</span><span class="pill good">AI</span></button>
-          <button><span>Periodic Review Agent</span><span class="pill good">AI</span></button>
-        </div>
-      </div>
-      <div class="footer-note">This live mockup is the internal CLM product demo. Use the left navigation to move through intake, case review, EDD, summary, monitoring, lifecycle, and audit views.</div>
-    </aside>
 
-    <section class="main">
-      <div class="metrics">
-        <div class="metric"><div class="metric-label">Open cases</div><div class="metric-value">128</div><div class="metric-note">All active onboarding, review, and exception cases.</div></div>
-        <div class="metric"><div class="metric-label">New applications</div><div class="metric-value">32</div><div class="metric-note">Fresh submissions received from the onboarding portal.</div></div>
-        <div class="metric"><div class="metric-label">Periodic reviews</div><div class="metric-value">14</div><div class="metric-note">Upcoming or in-progress scheduled refresh cycles.</div></div>
-        <div class="metric"><div class="metric-label">Trigger reviews</div><div class="metric-value">3</div><div class="metric-note">Event-driven reviews opened from alerts or profile changes.</div></div>
-      </div>
+<div class="app">
 
-      <div class="metrics" style="display:none;">
-        <div class="metric"><div class="metric-label">Open cases</div><div class="metric-value">128</div><div class="metric-note">Received, in CDD, in EDD, pending client response, and exception cases.</div></div>
-        <div class="metric"><div class="metric-label">Auto-cleared</div><div class="metric-value">74%</div><div class="metric-note">Cases completed without human intervention.</div></div>
-        <div class="metric"><div class="metric-label">Pending human review</div><div class="metric-value">9</div><div class="metric-note">Only unresolved discrepancies and screening exceptions.</div></div>
-        <div class="metric"><div class="metric-label">Periodic reviews due</div><div class="metric-value">14</div><div class="metric-note">Upcoming or active review cycles.</div></div>
-        <div class="metric"><div class="metric-label">Trigger events open</div><div class="metric-value">3</div><div class="metric-note">Active monitoring alerts requiring targeted review.</div></div>
-        
-      </div>
+<!-- SIDEBAR -->
 
-      <section class="view active" id="queue-view">
-        <div class="shell">
-          <div class="head">
-            <div>
-              <h2>Intake cases</h2>
-            </div>
-            <div class="actions">
-              <button class="btn secondary">Filter queue</button>
-              <button class="btn secondary">Sort by aging</button>
-              <button class="btn primary" data-jump="case">Review Apex Digital</button>
-            </div>
-          </div>
+<div class="sidebar">
 
-          <div class="grid-2">
-            <div class="stack">
-              <div class="table">
-                <div class="row header"><div>Case</div><div>Status</div><div>Pipeline</div><div>Aging</div><div>Priority</div><div>Action</div></div>
-                <div class="row"><div class="entity"><strong>Apex Digital LLC</strong><span class="mono">CASE-2026-00128 • Received 11:08 UTC</span></div><div><span class="pill info">Completeness Review</span></div><div><span class="pill neutral">Standard CDD</span></div><div class="mono">2h 12m / target 4h</div><div><span class="pill warn">Escalated</span></div><div><button class="btn secondary" data-jump="case">Open</button></div></div>
-                <div class="row"><div class="entity"><strong>North Harbor Ventures LP</strong><span class="mono">CASE-2026-00127 • Missing director ID</span></div><div><span class="pill warn">Pending Client Response</span></div><div><span class="pill neutral">Standard CDD</span></div><div class="mono">1d 4h</div><div><span class="pill neutral">FIFO</span></div><div><button class="btn secondary">Open</button></div></div>
-                <div class="row"><div class="entity"><strong>Meridian Capital Partners</strong><span class="mono">CASE-2026-00123 • Foreign FI</span></div><div><span class="pill good">In EDD Review</span></div><div><span class="pill bad">EDD</span></div><div class="mono">26h / target 72h</div><div><span class="pill neutral">FIFO</span></div><div><button class="btn secondary" data-jump="edd">View</button></div></div>
-                <div class="row"><div class="entity"><strong>Solaris Exchange Ltd</strong><span class="mono">CASE-2026-00112 • Potential sanctions match</span></div><div><span class="pill bad">Pending Human Review</span></div><div><span class="pill bad">EDD</span></div><div class="mono">3h 55m / target 4h</div><div><span class="pill warn">SLA risk</span></div><div><button class="btn secondary">Assign</button></div></div>
-              </div>
-            </div>
-            <div class="stack">
-              <div class="card"><h3>Queue status legend</h3><div class="subtext">Received • Completeness Review • Pending Client Response • In CDD Review • In EDD Review • Pending Screening • Screening Review • Pending Human Review • In Human Review • Risk Assessment • Pending Senior Approval • Approved • Approved with Conditions • Declined</div></div>
-              
-            </div>
-          </div>
-        </div>
-      </section>
+<div class="logo">O</div>
 
-      <section class="view" id="case-view">
-        <div class="shell">
-          <div class="head">
-            <div><div class="kicker">Stage 3–7 • Active case workspace</div><h2>Apex Digital LLC — active CLM case</h2><p>This workspace shows the application as ingested from onboarding, all extracted fields, the validation and screening pipeline, and the exact exception that requires human attention.</p></div>
-            <div class="actions"><span class="pill info">CASE-2026-00128</span><span class="pill warn">Pending PEP disposition</span><button class="btn primary" data-jump="summary">Generate summary</button></div>
-          </div>
-          <div class="grid-2">
-            <div class="stack">
-              <div class="card"><h3>Submitted onboarding data</h3><div class="fields"><div class="field"><div class="field-label">Entity name</div><div class="field-value">Apex Digital LLC</div></div><div class="field"><div class="field-label">Entity type</div><div class="field-value">LLC</div></div><div class="field"><div class="field-label">Jurisdiction</div><div class="field-value">Delaware, United States</div></div><div class="field"><div class="field-label">Business activity</div><div class="field-value">Institutional digital asset exchange and custody</div></div><div class="field"><div class="field-label">Applicant</div><div class="field-value">David Chen — General Counsel</div></div><div class="field"><div class="field-label">Expected usage</div><div class="field-value">Daily trading, OTC settlement, custody</div></div></div></div>
-              <div class="card"><h3>Agent pipeline</h3><div class="stages"><div class="status-card"><h4>Document extraction</h4><div class="panel-card"><strong>Classification agent</strong><p>Identified formation docs, IDs, W-9, utility bill, source-of-funds evidence, and ownership register.</p><span class="pill good">98.4% confidence</span></div><div class="panel-card"><strong>Extraction agent</strong><p>Populated entity details, 2 UBOs, control person, business profile, and source-of-funds fields.</p><span class="pill good">96.8% confidence</span></div></div><div class="status-card"><h4>Validation</h4><div class="panel-card"><strong>Identity verification</strong><p>Validated applicant and associated individuals. One address gap resolved with utility bill evidence.</p><span class="pill info">1 discrepancy resolved</span></div><div class="panel-card"><strong>Entity verification</strong><p>Verified formation, good standing, EIN, and registered address against registry and submitted docs.</p><span class="pill good">Verified</span></div></div><div class="status-card"><h4>Screening</h4><div class="panel-card"><strong>Screening agent</strong><p>Submitted entity and all related parties to sanctions, PEP, and adverse media providers.</p><span class="pill warn">1 PEP match</span></div><div class="panel-card"><strong>Cross-reference agent</strong><p>Compared addresses, ownership, and identity fields across all sources.</p><span class="pill good">Consistent</span></div></div><div class="status-card"><h4>Decisioning</h4><div class="panel-card"><strong>Risk mapping</strong><p>Client framework marked the case High Risk, forcing EDD and senior approval.</p><span class="pill bad">EDD required</span></div><div class="panel-card"><strong>Summary generator</strong><p>Waiting for final human disposition of the PEP issue before packaging the case.</p><span class="pill neutral">Blocked by exception</span></div></div></div></div>
-              <div class="card"><h3>Exception-based human review only</h3><div class="timeline"><div class="timeline-item"><div class="dot good"></div><div class="timeline-card"><strong>Resolved automatically</strong><p>Passport lacked address. Agent requested and validated a utility bill and closed the discrepancy without analyst action.</p></div></div><div class="timeline-item"><div class="dot warn"></div><div class="timeline-card"><strong>Analyst action required</strong><p>Sarah Kim returned a likely true positive PEP result. Agent attached sources, rationale, and recommendation for human disposition.</p></div></div><div class="timeline-item"><div class="dot info"></div><div class="timeline-card"><strong>Senior approval required</strong><p>Because client-defined risk tier is High, the case also requires senior compliance sign-off after analyst review.</p></div></div></div></div>
-            </div>
-            <div class="stack">
-              <div class="card"><h3>Current case status</h3><div class="fields"><div class="field"><div class="field-label">Status</div><div class="field-value"><span class="pill warn">Screening Review</span></div></div><div class="field"><div class="field-label">Pipeline</div><div class="field-value"><span class="pill bad">EDD</span></div></div><div class="field"><div class="field-label">Owner</div><div class="field-value">Ana M. — Compliance Analyst</div></div><div class="field"><div class="field-label">Aging</div><div class="field-value">2h 12m</div></div><div class="field"><div class="field-label">SLA target</div><div class="field-value">72 hours</div></div><div class="field"><div class="field-label">Next action</div><div class="field-value">PEP disposition</div></div></div></div>
-              <div class="card"><h3>CDD data completeness</h3><div class="checks"><div class="check"><i>✓</i><div><strong>Entity identification</strong><div class="subtext">Legal name, jurisdiction, formation date, EIN, and business activity collected and verified.</div></div></div><div class="check"><i>✓</i><div><strong>Beneficial ownership</strong><div class="subtext">UBOs at 45% and 30% identified, verified, and linked to ownership evidence.</div></div></div><div class="check"><i>✓</i><div><strong>Control person</strong><div class="subtext">Control prong satisfied and linked to source documents.</div></div></div><div class="check"><i>✓</i><div><strong>Screening initiated</strong><div class="subtext">Entity and associated parties were submitted to the client’s screening provider.</div></div></div></div></div>
-              <div class="card"><h3>Actions</h3><div class="actions" style="margin-top:8px;"><button class="btn secondary">Request client info</button><button class="btn secondary" data-jump="audit">Open audit</button><button class="btn primary" data-jump="edd">Open EDD</button></div></div>
-            </div>
-          </div>
-        </div>
-      </section>
+<div class="workspace">
+CLM Product Demo
+</div>
 
-      <section class="view" id="edd-view">
-        <div class="shell">
-          <div class="head">
-            <div><div class="kicker">Stage 6 • EDD workflow</div><h2>Enhanced due diligence</h2><p>EDD is triggered by the client’s own policy and risk ranking. CLM uses that ranking to route the case, collect deeper evidence, and define monitoring conditions — it does not create a separate internal risk model.</p></div>
-            <div class="actions"><span class="pill bad">High Risk</span><button class="btn secondary">Attach memo</button><button class="btn primary" data-jump="summary">Move to summary</button></div>
-          </div>
-          <div class="grid-2">
-            <div class="stack">
-              <div class="card"><h3>EDD triggers on this case</h3><div class="checks"><div class="check"><i>!</i><div><strong>Client-defined risk tier = High</strong><div class="subtext">Ingested directly from the client risk framework and linked to workflow routing.</div></div></div><div class="check"><i>!</i><div><strong>Potential PEP association</strong><div class="subtext">Sarah Kim returned a likely true positive PEP screening result requiring manual disposition.</div></div></div></div></div>
-              <div class="card"><h3>EDD agent outputs</h3><div class="timeline"><div class="timeline-item"><div class="dot info"></div><div class="timeline-card"><strong>Source of funds / wealth agent</strong><p>Validated operating revenue against bank statements and corroborated Sarah Kim source-of-wealth with supporting docs.</p></div></div><div class="timeline-item"><div class="dot warn"></div><div class="timeline-card"><strong>PEP analysis agent</strong><p>Generated plain-language PEP narrative, source links, and a recommended proceed-with-conditions position.</p></div></div><div class="timeline-item"><div class="dot good"></div><div class="timeline-card"><strong>Expected activity analysis</strong><p>Stated business activity and expected volumes are consistent with profile and peer norms.</p></div></div></div></div>
-            </div>
-            <div class="stack">
-              <div class="card"><h3>EDD recommendation</h3><div class="fields"><div class="field"><div class="field-label">Recommendation</div><div class="field-value"><span class="pill warn">Approve with conditions</span></div></div><div class="field"><div class="field-label">Conditions</div><div class="field-value">Senior approval, annual refresh, enhanced screening sensitivity</div></div><div class="field"><div class="field-label">Monitoring cadence</div><div class="field-value">12-month periodic review</div></div><div class="field"><div class="field-label">Remaining blocker</div><div class="field-value">Human PEP disposition + final sign-off</div></div></div></div>
-              <div class="card"><h3>Human reviewer package</h3><div class="subtext">Only the unresolved issue is surfaced. CLM packages the discrepancy, source references, agent attempts, and recommendation so the analyst never has to restart from scratch.</div><div class="actions" style="margin-top:12px;"><button class="btn secondary">Assign analyst</button><button class="btn primary">Request senior approval</button></div></div>
-            </div>
-          </div>
-        </div>
-      </section>
+<div class="nav">
 
-      <section class="view" id="summary-view">
-        <div class="shell">
-          <div class="head">
-            <div><div class="kicker">Stage 8 • Risk summary and packaging</div><h2>Final KYC risk summary</h2><p>Once CDD / EDD work is complete, CLM packages the official compliance record with customer profile, ownership, screening outcomes, verification results, client-defined risk tier, recommendation, and next review date.</p></div>
-            <div class="actions"><button class="btn secondary">Download PDF</button><button class="btn secondary">Export JSON</button><button class="btn primary" data-jump="lifecycle">Open lifecycle</button></div>
-          </div>
-          <div class="summary">
-            <div class="card"><h3>Customer profile</h3><ul><li><span>Legal entity</span><strong>Apex Digital LLC</strong></li><li><span>Business activity</span><strong>Institutional digital asset exchange + custody</strong></li><li><span>Jurisdictions</span><strong>US, UK, SG, DE</strong></li><li><span>Expected activity</span><strong>High-frequency trading and OTC settlement</strong></li></ul></div>
-            <div class="card"><h3>Beneficial ownership & control</h3><ul><li><span>UBOs</span><strong>Sarah Kim (45%), James Park (30%)</strong></li><li><span>Control person</span><strong>Sarah Kim — CEO</strong></li><li><span>Ownership complexity</span><strong>Low; no opaque intermediaries</strong></li><li><span>Verification</span><strong>Completed</strong></li></ul></div>
-            <div class="card"><h3>Verification results</h3><ul><li><span>Entity verification</span><strong>Verified via formation docs and registry</strong></li><li><span>Identity verification</span><strong>Completed for all associated persons</strong></li><li><span>Address verification</span><strong>Resolved by cross-document validation</strong></li><li><span>Open items</span><strong>PEP disposition pending</strong></li></ul></div>
-            <div class="card"><h3>Screening results</h3><ul><li><span>Sanctions</span><strong>No actionable hits</strong></li><li><span>PEP</span><strong>Potential foreign PEP for Sarah Kim</strong></li><li><span>Adverse media</span><strong>No material findings</strong></li><li><span>Disposition</span><strong>Human review required</strong></li></ul></div>
-            <div class="card"><h3>Risk assessment</h3><ul><li><span>Client risk tier</span><strong>High Risk</strong></li><li><span>Mapped workflow</span><strong>EDD + senior approval</strong></li><li><span>Mitigants</span><strong>Strong entity verification and documented SOF / SOW</strong></li><li><span>Narrative</span><strong>Risk is elevated primarily due to PEP exposure; otherwise evidence is strong.</strong></li></ul></div>
-            <div class="card"><h3>Recommendation</h3><ul><li><span>Outcome</span><strong>Approve with conditions</strong></li><li><span>Conditions</span><strong>Senior sign-off and annual review cadence</strong></li><li><span>Next review date</span><strong>12 months from approval</strong></li><li><span>Audit reference</span><strong>Linked and exportable</strong></li></ul></div>
-          </div>
-        </div>
-      </section>
+<button onclick="showView('queue')" class="nav-item active">
+Intake Queue
+</button>
 
-      <section class="view" id="monitoring-view">
-        <div class="shell">
-          <div class="head">
-            <div><div class="kicker">Post-approval • Ongoing monitoring</div><h2>Monitoring and alert management</h2><p>This view shows how CLM continues monitoring approved customers, rescreens associated parties, and generates event-driven reviews when sanctions, PEP, adverse media, ownership, or activity changes occur.</p></div>
-            <div class="actions"><button class="btn secondary">Run rescreening</button><button class="btn primary" data-jump="lifecycle">Open lifecycle</button></div>
-          </div>
-          <div class="grid-3">
-            <div class="card"><h3>Live monitoring alerts</h3><div class="checks"><div class="check"><i>•</i><div><strong>Screening alert</strong><div class="subtext">Sarah Kim screening profile updated by provider; trigger review opened automatically.</div></div></div><div class="check"><i>•</i><div><strong>Document expiry</strong><div class="subtext">James Park passport expires in 45 days; refresh request scheduled.</div></div></div><div class="check"><i>•</i><div><strong>Jurisdiction change</strong><div class="subtext">Customer added UAE operations; policy requires targeted review.</div></div></div></div></div>
-            <div class="card"><h3>Monitoring actions</h3><div class="fields"><div class="field"><div class="field-label">Rescreening cadence</div><div class="field-value">Weekly for High Risk customers</div></div><div class="field"><div class="field-label">Open trigger reviews</div><div class="field-value">3</div></div><div class="field"><div class="field-label">Upcoming document refresh</div><div class="field-value">5</div></div><div class="field"><div class="field-label">Current monitoring plan</div><div class="field-value">Enhanced watchlist + annual full refresh</div></div></div></div>
-            <div class="card"><h3>Agent automation</h3><div class="checks"><div class="check"><i>✓</i><div><strong>Trigger review creation</strong><div class="subtext">Events automatically create targeted review cases.</div></div></div><div class="check"><i>✓</i><div><strong>Client notification</strong><div class="subtext">CLM sends updated document and attestation requests when needed.</div></div></div><div class="check"><i>✓</i><div><strong>Queue escalation</strong><div class="subtext">Overdue reviews and alerts are escalated to compliance operations.</div></div></div></div></div>
-          </div>
-        </div>
-      </section>
+<button onclick="showView('workspace')" class="nav-item">
+Case Workspace
+</button>
 
-      <section class="view" id="lifecycle-view">
-        <div class="shell">
-          <div class="head">
-            <div><div class="kicker">Stage 9 • Ongoing monitoring and refresh</div><h2>Client lifecycle management</h2><p>After approval, CLM becomes the persistent customer record. It schedules periodic reviews, launches trigger-based reviews, tracks overdue refreshes, and surfaces client action requests through one lifecycle workspace.</p></div>
-            <div class="actions"><button class="btn secondary">Schedule review</button><button class="btn primary">Create trigger review</button></div>
-          </div>
-          <div class="banner"><div><strong>Action required</strong><br />Apex Digital LLC — Periodic review request due in 7 days.</div><button class="btn primary">Open review request</button></div>
-          <div class="grid-3">
-            <div class="card"><h3>Review scheduling</h3><div class="checks"><div class="check"><i>90</i><div><strong>90-day notification</strong><div class="subtext">Relationship manager is warned that the review cycle is approaching.</div></div></div><div class="check"><i>60</i><div><strong>60-day request</strong><div class="subtext">Refresh request sent to the client with requested documents and attestations.</div></div></div><div class="check"><i>30</i><div><strong>30-day escalation</strong><div class="subtext">If there is no response, the review escalates to compliance ops.</div></div></div></div></div>
-            <div class="card"><h3>Trigger-based reviews</h3><div class="checks"><div class="check"><i>•</i><div><strong>Screening alerts</strong><div class="subtext">New sanctions or PEP changes on active customers.</div></div></div><div class="check"><i>•</i><div><strong>Ownership / director changes</strong><div class="subtext">Client-reported profile updates requiring review.</div></div></div><div class="check"><i>•</i><div><strong>Jurisdiction or activity changes</strong><div class="subtext">Material changes in geography or business line.</div></div></div></div></div>
-            <div class="card"><h3>Lifecycle dashboard</h3><div class="fields"><div class="field"><div class="field-label">Upcoming reviews</div><div class="field-value">14</div></div><div class="field"><div class="field-label">Overdue reviews</div><div class="field-value">6</div></div><div class="field"><div class="field-label">Trigger events open</div><div class="field-value">3</div></div><div class="field"><div class="field-label">Rescreening cadence</div><div class="field-value">Based on customer risk tier</div></div></div></div>
-          </div>
-        </div>
-      </section>
+<button onclick="showView('edd')" class="nav-item">
+EDD Pipeline
+</button>
 
-      <section class="view" id="audit-view">
-        <div class="shell">
-          <div class="head">
-            <div><div class="kicker">Auditability is non-negotiable</div><h2>Immutable audit trail</h2><p>Every agent and human action is timestamped, attributable, explainable, and exportable for regulatory examination. Audit records should be immutable and retained for the full required period.</p></div>
-            <div class="actions"><button class="btn secondary">Export CSV</button><button class="btn primary">Export examiner pack</button></div>
-          </div>
-          <div class="audit">
-            <div class="audit-row header"><div>Action</div><div>Actor</div><div>Timestamp</div><div>Confidence / type</div><div>Source reference</div></div>
-            <div class="audit-row"><div>Case created from onboarding submission</div><div>Orchestration Agent</div><div>2026-03-05 11:08 UTC</div><div>System</div><div>Portal payload</div></div>
-            <div class="audit-row"><div>Document classified as Operating Agreement</div><div>Document Classification Agent</div><div>2026-03-05 11:09 UTC</div><div>98.4%</div><div>operating_agreement.pdf</div></div>
-            <div class="audit-row"><div>UBO extracted at 45% ownership</div><div>Extraction Agent</div><div>2026-03-05 11:10 UTC</div><div>96.8%</div><div>shareholder_register.pdf</div></div>
-            <div class="audit-row"><div>Address discrepancy resolved using utility bill</div><div>Identity Verification Agent</div><div>2026-03-05 11:21 UTC</div><div>Resolved</div><div>passport.pdf + utility_bill.pdf</div></div>
-            <div class="audit-row"><div>PEP match routed for analyst review</div><div>Screening Agent</div><div>2026-03-05 11:42 UTC</div><div>Likely true positive</div><div>client screening provider</div></div>
-            <div class="audit-row"><div>Client risk tier mapped to EDD workflow</div><div>Risk Interpretation Agent</div><div>2026-03-05 11:45 UTC</div><div>High Risk</div><div>client risk framework</div></div>
-          </div>
-        </div>
-      </section>
-    </section>
-  </div>
+<button onclick="showView('risk')" class="nav-item">
+Risk Summary
+</button>
 
-  <script>
-    const buttons = document.querySelectorAll('[data-view]');
-    const views = {
-      monitoring: document.getElementById('monitoring-view'),
-      queue: document.getElementById('queue-view'),
-      case: document.getElementById('case-view'),
-      edd: document.getElementById('edd-view'),
-      summary: document.getElementById('summary-view'),
-      monitoring: document.getElementById('monitoring-view'),
-      lifecycle: document.getElementById('lifecycle-view'),
-      audit: document.getElementById('audit-view')
-    };
-    function showView(key) {
-      Object.entries(views).forEach(([name, el]) => el.classList.toggle('active', name === key));
-      buttons.forEach(btn => btn.classList.toggle('active', btn.dataset.view === key));
-    }
-    buttons.forEach(btn => btn.addEventListener('click', () => showView(btn.dataset.view)));
-    document.querySelectorAll('[data-jump]').forEach(btn => btn.addEventListener('click', () => showView(btn.dataset.jump)));
-  </script>
+<button onclick="showView('lifecycle')" class="nav-item">
+Lifecycle
+</button>
+
+<button onclick="showView('audit')" class="nav-item">
+Audit Trail
+</button>
+
+</div>
+
+</div>
+
+
+<!-- MAIN CONTENT -->
+
+<div class="main">
+
+
+<!-- METRICS -->
+
+<div class="metrics">
+
+<div class="metric">
+<div class="metric-title">OPEN CASES</div>
+<div class="metric-value">128</div>
+</div>
+
+<div class="metric">
+<div class="metric-title">NEW APPLICATIONS</div>
+<div class="metric-value">32</div>
+</div>
+
+<div class="metric">
+<div class="metric-title">PERIODIC REVIEWS</div>
+<div class="metric-value">14</div>
+</div>
+
+<div class="metric">
+<div class="metric-title">TRIGGER REVIEWS</div>
+<div class="metric-value">3</div>
+</div>
+
+</div>
+
+
+<!-- INTAKE QUEUE -->
+
+<div id="queue" class="view active">
+
+<h2>Intake Cases</h2>
+
+<div id="caseList"></div>
+
+</div>
+
+
+<!-- CASE WORKSPACE -->
+
+<div id="workspace" class="view">
+
+<h2 id="caseTitle">Case Workspace</h2>
+
+<div class="panel">
+
+<h3>Customer Profile</h3>
+
+<p id="customerInfo"></p>
+
+</div>
+
+<div class="panel">
+
+<h3>Documents</h3>
+
+<ul id="documentList"></ul>
+
+</div>
+
+<div class="panel">
+
+<h3>Risk Summary</h3>
+
+<p id="riskSummary"></p>
+
+</div>
+
+</div>
+
+
+<!-- EDD -->
+
+<div id="edd" class="view">
+
+<h2>EDD Pipeline</h2>
+
+<div class="panel">
+
+Meridian Capital Partners  
+Solstice Exchange Ltd
+
+</div>
+
+</div>
+
+
+<!-- RISK SUMMARY -->
+
+<div id="risk" class="view">
+
+<h2>Risk Overview</h2>
+
+<div class="panel">
+
+Customer profile  
+Risk factors  
+Mitigants  
+Recommendation
+
+</div>
+
+</div>
+
+
+<!-- LIFECYCLE -->
+
+<div id="lifecycle" class="view">
+
+<h2>Lifecycle Monitoring</h2>
+
+<div class="panel">
+
+Periodic Reviews  
+Trigger Events  
+Monitoring Alerts
+
+</div>
+
+</div>
+
+
+<!-- AUDIT -->
+
+<div id="audit" class="view">
+
+<h2>Audit Trail</h2>
+
+<div class="panel">
+
+All actions logged for regulators.
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script src="app.js"></script>
+
 </body>
 </html>
