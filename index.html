@@ -125,35 +125,95 @@
         </div>
       </section>
 
-      <section class="view" id="intake-view">
-        <div class="panel">
-          <div class="panel-head panel-head-spread">
-            <h2>Intake Queue</h2>
-            <div class="panel-actions">
-              <input class="search-input" id="caseSearch" placeholder="Search client or case ID" />
-              <button class="ghost-btn">Filter</button>
-              <button class="ghost-btn">Sort by aging</button>
-            </div>
-          </div>
+   <section class="view" id="intake-view">
+  <div class="panel intake-panel">
+    <div class="panel-head panel-head-spread">
+      <div>
+        <h2>Intake Queue</h2>
+        <p class="panel-subtext">New onboarding submissions, deficiencies, screening holds, and cases awaiting analyst action.</p>
+      </div>
+      <div class="panel-actions">
+        <button class="ghost-btn" id="sortAgingBtn">Sort by Aging</button>
+        <button class="ghost-btn">Export Queue</button>
+        <button class="ghost-btn">Refresh</button>
+      </div>
+    </div>
 
-          <div class="table-wrap">
-            <table class="queue-table">
-              <thead>
-                <tr>
-                  <th>Client</th>
-                  <th>Status</th>
-                  <th>Pipeline</th>
-                  <th>Aging</th>
-                  <th>Priority</th>
-                  <th>Assignee</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody id="queueBody"></tbody>
-            </table>
-          </div>
-        </div>
-      </section>
+    <div class="queue-status-bar" id="queueStatusBar">
+      <button class="queue-chip active" data-status-filter="all">All Intake <span id="countAll">0</span></button>
+      <button class="queue-chip" data-status-filter="Completeness Review">Completeness <span id="countCompleteness">0</span></button>
+      <button class="queue-chip" data-status-filter="Pending Client Response">Pending Client <span id="countPendingClient">0</span></button>
+      <button class="queue-chip" data-status-filter="In CDD Review">CDD Review <span id="countCDD">0</span></button>
+      <button class="queue-chip" data-status-filter="Pending Screening">Screening <span id="countScreening">0</span></button>
+      <button class="queue-chip" data-status-filter="Pending Human Review">Human Review <span id="countHuman">0</span></button>
+      <button class="queue-chip" data-status-filter="sla-risk">SLA Risk <span id="countSLA">0</span></button>
+    </div>
+
+    <div class="queue-toolbar">
+      <div class="queue-filters">
+        <input class="search-input" id="caseSearch" placeholder="Search client, case ID, or activity" />
+
+        <select class="queue-select" id="statusFilter">
+          <option value="all">All Statuses</option>
+          <option value="Completeness Review">Completeness Review</option>
+          <option value="Pending Client Response">Pending Client Response</option>
+          <option value="In CDD Review">In CDD Review</option>
+          <option value="Pending Screening">Pending Screening</option>
+          <option value="Pending Human Review">Pending Human Review</option>
+          <option value="In EDD Review">In EDD Review</option>
+        </select>
+
+        <select class="queue-select" id="pipelineFilter">
+          <option value="all">All Pipelines</option>
+          <option value="Standard CDD">Standard CDD</option>
+          <option value="EDD Review">EDD Review</option>
+        </select>
+
+        <select class="queue-select" id="priorityFilter">
+          <option value="all">All Priorities</option>
+          <option value="Escalated">Escalated</option>
+          <option value="High Risk">High Risk</option>
+          <option value="FIFO">FIFO</option>
+        </select>
+
+        <select class="queue-select" id="jurisdictionFilter">
+          <option value="all">All Jurisdictions</option>
+          <option value="Delaware, US">Delaware, US</option>
+          <option value="Cayman Islands">Cayman Islands</option>
+          <option value="Singapore">Singapore</option>
+        </select>
+
+        <select class="queue-select" id="assigneeFilter">
+          <option value="all">All Assignees</option>
+          <option value="Ops Queue">Ops Queue</option>
+          <option value="Client Pending">Client Pending</option>
+          <option value="Ana M.">Ana M.</option>
+        </select>
+
+        <button class="ghost-btn" id="resetFiltersBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table class="queue-table enterprise">
+        <thead>
+          <tr>
+            <th>Client</th>
+            <th>Status</th>
+            <th>Pipeline</th>
+            <th>Risk</th>
+            <th>Jurisdiction</th>
+            <th>Aging</th>
+            <th>Assignee</th>
+            <th>Last Action</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="queueBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
 
       <section class="view" id="workspace-view">
         <div class="workspace-layout">
