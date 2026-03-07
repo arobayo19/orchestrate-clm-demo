@@ -4,15 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Orchestrate KYC — CLM Demo</title>
-
-  <link rel="preconnect" href="https://api.fontshare.com" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
-  <link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,700,800&f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="app-shell">
@@ -25,216 +20,202 @@
         </div>
       </div>
 
-      <div class="nav-section">
-        <div class="nav-section-title">Overview</div>
+      <nav class="side-nav">
+        <div class="nav-group-title">Overview</div>
         <button class="nav-item active" data-view="dashboard">Dashboard</button>
-      </div>
 
-      <div class="nav-section">
-        <div class="nav-section-title">Onboarding</div>
+        <div class="nav-group-title">Onboarding</div>
         <button class="nav-item" data-view="intake">Intake Queue</button>
-      </div>
 
-      <div class="nav-section">
-        <div class="nav-section-title">Case Management</div>
+        <div class="nav-group-title">Case Management</div>
         <button class="nav-item" data-view="workspace">Case Workspace</button>
         <button class="nav-item" data-view="escalations">Escalations</button>
-      </div>
 
-      <div class="nav-section">
-        <div class="nav-section-title">Risk</div>
+        <div class="nav-group-title">Risk</div>
         <button class="nav-item" data-view="risk">Risk Overview</button>
         <button class="nav-item" data-view="edd">EDD Pipeline</button>
-      </div>
 
-      <div class="nav-section">
-        <div class="nav-section-title">Monitoring</div>
+        <div class="nav-group-title">Monitoring</div>
         <button class="nav-item" data-view="monitoring">Periodic Reviews</button>
         <button class="nav-item" data-view="triggers">Trigger Reviews</button>
-      </div>
 
-      <div class="nav-section">
-        <div class="nav-section-title">AI Agents</div>
+        <div class="nav-group-title">AI Agents</div>
         <button class="nav-item" data-view="agents">Automation Activity</button>
-      </div>
 
-      <div class="nav-section">
-        <div class="nav-section-title">System</div>
+        <div class="nav-group-title">System</div>
         <button class="nav-item" data-view="audit">Audit Trail</button>
+      </nav>
+
+      <div class="sidebar-footer">
+        AI-first compliance engine for onboarding, review, escalation, and lifecycle monitoring.
       </div>
     </aside>
 
     <main class="main">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow" id="pageEyebrow">Overview</div>
+          <h1 id="pageTitle">Dashboard</h1>
+        </div>
+        <div class="topbar-actions">
+          <button class="ghost-btn">Export</button>
+          <button class="primary-btn">New Review</button>
+        </div>
+      </header>
+
+      <section class="metrics-grid">
+        <article class="metric-card">
+          <div class="metric-label">Open Cases</div>
+          <div class="metric-value">128</div>
+          <div class="metric-note">All active onboarding, review, and exception cases.</div>
+        </article>
+        <article class="metric-card">
+          <div class="metric-label">New Applications</div>
+          <div class="metric-value">32</div>
+          <div class="metric-note">Fresh submissions received from the onboarding portal.</div>
+        </article>
+        <article class="metric-card">
+          <div class="metric-label">Periodic Reviews</div>
+          <div class="metric-value">14</div>
+          <div class="metric-note">Upcoming or in-progress scheduled refresh cycles.</div>
+        </article>
+        <article class="metric-card">
+          <div class="metric-label">Trigger Reviews</div>
+          <div class="metric-value">3</div>
+          <div class="metric-note">Event-driven reviews opened from alerts or profile changes.</div>
+        </article>
+      </section>
+
       <section class="view active" id="dashboard-view">
-        <div class="page-head">
-          <div>
-            <div class="eyebrow">Overview</div>
-            <h1>Dashboard</h1>
-          </div>
-          <div class="page-actions">
-            <button class="ghost-btn">Export</button>
-            <button class="primary-btn">New Review</button>
-          </div>
-        </div>
-
-        <div class="metrics-grid">
-          <div class="metric-card">
-            <div class="metric-label">Open Cases</div>
-            <div class="metric-value">128</div>
-            <div class="metric-note">All active onboarding, review, and exception cases.</div>
-          </div>
-
-          <div class="metric-card">
-            <div class="metric-label">New Applications</div>
-            <div class="metric-value">32</div>
-            <div class="metric-note">Fresh submissions received from the onboarding portal.</div>
-          </div>
-
-          <div class="metric-card">
-            <div class="metric-label">Periodic Reviews</div>
-            <div class="metric-value">14</div>
-            <div class="metric-note">Upcoming or in-progress scheduled refresh cycles.</div>
-          </div>
-
-          <div class="metric-card">
-            <div class="metric-label">Trigger Reviews</div>
-            <div class="metric-value">3</div>
-            <div class="metric-note">Event-driven reviews opened from alerts or profile changes.</div>
-          </div>
-        </div>
-
-        <div class="dashboard-simple-grid">
-          <div class="panel dashboard-panel">
-            <div class="panel-head panel-head-spread">
+        <div class="content-grid">
+          <div class="panel">
+            <div class="panel-head">
               <h2>Operational Snapshot</h2>
-              <span class="mini-badge green">Live</span>
             </div>
-
-            <div class="snapshot-clean">
-              <div class="snapshot-clean-row">
-                <div>
-                  <div class="snapshot-clean-label">Cases at SLA Risk</div>
-                  <div class="snapshot-clean-meta">Across all active queues</div>
-                </div>
-                <div class="snapshot-clean-value">7</div>
+            <div class="snapshot-grid">
+              <div class="snapshot-card">
+                <div class="snapshot-title">Pending Human Review</div>
+                <div class="snapshot-big">9</div>
+                <div class="snapshot-meta">4 over SLA target</div>
               </div>
-
-              <div class="snapshot-clean-row">
-                <div>
-                  <div class="snapshot-clean-label">Pending Human Review</div>
-                  <div class="snapshot-clean-meta">4 over 4h SLA target</div>
-                </div>
-                <div class="snapshot-clean-value">9</div>
+              <div class="snapshot-card">
+                <div class="snapshot-title">EDD Cases</div>
+                <div class="snapshot-big">11</div>
+                <div class="snapshot-meta">3 awaiting senior approval</div>
               </div>
-
-              <div class="snapshot-clean-row">
-                <div>
-                  <div class="snapshot-clean-label">EDD Cases</div>
-                  <div class="snapshot-clean-meta">3 awaiting senior approval</div>
-                </div>
-                <div class="snapshot-clean-value">11</div>
+              <div class="snapshot-card">
+                <div class="snapshot-title">Overdue Reviews</div>
+                <div class="snapshot-big">6</div>
+                <div class="snapshot-meta">Periodic or trigger-driven</div>
               </div>
-
-              <div class="snapshot-clean-row">
-                <div>
-                  <div class="snapshot-clean-label">Overdue Reviews</div>
-                  <div class="snapshot-clean-meta">Periodic + trigger-driven</div>
-                </div>
-                <div class="snapshot-clean-value">6</div>
+              <div class="snapshot-card">
+                <div class="snapshot-title">Screening Alerts</div>
+                <div class="snapshot-big">5</div>
+                <div class="snapshot-meta">2 likely true positives</div>
               </div>
             </div>
           </div>
 
-          <div class="panel dashboard-panel">
-            <div class="panel-head panel-head-spread">
+          <div class="panel">
+            <div class="panel-head">
               <h2>Top Priority Cases</h2>
-              <span class="mini-badge gold">Attention</span>
             </div>
-
-            <div class="priority-clean-list">
-              <button class="priority-clean-card" onclick="openCase('CASE-2026-00128')">
-                <div>
-                  <div class="priority-clean-name">Apex Digital LLC</div>
-                  <div class="priority-clean-meta">Completeness Review · Standard CDD</div>
-                </div>
-                <div class="priority-clean-id">CASE-2026-00128</div>
-              </button>
-
-              <button class="priority-clean-card" onclick="openCase('CASE-2026-00127')">
-                <div>
-                  <div class="priority-clean-name">North Harbor Ventures LP</div>
-                  <div class="priority-clean-meta">Pending Client Response · Standard CDD</div>
-                </div>
-                <div class="priority-clean-id">CASE-2026-00127</div>
-              </button>
-
-              <button class="priority-clean-card" onclick="openCase('CASE-2026-00126')">
-                <div>
-                  <div class="priority-clean-name">Solstice Exchange Ltd</div>
-                  <div class="priority-clean-meta">Pending Human Review · EDD Review</div>
-                </div>
-                <div class="priority-clean-id">CASE-2026-00126</div>
-              </button>
-            </div>
+            <div class="simple-list" id="priorityList"></div>
           </div>
         </div>
       </section>
 
-      <section class="view" id="intake-view">
-        <div class="page-head">
-          <div>
-            <div class="eyebrow">Onboarding</div>
-            <h1>Intake Queue</h1>
-          </div>
-          <div class="page-actions">
-            <button class="ghost-btn" id="sortAgingBtn">Sort by Aging</button>
-            <button class="ghost-btn">Export Queue</button>
-          </div>
-        </div>
+   <section class="view" id="intake-view">
+  <div class="panel intake-panel">
+    <div class="panel-head panel-head-spread">
+      <div>
+        <h2>Intake Queue</h2>
+        <p class="panel-subtext">New onboarding submissions, deficiencies, screening holds, and cases awaiting analyst action.</p>
+      </div>
+      <div class="panel-actions">
+        <button class="ghost-btn" id="sortAgingBtn">Sort by Aging</button>
+        <button class="ghost-btn">Export Queue</button>
+        <button class="ghost-btn">Refresh</button>
+      </div>
+    </div>
 
-        <div class="panel intake-panel">
-          <div class="panel-head panel-head-spread">
-            <div>
-              <h2>Queue</h2>
-              <p class="panel-subtext">New onboarding submissions, deficiencies, screening holds, and cases awaiting analyst action.</p>
-            </div>
-          </div>
+    <div class="queue-status-bar" id="queueStatusBar">
+      <button class="queue-chip active" data-status-filter="all">All Intake <span id="countAll">0</span></button>
+      <button class="queue-chip" data-status-filter="Completeness Review">Completeness <span id="countCompleteness">0</span></button>
+      <button class="queue-chip" data-status-filter="Pending Client Response">Pending Client <span id="countPendingClient">0</span></button>
+      <button class="queue-chip" data-status-filter="In CDD Review">CDD Review <span id="countCDD">0</span></button>
+      <button class="queue-chip" data-status-filter="Pending Screening">Screening <span id="countScreening">0</span></button>
+      <button class="queue-chip" data-status-filter="Pending Human Review">Human Review <span id="countHuman">0</span></button>
+      <button class="queue-chip" data-status-filter="sla-risk">SLA Risk <span id="countSLA">0</span></button>
+    </div>
 
-          <div class="queue-toolbar">
-            <div class="queue-filters">
-              <button class="filter-pill active">All Intake <span>4</span></button>
-              <button class="filter-pill">Completeness <span>1</span></button>
-              <button class="filter-pill">Pending Client <span>1</span></button>
-              <button class="filter-pill">CDD Review <span>1</span></button>
-              <button class="filter-pill">Human Review <span>1</span></button>
-            </div>
+    <div class="queue-toolbar">
+      <div class="queue-filters">
+        <input class="search-input" id="caseSearch" placeholder="Search client, case ID, or activity" />
 
-            <div class="queue-searchbar">
-              <input type="text" placeholder="Search client, case ID, or entity" />
-              <select>
-                <option>All Statuses</option>
-              </select>
-              <select>
-                <option>All Pipelines</option>
-              </select>
-              <select>
-                <option>All Priorities</option>
-              </select>
-            </div>
-          </div>
+        <select class="queue-select" id="statusFilter">
+          <option value="all">All Statuses</option>
+          <option value="Completeness Review">Completeness Review</option>
+          <option value="Pending Client Response">Pending Client Response</option>
+          <option value="In CDD Review">In CDD Review</option>
+          <option value="Pending Screening">Pending Screening</option>
+          <option value="Pending Human Review">Pending Human Review</option>
+          <option value="In EDD Review">In EDD Review</option>
+        </select>
 
-          <div class="queue-table" id="queueTable"></div>
-        </div>
-      </section>
+        <select class="queue-select" id="pipelineFilter">
+          <option value="all">All Pipelines</option>
+          <option value="Standard CDD">Standard CDD</option>
+          <option value="EDD Review">EDD Review</option>
+        </select>
+
+        <select class="queue-select" id="priorityFilter">
+          <option value="all">All Priorities</option>
+          <option value="Escalated">Escalated</option>
+          <option value="High Risk">High Risk</option>
+          <option value="FIFO">FIFO</option>
+        </select>
+
+        <select class="queue-select" id="jurisdictionFilter">
+          <option value="all">All Jurisdictions</option>
+          <option value="Delaware, US">Delaware, US</option>
+          <option value="Cayman Islands">Cayman Islands</option>
+          <option value="Singapore">Singapore</option>
+        </select>
+
+        <select class="queue-select" id="assigneeFilter">
+          <option value="all">All Assignees</option>
+          <option value="Ops Queue">Ops Queue</option>
+          <option value="Client Pending">Client Pending</option>
+          <option value="Ana M.">Ana M.</option>
+        </select>
+
+        <button class="ghost-btn" id="resetFiltersBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table class="queue-table enterprise">
+        <thead>
+          <tr>
+            <th>Client</th>
+            <th>Status</th>
+            <th>Pipeline</th>
+            <th>Risk</th>
+            <th>Jurisdiction</th>
+            <th>Aging</th>
+            <th>Assignee</th>
+            <th>Last Action</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="queueBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
 
       <section class="view" id="workspace-view">
-        <div class="page-head">
-          <div>
-            <div class="eyebrow">Case Management</div>
-            <h1>Case Workspace</h1>
-          </div>
-        </div>
-
         <div class="workspace-layout">
           <div class="workspace-main">
             <div class="panel case-header">
@@ -372,12 +353,6 @@
       </section>
 
       <section class="view" id="escalations-view">
-        <div class="page-head">
-          <div>
-            <div class="eyebrow">Case Management</div>
-            <h1>Escalations</h1>
-          </div>
-        </div>
         <div class="panel">
           <div class="panel-head"><h2>Escalations</h2></div>
           <p class="body-copy">Cases requiring senior reviewer, BSA officer, or policy override approval.</p>
@@ -385,12 +360,6 @@
       </section>
 
       <section class="view" id="risk-view">
-        <div class="page-head">
-          <div>
-            <div class="eyebrow">Risk</div>
-            <h1>Risk Overview</h1>
-          </div>
-        </div>
         <div class="panel">
           <div class="panel-head"><h2>Risk Overview</h2></div>
           <p class="body-copy">Firm-wide risk segmentation, active high-risk cases, and policy-driven routing outcomes.</p>
@@ -398,12 +367,6 @@
       </section>
 
       <section class="view" id="edd-view">
-        <div class="page-head">
-          <div>
-            <div class="eyebrow">Risk</div>
-            <h1>EDD Pipeline</h1>
-          </div>
-        </div>
         <div class="panel">
           <div class="panel-head"><h2>EDD Pipeline</h2></div>
           <p class="body-copy">Enhanced Due Diligence queue for high-risk cases requiring source of wealth, jurisdiction review, and deeper screening analysis.</p>
@@ -411,12 +374,6 @@
       </section>
 
       <section class="view" id="monitoring-view">
-        <div class="page-head">
-          <div>
-            <div class="eyebrow">Monitoring</div>
-            <h1>Periodic Reviews</h1>
-          </div>
-        </div>
         <div class="panel">
           <div class="panel-head"><h2>Periodic Reviews</h2></div>
           <p class="body-copy">Scheduled refresh cycles based on customer risk tier and lifecycle review cadence.</p>
@@ -424,12 +381,6 @@
       </section>
 
       <section class="view" id="triggers-view">
-        <div class="page-head">
-          <div>
-            <div class="eyebrow">Monitoring</div>
-            <h1>Trigger Reviews</h1>
-          </div>
-        </div>
         <div class="panel">
           <div class="panel-head"><h2>Trigger Reviews</h2></div>
           <p class="body-copy">Ad hoc reviews initiated by sanctions alerts, ownership changes, adverse media, or profile updates.</p>
@@ -437,12 +388,6 @@
       </section>
 
       <section class="view" id="agents-view">
-        <div class="page-head">
-          <div>
-            <div class="eyebrow">AI Agents</div>
-            <h1>Automation Activity</h1>
-          </div>
-        </div>
         <div class="panel">
           <div class="panel-head"><h2>Automation Activity</h2></div>
           <p class="body-copy">Live orchestration view across extraction, ownership mapping, screening, risk, and review scheduling agents.</p>
@@ -450,12 +395,6 @@
       </section>
 
       <section class="view" id="audit-view">
-        <div class="page-head">
-          <div>
-            <div class="eyebrow">System</div>
-            <h1>Audit Trail</h1>
-          </div>
-        </div>
         <div class="panel">
           <div class="panel-head"><h2>Audit Trail</h2></div>
           <p class="body-copy">Immutable regulator-ready action logs searchable by case, actor, source, and timestamp.</p>
