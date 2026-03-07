@@ -747,3 +747,71 @@ h3{
   gap:12px;
   margin-bottom:14px;
 }
+.brand-logo-lockup{
+  align-items:center;
+  gap:14px;
+}
+
+.brand-mark-logo{
+  width:42px;
+  height:42px;
+  border-radius:12px;
+  background:transparent;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+}
+
+.logo-shell{
+  position:relative;
+  width:36px;
+  height:36px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.logo-ring{
+  position:absolute;
+  border:2px solid rgba(46,164,99,.55);
+  border-radius:10px;
+  box-shadow:0 0 0 1px rgba(46,164,99,.06) inset;
+}
+
+.logo-ring-1{
+  width:30px;
+  height:30px;
+}
+
+.logo-ring-2{
+  width:18px;
+  height:18px;
+  border-radius:7px;
+  border-color:rgba(46,164,99,.75);
+}
+
+.logo-core{
+  width:8px;
+  height:8px;
+  border-radius:3px;
+  background:linear-gradient(180deg, #2ea463, #228a52);
+  box-shadow:0 0 10px rgba(46,164,99,.25);
+}
+
+.brand-name-logo{
+  display:flex;
+  align-items:baseline;
+  gap:8px;
+  font-size:18px;
+  font-weight:800;
+  letter-spacing:-.03em;
+}
+
+.brand-name-white{
+  color:#f3f1ee;
+}
+
+.brand-name-green{
+  color:#2ea463;
+}
