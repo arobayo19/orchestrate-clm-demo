@@ -170,6 +170,17 @@ const cases = [
 const priorityList = document.getElementById("priorityList");
 const queueBody = document.getElementById("queueBody");
 const caseSearch = document.getElementById("caseSearch");
+const statusFilter = document.getElementById("statusFilter");
+const pipelineFilter = document.getElementById("pipelineFilter");
+const priorityFilter = document.getElementById("priorityFilter");
+const jurisdictionFilter = document.getElementById("jurisdictionFilter");
+const assigneeFilter = document.getElementById("assigneeFilter");
+const resetFiltersBtn = document.getElementById("resetFiltersBtn");
+const sortAgingBtn = document.getElementById("sortAgingBtn");
+const queueChips = document.querySelectorAll(".queue-chip");
+
+let activeStatusChip = "all";
+let sortByAgingDesc = true;
 
 const pageEyebrow = document.getElementById("pageEyebrow");
 const pageTitle = document.getElementById("pageTitle");
