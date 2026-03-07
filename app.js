@@ -16,6 +16,7 @@ const cases = [
   {
     id: "CASE-2026-00128",
     client: "Apex Digital LLC",
+    queueType: "onboarding",
     legalName: "Apex Digital LLC",
     formationDate: "2020-07-14",
     registrationNumber: "REG-2020-88421",
@@ -88,6 +89,7 @@ const cases = [
   {
     id: "CASE-2026-00127",
     client: "North Harbor Ventures LP",
+    queueType: "onboarding",
     legalName: "North Harbor Ventures LP",
     formationDate: "2019-03-11",
     registrationNumber: "CAY-LP-44318",
@@ -155,6 +157,7 @@ const cases = [
   {
     id: "CASE-2026-00126",
     client: "Solstice Exchange Ltd",
+    queueType: "screening",
     legalName: "Solstice Exchange Ltd",
     formationDate: "2018-11-23",
     registrationNumber: "SG-88411-EX",
@@ -223,6 +226,7 @@ const cases = [
   {
     id: "CASE-2026-00125",
     client: "Meridian Capital Partners",
+    queueType: "periodic",
     legalName: "Meridian Capital Partners",
     formationDate: "2021-01-09",
     registrationNumber: "REG-2021-11390",
