@@ -325,11 +325,11 @@ h3{
   font-weight:700;
   white-space:nowrap;
 }
-.badge.blue{background:rgba(79,157,255,.14);color:#8fc0ff;border:1px solid rgba(79,157,255,.25)}
-.badge.gray{background:rgba(255,255,255,.06);color:#d7e5ea;border:1px solid rgba(255,255,255,.08)}
-.badge.gold{background:rgba(224,180,75,.14);color:#f1cb6d;border:1px solid rgba(224,180,75,.24)}
-.badge.green{background:rgba(69,219,137,.14);color:#7ff0af;border:1px solid rgba(69,219,137,.24)}
-.badge.red{background:rgba(255,126,126,.14);color:#ffb0b0;border:1px solid rgba(255,126,126,.24)}
+.badge.blue{background:rgba(79,157,255,.12);color:#9bc4ff;border:1px solid rgba(79,157,255,.22)}
+.badge.gray{background:rgba(255,255,255,.05);color:#e4ddd8;border:1px solid rgba(255,255,255,.08)}
+.badge.gold{background:rgba(208,168,92,.14);color:#e1bc77;border:1px solid rgba(208,168,92,.24)}
+.badge.green{background:rgba(46,164,99,.14);color:#7fdaaa;border:1px solid rgba(46,164,99,.24)}
+.badge.red{background:rgba(217,107,107,.14);color:#eaa2a2;border:1px solid rgba(217,107,107,.22)}
 
 .workspace-layout{
   display:grid;
