@@ -164,9 +164,89 @@ const cases = [
       ["Adverse Media Agent", "Generated review package for analyst."],
       ["Risk Summary Agent", "Marked case as high risk pending final screening outcome."]
     ]
+  },
+  {
+    id: "CASE-2026-00125",
+    client: "Meridian Capital Partners",
+    status: "In CDD Review",
+    statusClass: "blue",
+    pipeline: "Standard CDD",
+    pipelineClass: "gray",
+    aging: "3h 18m",
+    priority: "FIFO",
+    priorityClass: "gray",
+    assignee: "Jordan T.",
+    entityType: "LLC",
+    jurisdiction: "Delaware, US",
+    activity: "Institutional investment advisory",
+    expected: "Treasury transfers and investment subscriptions",
+    summary: "CDD extraction and validation are underway. Entity documents and ownership information are complete, with screening still in progress.",
+    checks: [
+      ["Document completeness", "Complete", "green"],
+      ["Entity verification", "Verified", "green"],
+      ["Address verification", "Verified", "green"],
+      ["Screening status", "Pending screening", "gold"]
+    ],
+    documents: [
+      ["Certificate of Formation", "Verified", "green"],
+      ["Operating Agreement", "Ownership extracted and reconciled", "green"],
+      ["W-9", "Verified against EIN data", "green"]
+    ],
+    ownershipNotes: "Ownership structure is direct and fully reconciled. One control person identified with no additional complexity.",
+    sanctions: "Pending screening results from connected provider.",
+    pep: "No PEP concerns identified at intake.",
+    media: "No material negative media found so far.",
+    riskScore: 52,
+    riskNarrative: "Moderate operational risk due to transaction profile, but otherwise mitigated by straightforward structure and complete onboarding data.",
+    riskFactors: ["Investment advisory", "Domestic entity", "Low ownership complexity"],
+    activity: [
+      ["10:18 UTC", "CDD Review started", "Case entered standard CDD workflow."],
+      ["10:24 UTC", "Entity Verification Agent", "Verified formation and address records."],
+      ["10:31 UTC", "Screening Agent", "Submitted sanctions and adverse media screening requests."]
+    ],
+    audit: [
+      ["10:18 UTC", "System", "Moved case into In CDD Review."],
+      ["10:24 UTC", "Entity Verification Agent", "Verified entity details against public registry."],
+      ["10:31 UTC", "Screening Agent", "Submitted screening request."]
+    ],
+    agents: [
+      ["Entity Verification Agent", "Entity and address checks passed."],
+      ["Screening Agent", "Awaiting provider results."],
+      ["Risk Summary Agent", "Preliminary risk profile generated."]
+    ]
   }
 ];
 
+function getLastAction(caseObj) {
+  if (!caseObj.activity || !caseObj.activity.length) return ["No activity", ""];
+  const [time, title] = caseObj.activity[caseObj.activity.length - 1];
+  return [title, time];
+}
+
+function getRiskBadge(score) {
+  if (score >= 80) return { label: "High", className: "red" };
+  if (score >= 60) return { label: "Moderate", className: "gold" };
+  return { label: "Low", className: "green" };
+}
+
+function parseAgingHours(agingText) {
+  const lower = agingText.toLowerCase();
+  let total = 0;
+
+  const dayMatch = lower.match(/(\d+)d/);
+  const hourMatch = lower.match(/(\d+)h/);
+  const minMatch = lower.match(/(\d+)m/);
+
+  if (dayMatch) total += Number(dayMatch[1]) * 24;
+  if (hourMatch) total += Number(hourMatch[1]);
+  if (minMatch) total += Number(minMatch[1]) / 60;
+
+  return total;
+}
+
+function isSLARisk(caseObj) {
+  return caseObj.priority === "Escalated" || parseAgingHours(caseObj.aging) >= 4;
+}
 const priorityList = document.getElementById("priorityList");
 const queueBody = document.getElementById("queueBody");
 const caseSearch = document.getElementById("caseSearch");
