@@ -415,3 +415,71 @@ const clients = [
     ownershipStructure: "Direct ownership",
     ownershipComplexity: "Low",
     ownershipNotes: "Two direct beneficial owners identified. No layered legal entity chain, no nominee ownership, and
+
+    let currentClient = clients[0];
+let currentCase = cases[0];
+
+function openClientProfile(clientId) {
+  const found = clients.find((c) => c.id === clientId);
+  if (!found) return;
+
+  currentClient = found;
+  renderClientProfile(found);
+}
+
+function renderClientDirectory() {
+  if (!clientDirectoryBody) return;
+
+  clientDirectoryBody.innerHTML = "";
+
+  const searchValue = (clientDirectorySearch?.value || "").toLowerCase().trim();
+
+  const visibleClients = clients.filter((client) => {
+    const haystack = `
+      ${client.name}
+      ${client.legalName}
+      ${client.entityType}
+      ${client.jurisdiction}
+    `.toLowerCase();
+
+    return !searchValue || haystack.includes(searchValue);
+  });
+
+  visibleClients.forEach((client) => {
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>
+        <div class="client-cell">
+          <div class="client-name profile-open-link" data-client="${client.id}">
+            ${client.name}
+          </div>
+          <div class="client-sub">${client.id}</div>
+        </div>
+      </td>
+      <td>${client.entityType}</td>
+      <td>${client.jurisdiction}</td>
+      <td><span class="badge ${client.riskClass}">${client.riskTier}</span></td>
+      <td>${client.lastReviewDate}</td>
+      <td>${client.nextReviewDate}</td>
+      <td>${client.accounts?.length || 0}</td>
+      <td>${client.openCases}</td>
+      <td>
+        <button class="open-link profile-open-link" data-client="${client.id}">
+          View Profile
+        </button>
+      </td>
+    `;
+
+    clientDirectoryBody.appendChild(tr);
+  });
+
+  document.querySelectorAll(".profile-open-link").forEach((btn) => {
+    btn.addEventListener("click", () => openClientProfile(btn.dataset.client));
+  });
+}
+
+clientDirectorySearch?.addEventListener("input", renderClientDirectory);
+
+renderClientDirectory();
+renderClientProfile(clients[0]);
