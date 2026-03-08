@@ -1,10 +1,10 @@
 const views = {
   dashboard: { id: "dashboard-view", eyebrow: "Overview", title: "Dashboard" },
+  directory: { id: "client-directory-view", eyebrow: "Clients", title: "Client Directory" },
+  profile: { id: "kyc-profile-view", eyebrow: "Clients", title: "KYC Profile" },
   intake: { id: "intake-view", eyebrow: "Intake Queue", title: "Onboarding Queue" },
   workspace: { id: "workspace-view", eyebrow: "Case Management", title: "Case Workspace" },
   escalations: { id: "escalations-view", eyebrow: "Case Management", title: "Escalations" },
-  risk: { id: "risk-view", eyebrow: "Risk", title: "Risk Overview" },
-  edd: { id: "edd-view", eyebrow: "Risk", title: "EDD Pipeline" },
   monitoring: { id: "monitoring-view", eyebrow: "Intake Queue", title: "Periodic Reviews Queue" },
   triggers: { id: "triggers-view", eyebrow: "Intake Queue", title: "Trigger Reviews Queue" },
   screening: { id: "screening-view", eyebrow: "Intake Queue", title: "Screening Queue" },
