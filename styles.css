@@ -1055,3 +1055,26 @@ h3{
 .profile-tab-content.active{
   display:block;
 }
+
+.profile-tab-content {
+  display: none;
+}
+
+.profile-tab-content.active {
+  display: block;
+}
+
+.profile-tab {
+  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,.02);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 10px 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.profile-tab.active {
+  background: rgba(69,219,137,.14);
+  border-color: rgba(69,219,137,.25);
+}
