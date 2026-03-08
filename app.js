@@ -674,3 +674,617 @@ document.querySelectorAll(".profile-tab").forEach((tab) => {
     document.getElementById(`profile-tab-${tab.dataset.profileTab}`)?.classList.add("active");
   });
 });
+const priorityList = document.getElementById("priorityList");
+const queueBody = document.getElementById("queueBody");
+const monitoringQueueBody = document.getElementById("monitoringQueueBody");
+const triggersQueueBody = document.getElementById("triggersQueueBody");
+const screeningQueueBody = document.getElementById("screeningQueueBody");
+
+const clientDirectorySearch = document.getElementById("clientDirectorySearch");
+const clientDirectoryBody = document.getElementById("clientDirectoryBody");
+
+const pageEyebrow = document.getElementById("pageEyebrow");
+const pageTitle = document.getElementById("pageTitle");
+
+const caseSearch = document.getElementById("caseSearch");
+const statusFilter = document.getElementById("statusFilter");
+const pipelineFilter = document.getElementById("pipelineFilter");
+const priorityFilter = document.getElementById("priorityFilter");
+const jurisdictionFilter = document.getElementById("jurisdictionFilter");
+const assigneeFilter = document.getElementById("assigneeFilter");
+const resetFiltersBtn = document.getElementById("resetFiltersBtn");
+const sortAgingBtn = document.getElementById("sortAgingBtn");
+const queueChips = document.querySelectorAll(".queue-chip");
+
+const caseId = document.getElementById("caseId");
+const caseClientName = document.getElementById("caseClientName");
+const caseStatus = document.getElementById("caseStatus");
+const casePipeline = document.getElementById("casePipeline");
+const casePriority = document.getElementById("casePriority");
+
+const ovLegalName = document.getElementById("ovLegalName");
+const ovEntityType = document.getElementById("ovEntityType");
+const ovJurisdiction = document.getElementById("ovJurisdiction");
+const ovRiskTier = document.getElementById("ovRiskTier");
+const ovEddTriggered = document.getElementById("ovEddTriggered");
+const overviewChecks = document.getElementById("overviewChecks");
+const overviewSummary = document.getElementById("overviewSummary");
+
+const documentsList = document.getElementById("documentsList");
+const ownershipEntity = document.getElementById("ownershipEntity");
+const ownershipNotes = document.getElementById("ownershipNotes");
+const screenSanctions = document.getElementById("screenSanctions");
+const screenPep = document.getElementById("screenPep");
+const screenMedia = document.getElementById("screenMedia");
+const riskNarrative = document.getElementById("riskNarrative");
+const riskFactors = document.getElementById("riskFactors");
+const auditTimeline = document.getElementById("auditTimeline");
+const agentFeed = document.getElementById("agentFeed");
+
+const profileClientName = document.getElementById("profileClientName");
+const profileRelationshipStatus = document.getElementById("profileRelationshipStatus");
+const profileRiskTier = document.getElementById("profileRiskTier");
+const profileEntityType = document.getElementById("profileEntityType");
+const profileOvName = document.getElementById("profileOvName");
+const profileOvEntityType = document.getElementById("profileOvEntityType");
+const profileOvJurisdiction = document.getElementById("profileOvJurisdiction");
+const profileOvRiskTier = document.getElementById("profileOvRiskTier");
+const profileLastReview = document.getElementById("profileLastReview");
+const profileNextReview = document.getElementById("profileNextReview");
+const profileRelationshipText = document.getElementById("profileRelationshipText");
+const profileOpenCases = document.getElementById("profileOpenCases");
+const profileAccountCount = document.getElementById("profileAccountCount");
+const profileScreeningStatus = document.getElementById("profileScreeningStatus");
+const profileOwnershipStatus = document.getElementById("profileOwnershipStatus");
+const profileLastCompletedReview = document.getElementById("profileLastCompletedReview");
+const profileSummary = document.getElementById("profileSummary");
+
+const profileBizName = document.getElementById("profileBizName");
+const profileBizDba = document.getElementById("profileBizDba");
+const profileBizType = document.getElementById("profileBizType");
+const profileBizFormation = document.getElementById("profileBizFormation");
+const profileBizCountry = document.getElementById("profileBizCountry");
+const profileBizState = document.getElementById("profileBizState");
+const profileBizReg = document.getElementById("profileBizReg");
+const profileBizAddress = document.getElementById("profileBizAddress");
+const profileBizIndustry = document.getElementById("profileBizIndustry");
+
+const profileOwnUbo = document.getElementById("profileOwnUbo");
+const profileOwnControllers = document.getElementById("profileOwnControllers");
+const profileOwnStructure = document.getElementById("profileOwnStructure");
+const profileOwnComplexity = document.getElementById("profileOwnComplexity");
+const profileOwnershipNotes = document.getElementById("profileOwnershipNotes");
+const profileSanctions = document.getElementById("profileSanctions");
+const profilePep = document.getElementById("profilePep");
+const profileMedia = document.getElementById("profileMedia");
+const profileAccountsBody = document.getElementById("profileAccountsBody");
+const profileCasesBody = document.getElementById("profileCasesBody");
+
+let activeStatusChip = "all";
+let sortByAgingDesc = true;
+
+function getLastAction(caseObj) {
+  if (!caseObj.activityLog || !caseObj.activityLog.length) return ["No activity", ""];
+  const [time, title] = caseObj.activityLog[caseObj.activityLog.length - 1];
+  return [title, time];
+}
+
+function getRiskBadge(score) {
+  if (score >= 80) return { label: "High", className: "red" };
+  if (score >= 60) return { label: "Moderate", className: "gold" };
+  return { label: "Low", className: "green" };
+}
+
+function parseAgingHours(agingText = "") {
+  const lower = agingText.toLowerCase();
+  let total = 0;
+  const dayMatch = lower.match(/(\d+)d/);
+  const hourMatch = lower.match(/(\d+)h/);
+  const minMatch = lower.match(/(\d+)m/);
+  if (dayMatch) total += Number(dayMatch[1]) * 24;
+  if (hourMatch) total += Number(hourMatch[1]);
+  if (minMatch) total += Number(minMatch[1]) / 60;
+  return total;
+}
+
+function isSLARisk(caseObj) {
+  return caseObj.priority === "Escalated" || parseAgingHours(caseObj.aging) >= 4;
+}
+
+function renderPriorityList() {
+  if (!priorityList) return;
+  priorityList.innerHTML = "";
+  cases.forEach((item) => {
+    const row = document.createElement("div");
+    row.className = "simple-row";
+    row.innerHTML = `
+      <div class="left">
+        <strong>${item.client}</strong>
+        <span>${item.status} · ${item.pipeline}</span>
+      </div>
+      <div class="right">${item.id}</div>
+    `;
+    row.addEventListener("click", () => openCase(item.id));
+    priorityList.appendChild(row);
+  });
+}
+
+function renderQueueCounts() {
+  const byId = (id) => document.getElementById(id);
+  if (byId("countAll")) byId("countAll").textContent = cases.filter(c => c.queueType === "onboarding").length;
+  if (byId("countCompleteness")) byId("countCompleteness").textContent = cases.filter(c => c.status === "Completeness Review").length;
+  if (byId("countPendingClient")) byId("countPendingClient").textContent = cases.filter(c => c.status === "Pending Client Response").length;
+  if (byId("countCDD")) byId("countCDD").textContent = cases.filter(c => c.status === "In CDD Review").length;
+  if (byId("countScreening")) byId("countScreening").textContent = cases.filter(c => c.status === "Pending Screening").length;
+  if (byId("countHuman")) byId("countHuman").textContent = cases.filter(c => c.status === "Pending Human Review").length;
+  if (byId("countSLA")) byId("countSLA").textContent = cases.filter(c => isSLARisk(c)).length;
+}
+
+function renderQueue() {
+  if (!queueBody) return;
+  queueBody.innerHTML = "";
+
+  const searchValue = (caseSearch?.value || "").toLowerCase().trim();
+  const statusValue = statusFilter?.value || "all";
+  const pipelineValue = pipelineFilter?.value || "all";
+  const priorityValue = priorityFilter?.value || "all";
+  const jurisdictionValue = jurisdictionFilter?.value || "all";
+  const assigneeValue = assigneeFilter?.value || "all";
+
+  let visibleCases = cases.filter((item) => item.queueType === "onboarding").filter((item) => {
+    const searchable = `${item.client} ${item.id} ${item.activity} ${item.jurisdiction}`.toLowerCase();
+
+    const matchesSearch = !searchValue || searchable.includes(searchValue);
+    const matchesStatus = statusValue === "all" || item.status === statusValue;
+    const matchesPipeline = pipelineValue === "all" || item.pipeline === pipelineValue;
+    const matchesPriority = priorityValue === "all" || item.priority === priorityValue;
+    const matchesJurisdiction = jurisdictionValue === "all" || item.jurisdiction === jurisdictionValue;
+    const matchesAssignee = assigneeValue === "all" || item.assignee === assigneeValue;
+    const matchesChip =
+      activeStatusChip === "all"
+        ? true
+        : activeStatusChip === "sla-risk"
+        ? isSLARisk(item)
+        : item.status === activeStatusChip;
+
+    return matchesSearch && matchesStatus && matchesPipeline && matchesPriority && matchesJurisdiction && matchesAssignee && matchesChip;
+  });
+
+  visibleCases.sort((a, b) => {
+    const aHours = parseAgingHours(a.aging);
+    const bHours = parseAgingHours(b.aging);
+    return sortByAgingDesc ? bHours - aHours : aHours - bHours;
+  });
+
+  visibleCases.forEach((item) => {
+    const risk = getRiskBadge(item.riskScore);
+    const [lastActionLabel, lastActionTime] = getLastAction(item);
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>
+        <div class="client-cell">
+          <div class="client-name">${item.client}</div>
+          <div class="client-sub">${item.id}</div>
+          <div class="client-meta">${item.activity}</div>
+        </div>
+      </td>
+      <td><span class="badge ${item.statusClass}">${item.status}</span></td>
+      <td><span class="badge ${item.pipelineClass}">${item.pipeline}</span></td>
+      <td>
+        <div class="risk-cell">
+          <span class="badge ${risk.className}">${risk.label}</span>
+          <div class="table-note">Score ${item.riskScore}</div>
+        </div>
+      </td>
+      <td>${item.jurisdiction}</td>
+      <td>
+        <div>${item.aging}</div>
+        <div class="${isSLARisk(item) ? "sla-flag" : "sla-safe"}" style="margin-top:8px;">
+          ${isSLARisk(item) ? "SLA Risk" : "On Track"}
+        </div>
+      </td>
+      <td>${item.assignee}</td>
+      <td>
+        <div class="last-action">
+          ${lastActionLabel}
+          <span>${lastActionTime}</span>
+        </div>
+      </td>
+      <td><button class="open-link" data-case="${item.id}">Open</button></td>
+    `;
+    queueBody.appendChild(tr);
+  });
+
+  queueBody.querySelectorAll(".open-link").forEach((btn) => {
+    btn.addEventListener("click", () => openCase(btn.dataset.case));
+  });
+
+  renderQueueCounts();
+}
+
+function renderQueueForTarget(targetId, queueType) {
+  const targetBody = document.getElementById(targetId);
+  if (!targetBody) return;
+
+  targetBody.innerHTML = "";
+
+  cases.filter((item) => item.queueType === queueType).forEach((item) => {
+    const risk = getRiskBadge(item.riskScore);
+    const [lastActionLabel, lastActionTime] = getLastAction(item);
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>
+        <div class="client-cell">
+          <div class="client-name">${item.client}</div>
+          <div class="client-sub">${item.id}</div>
+          <div class="client-meta">${item.activity}</div>
+        </div>
+      </td>
+      <td><span class="badge ${item.statusClass}">${item.status}</span></td>
+      <td><span class="badge ${item.pipelineClass}">${item.pipeline}</span></td>
+      <td>
+        <div class="risk-cell">
+          <span class="badge ${risk.className}">${risk.label}</span>
+          <div class="table-note">Score ${item.riskScore}</div>
+        </div>
+      </td>
+      <td>${item.jurisdiction}</td>
+      <td>${item.aging}</td>
+      <td>${item.assignee}</td>
+      <td>
+        <div class="last-action">
+          ${lastActionLabel}
+          <span>${lastActionTime}</span>
+        </div>
+      </td>
+      <td><button class="open-link" data-case="${item.id}">Open</button></td>
+    `;
+    targetBody.appendChild(tr);
+  });
+
+  targetBody.querySelectorAll(".open-link").forEach((btn) => {
+    btn.addEventListener("click", () => openCase(btn.dataset.case));
+  });
+}
+
+function renderCase(caseObj) {
+  currentCase = caseObj;
+
+  if (caseId) caseId.textContent = caseObj.id || "-";
+  if (caseClientName) caseClientName.textContent = caseObj.client || "-";
+
+  if (caseStatus) {
+    caseStatus.className = `badge ${caseObj.statusClass || "gray"}`;
+    caseStatus.textContent = caseObj.status || "-";
+  }
+
+  if (casePipeline) {
+    casePipeline.className = `badge ${caseObj.pipelineClass || "gray"}`;
+    casePipeline.textContent = caseObj.pipeline || "-";
+  }
+
+  if (casePriority) {
+    casePriority.className = `badge ${caseObj.priorityClass || "gray"}`;
+    casePriority.textContent = caseObj.priority || "-";
+  }
+
+  if (ovLegalName) ovLegalName.textContent = caseObj.legalName || caseObj.client || "-";
+  if (ovEntityType) ovEntityType.textContent = caseObj.entityType || "-";
+  if (ovJurisdiction) ovJurisdiction.textContent = caseObj.jurisdiction || "-";
+  if (ovRiskTier) ovRiskTier.textContent = caseObj.riskTier || "-";
+  if (ovEddTriggered) ovEddTriggered.textContent = caseObj.eddTriggered || "-";
+  if (overviewSummary) overviewSummary.textContent = caseObj.summary || "-";
+  if (ownershipEntity) ownershipEntity.textContent = caseObj.client || "-";
+  if (ownershipNotes) ownershipNotes.textContent = caseObj.ownershipNotes || "-";
+  if (screenSanctions) screenSanctions.textContent = caseObj.sanctions || "-";
+  if (screenPep) screenPep.textContent = caseObj.pep || "-";
+  if (screenMedia) screenMedia.textContent = caseObj.media || "-";
+  if (riskNarrative) riskNarrative.textContent = caseObj.riskNarrative || "-";
+
+  if (overviewChecks) {
+    overviewChecks.innerHTML = "";
+    (caseObj.checks || []).forEach(([label, result, cls]) => {
+      const li = document.createElement("li");
+      li.innerHTML = `<span>${label}</span><span class="badge ${cls || "gray"}">${result}</span>`;
+      overviewChecks.appendChild(li);
+    });
+  }
+
+  if (documentsList) {
+    documentsList.innerHTML = "";
+    (caseObj.documents || []).forEach(([name, meta, cls]) => {
+      const item = document.createElement("div");
+      item.className = "doc-item";
+      item.innerHTML = `
+        <div class="doc-meta">
+          <strong>${name}</strong>
+          <span>${meta}</span>
+        </div>
+        <span class="badge ${cls || "gray"}">${name}</span>
+      `;
+      documentsList.appendChild(item);
+    });
+  }
+
+  if (riskFactors) {
+    riskFactors.innerHTML = "";
+    (caseObj.riskFactors || []).forEach((factor) => {
+      const chip = document.createElement("span");
+      chip.className = "chip";
+      chip.textContent = factor;
+      riskFactors.appendChild(chip);
+    });
+  }
+
+  if (auditTimeline) {
+    auditTimeline.innerHTML = "";
+    (caseObj.audit || []).forEach(([time, actor, text]) => {
+      const item = document.createElement("div");
+      item.className = "timeline-item";
+      item.innerHTML = `
+        <div class="timeline-time">${time}</div>
+        <div class="timeline-body">
+          <strong>${actor}</strong>
+          <span>${text}</span>
+        </div>
+      `;
+      auditTimeline.appendChild(item);
+    });
+  }
+
+  if (agentFeed) {
+    agentFeed.innerHTML = "";
+    (caseObj.agents || []).forEach(([name, text]) => {
+      const card = document.createElement("div");
+      card.className = "agent-card";
+      card.innerHTML = `
+        <strong>${name}</strong>
+        <span>${text}</span>
+      `;
+      agentFeed.appendChild(card);
+    });
+  }
+}
+
+function openCase(caseIdValue) {
+  const found = cases.find((c) => c.id === caseIdValue);
+  if (!found) return;
+  renderCase(found);
+  setActiveView("workspace");
+}
+
+function renderClientProfile(clientObj) {
+  currentClient = clientObj;
+
+  if (profileClientName) profileClientName.textContent = clientObj.name || "-";
+
+  if (profileRelationshipStatus) {
+    profileRelationshipStatus.className = `badge ${clientObj.relationshipClass || "gray"}`;
+    profileRelationshipStatus.textContent = clientObj.relationshipStatus || "-";
+  }
+
+  if (profileRiskTier) {
+    profileRiskTier.className = `badge ${clientObj.riskClass || "gray"}`;
+    profileRiskTier.textContent = `${clientObj.riskTier || "-"} Risk`;
+  }
+
+  if (profileEntityType) {
+    profileEntityType.className = "badge gray";
+    profileEntityType.textContent = clientObj.entityType || "-";
+  }
+
+  if (profileOvName) profileOvName.textContent = clientObj.legalName || "-";
+  if (profileOvEntityType) profileOvEntityType.textContent = clientObj.entityType || "-";
+  if (profileOvJurisdiction) profileOvJurisdiction.textContent = clientObj.jurisdiction || "-";
+  if (profileOvRiskTier) profileOvRiskTier.textContent = clientObj.riskTier || "-";
+  if (profileLastReview) profileLastReview.textContent = clientObj.lastReviewDate || "-";
+  if (profileNextReview) profileNextReview.textContent = clientObj.nextReviewDate || "-";
+  if (profileRelationshipText) profileRelationshipText.textContent = clientObj.relationshipStatus || "-";
+  if (profileOpenCases) profileOpenCases.textContent = clientObj.openCases ?? "0";
+  if (profileAccountCount) profileAccountCount.textContent = clientObj.accounts?.length ?? "0";
+  if (profileScreeningStatus) profileScreeningStatus.textContent = clientObj.screeningStatus || "-";
+  if (profileOwnershipStatus) profileOwnershipStatus.textContent = clientObj.ownershipStatus || "-";
+  if (profileLastCompletedReview) profileLastCompletedReview.textContent = clientObj.lastCompletedReview || "-";
+  if (profileSummary) profileSummary.textContent = clientObj.summary || "-";
+
+  if (profileBizName) profileBizName.textContent = clientObj.legalName || "-";
+  if (profileBizDba) profileBizDba.textContent = clientObj.businessDba || "-";
+  if (profileBizType) profileBizType.textContent = clientObj.entityType || "-";
+  if (profileBizFormation) profileBizFormation.textContent = clientObj.formationDate || "-";
+  if (profileBizCountry) profileBizCountry.textContent = clientObj.incorporationCountry || "-";
+  if (profileBizState) profileBizState.textContent = clientObj.incorporationState || "-";
+  if (profileBizReg) profileBizReg.textContent = clientObj.registrationNumber || "-";
+  if (profileBizAddress) profileBizAddress.textContent = clientObj.operatingAddress || "-";
+  if (profileBizIndustry) profileBizIndustry.textContent = clientObj.industry || "-";
+
+  if (profileOwnUbo) profileOwnUbo.textContent = clientObj.ownershipUbo || "-";
+  if (profileOwnControllers) profileOwnControllers.textContent = clientObj.ownershipControllers || "-";
+  if (profileOwnStructure) profileOwnStructure.textContent = clientObj.ownershipStructure || "-";
+  if (profileOwnComplexity) profileOwnComplexity.textContent = clientObj.ownershipComplexity || "-";
+  if (profileOwnershipNotes) profileOwnershipNotes.textContent = clientObj.ownershipNotes || "-";
+
+  if (profileSanctions) profileSanctions.textContent = clientObj.sanctions || "-";
+  if (profilePep) profilePep.textContent = clientObj.pep || "-";
+  if (profileMedia) profileMedia.textContent = clientObj.media || "-";
+
+  if (profileAccountsBody) {
+    profileAccountsBody.innerHTML = "";
+    (clientObj.accounts || []).forEach((account) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${account.accountName || "-"}</td>
+        <td>${account.accountType || "-"}</td>
+        <td><span class="badge ${account.statusClass || "gray"}">${account.status || "-"}</span></td>
+        <td>${account.purpose || "-"}</td>
+        <td>${account.openedDate || "-"}</td>
+      `;
+      profileAccountsBody.appendChild(tr);
+    });
+  }
+
+  if (profileCasesBody) {
+    profileCasesBody.innerHTML = "";
+    (clientObj.history || []).forEach((item) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${item.caseId || "-"}</td>
+        <td>${item.caseType || "-"}</td>
+        <td><span class="badge ${item.statusClass || "gray"}">${item.status || "-"}</span></td>
+        <td>${item.opened || "-"}</td>
+        <td>${item.outcome || "-"}</td>
+        <td><button class="open-link profile-case-open" data-case="${item.caseId}">Open Case</button></td>
+      `;
+      profileCasesBody.appendChild(tr);
+    });
+
+    profileCasesBody.querySelectorAll(".profile-case-open").forEach((btn) => {
+      btn.addEventListener("click", () => openCase(btn.dataset.case));
+    });
+  }
+}
+
+function openClientProfile(clientId) {
+  const found = clients.find((c) => c.id === clientId);
+  if (!found) return;
+  currentClient = found;
+  renderClientProfile(found);
+}
+
+function renderClientDirectory() {
+  if (!clientDirectoryBody) return;
+
+  clientDirectoryBody.innerHTML = "";
+
+  const searchValue = (clientDirectorySearch?.value || "").toLowerCase().trim();
+
+  const visibleClients = clients.filter((client) => {
+    const haystack = `
+      ${client.name}
+      ${client.legalName}
+      ${client.entityType}
+      ${client.jurisdiction}
+      ${(client.accounts || []).map(a => a.accountName).join(" ")}
+      ${(client.history || []).map(h => h.caseId).join(" ")}
+    `.toLowerCase();
+
+    return !searchValue || haystack.includes(searchValue);
+  });
+
+  visibleClients.forEach((client) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>
+        <div class="client-cell">
+          <div class="client-name profile-open-link" data-client="${client.id}">
+            ${client.name}
+          </div>
+          <div class="client-sub">${client.id}</div>
+        </div>
+      </td>
+      <td>${client.entityType}</td>
+      <td>${client.jurisdiction}</td>
+      <td><span class="badge ${client.riskClass}">${client.riskTier}</span></td>
+      <td>${client.lastReviewDate}</td>
+      <td>${client.nextReviewDate}</td>
+      <td>${client.accounts?.length || 0}</td>
+      <td>${client.openCases}</td>
+      <td><button class="open-link profile-open-link" data-client="${client.id}">View Profile</button></td>
+    `;
+    clientDirectoryBody.appendChild(tr);
+  });
+
+  document.querySelectorAll(".profile-open-link").forEach((btn) => {
+    btn.addEventListener("click", () => openClientProfile(btn.dataset.client));
+  });
+}
+
+function setActiveView(viewKey) {
+  document.querySelectorAll(".view").forEach((el) => el.classList.remove("active"));
+  document.querySelectorAll(".nav-item").forEach((el) => el.classList.remove("active"));
+
+  const target = views[viewKey];
+  if (!target) return;
+
+  document.getElementById(target.id)?.classList.add("active");
+  document.querySelector(`.nav-item[data-view="${viewKey}"]`)?.classList.add("active");
+
+  if (pageEyebrow) pageEyebrow.textContent = target.eyebrow;
+  if (pageTitle) pageTitle.textContent = target.title;
+
+  if (viewKey === "directory") renderClientDirectory();
+  if (viewKey === "intake") renderQueue();
+  if (viewKey === "monitoring") renderQueueForTarget("monitoringQueueBody", "periodic");
+  if (viewKey === "triggers") renderQueueForTarget("triggersQueueBody", "trigger");
+  if (viewKey === "screening") renderQueueForTarget("screeningQueueBody", "screening");
+}
+
+document.querySelectorAll(".nav-item").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    setActiveView(btn.dataset.view);
+  });
+});
+
+document.querySelectorAll(".tab").forEach((tab) => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".tabs-panel .tab").forEach((t) => t.classList.remove("active"));
+    document.querySelectorAll(".tabs-panel .tab-content").forEach((c) => c.classList.remove("active"));
+    tab.classList.add("active");
+    document.getElementById(`tab-${tab.dataset.tab}`)?.classList.add("active");
+  });
+});
+
+document.querySelectorAll(".profile-tab").forEach((tab) => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".profile-tab").forEach((t) => t.classList.remove("active"));
+    document.querySelectorAll(".profile-tab-content").forEach((c) => c.classList.remove("active"));
+    tab.classList.add("active");
+    document.getElementById(`profile-tab-${tab.dataset.profileTab}`)?.classList.add("active");
+  });
+});
+
+caseSearch?.addEventListener("input", renderQueue);
+statusFilter?.addEventListener("change", renderQueue);
+pipelineFilter?.addEventListener("change", renderQueue);
+priorityFilter?.addEventListener("change", renderQueue);
+jurisdictionFilter?.addEventListener("change", renderQueue);
+assigneeFilter?.addEventListener("change", renderQueue);
+clientDirectorySearch?.addEventListener("input", renderClientDirectory);
+
+resetFiltersBtn?.addEventListener("click", () => {
+  if (caseSearch) caseSearch.value = "";
+  if (statusFilter) statusFilter.value = "all";
+  if (pipelineFilter) pipelineFilter.value = "all";
+  if (priorityFilter) priorityFilter.value = "all";
+  if (jurisdictionFilter) jurisdictionFilter.value = "all";
+  if (assigneeFilter) assigneeFilter.value = "all";
+
+  activeStatusChip = "all";
+  queueChips.forEach((chip) => chip.classList.remove("active"));
+  document.querySelector('.queue-chip[data-status-filter="all"]')?.classList.add("active");
+
+  renderQueue();
+});
+
+sortAgingBtn?.addEventListener("click", () => {
+  sortByAgingDesc = !sortByAgingDesc;
+  sortAgingBtn.textContent = sortByAgingDesc ? "Sort by Aging" : "Sort by Aging ↑";
+  renderQueue();
+});
+
+queueChips.forEach((chip) => {
+  chip.addEventListener("click", () => {
+    queueChips.forEach((c) => c.classList.remove("active"));
+    chip.classList.add("active");
+    activeStatusChip = chip.dataset.statusFilter;
+    renderQueue();
+  });
+});
+
+renderPriorityList();
+renderQueue();
+renderCase(currentCase);
+renderClientDirectory();
+renderClientProfile(currentClient);
+setActiveView("dashboard");  pls answer the question by saying yes or no and then any amendments if needed.
