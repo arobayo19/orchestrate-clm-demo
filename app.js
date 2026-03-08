@@ -414,11 +414,104 @@ const clients = [
     ownershipControllers: "1",
     ownershipStructure: "Direct ownership",
     ownershipComplexity: "Low",
-    ownershipNotes: "Two direct beneficial owners identified. No layered legal entity chain, no nominee ownership, and
+    ownershipNotes: "Two direct beneficial owners identified. No layered legal entity chain, no nominee ownership, and no shell-company concerns identified in the current file.",
+    sanctions: "No sanctions matches returned for the entity or associated control persons.",
+    pep: "No direct PEP match. Prior low-confidence related-party review closed with no escalation.",
+    media: "No unresolved adverse media issue remains open on the client profile.",
+    accounts: [
+      {
+        accountName: "Operating Account",
+        accountType: "Operating Account",
+        status: "Active",
+        statusClass: "green",
+        purpose: "Operating account",
+        openedDate: "2025-12-11"
+      },
+      {
+        accountName: "Custody Account",
+        accountType: "Crypto Custody",
+        status: "Pending Activation",
+        statusClass: "gold",
+        purpose: "Crypto trading / custody",
+        openedDate: "2025-12-12"
+      }
+    ],
+    history: [
+      {
+        caseId: "CASE-2026-00128",
+        caseType: "Onboarding Application",
+        status: "Completeness Review",
+        statusClass: "blue",
+        opened: "2026-01-11",
+        outcome: "Open"
+      },
+      {
+        caseId: "CASE-2025-00981",
+        caseType: "Periodic Review",
+        status: "Completed",
+        statusClass: "green",
+        opened: "2025-12-11",
+        outcome: "Approved"
+      }
+    ]
+  },
+  {
+    id: "CLIENT-002",
+    name: "North Harbor Ventures LP",
+    legalName: "North Harbor Ventures LP",
+    entityType: "Limited Partnership",
+    jurisdiction: "Cayman Islands",
+    riskTier: "High",
+    riskClass: "red",
+    relationshipStatus: "Pending Onboarding",
+    relationshipClass: "gold",
+    lastReviewDate: "Not yet onboarded",
+    nextReviewDate: "TBD",
+    openCases: 1,
+    screeningStatus: "Not started",
+    ownershipStatus: "Pending docs",
+    lastCompletedReview: "None",
+    summary: "Prospective client with one onboarding application in pending-client-response state.",
+    businessDba: "North Harbor",
+    formationDate: "2019-03-11",
+    incorporationCountry: "Cayman Islands",
+    incorporationState: "-",
+    registrationNumber: "CAY-LP-44318",
+    operatingAddress: "Maple House, George Town, Cayman Islands",
+    industry: "Investment Management",
+    ownershipUbo: "Pending",
+    ownershipControllers: "1",
+    ownershipStructure: "Layered structure under review",
+    ownershipComplexity: "High",
+    ownershipNotes: "Ownership and control package remains incomplete pending client response.",
+    sanctions: "No screening completed yet due to incomplete onboarding package.",
+    pep: "PEP review not started.",
+    media: "Adverse media review not started.",
+    accounts: [
+      {
+        accountName: "Fund Treasury Account",
+        accountType: "Treasury",
+        status: "Pending",
+        statusClass: "gold",
+        purpose: "Investment / treasury management",
+        openedDate: "Not opened"
+      }
+    ],
+    history: [
+      {
+        caseId: "CASE-2026-00127",
+        caseType: "Onboarding Application",
+        status: "Pending Client Response",
+        statusClass: "gold",
+        opened: "2026-01-10",
+        outcome: "Open"
+      }
+    ]
+  }
+];
 
-    let currentClient = clients[0];
+let currentClient = clients[0];
 let currentCase = cases[0];
-
 function openClientProfile(clientId) {
   const found = clients.find((c) => c.id === clientId);
   if (!found) return;
