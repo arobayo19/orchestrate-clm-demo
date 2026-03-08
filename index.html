@@ -34,8 +34,7 @@
   <button class="nav-item active" data-view="dashboard">Dashboard</button>
 
   <div class="nav-group-title">Clients</div>
-  <button class="nav-item" data-view="directory">Client Directory</button>
-  <button class="nav-item" data-view="profile">KYC Profile</button>
+<button class="nav-item" data-view="directory">Client Directory</button>
 
   <div class="nav-group-title">Intake Queue</div>
   <button class="nav-item" data-view="intake">Onboarding</button>
@@ -137,7 +136,7 @@
     <div class="panel-head panel-head-spread">
       <div>
         <h2>Client Directory</h2>
-        <p class="panel-subtext">Search and review entities, their review cadence, open cases, and current KYC status.</p>
+        <p class="panel-subtext">Search and review entities, review cadence, open cases, accounts, and current KYC status.</p>
       </div>
     </div>
 
@@ -147,7 +146,7 @@
       </div>
     </div>
 
-    <div class="table-wrap">
+    <div class="table-wrap" style="margin-bottom:20px;">
       <table class="queue-table enterprise">
         <thead>
           <tr>
@@ -165,100 +164,199 @@
         <tbody id="clientDirectoryBody"></tbody>
       </table>
     </div>
-  </div>
-</section>
-      <section class="view" id="kyc-profile-view">
-  <div class="workspace-layout">
-  <div>
-      <div class="panel case-header">
-        <div class="case-header-top">
-          <div>
-            <div class="eyebrow">CLIENT PROFILE</div>
-            <h2 id="profileClientName">Apex Digital LLC</h2>
-            <div class="case-meta">
-              <span class="badge green" id="profileRelationshipStatus">Active Customer</span>
-              <span class="badge gold" id="profileRiskTier">Moderate Risk</span>
-              <span class="badge gray" id="profileEntityType">LLC</span>
-            </div>
+
+    <div class="panel" style="margin-top: 6px;">
+      <div class="panel-head panel-head-spread">
+        <div>
+          <div class="eyebrow">CLIENT PROFILE</div>
+          <h2 id="profileClientName">Select a client</h2>
+          <div class="case-meta">
+            <span class="badge green" id="profileRelationshipStatus">Active Customer</span>
+            <span class="badge gold" id="profileRiskTier">Moderate Risk</span>
+            <span class="badge gray" id="profileEntityType">LLC</span>
           </div>
         </div>
       </div>
 
-      <div class="panel tabs-panel">
-        <div class="tabs">
-          <button class="tab active" data-profile-tab="profile-overview">Overview</button>
-          <button class="tab" data-profile-tab="profile-business">Business Details</button>
-          <button class="tab" data-profile-tab="profile-ownership">Ownership & Control</button>
-          <button class="tab" data-profile-tab="profile-screening">Screening</button>
-          <button class="tab" data-profile-tab="profile-accounts">Accounts</button>
-          <button class="tab" data-profile-tab="profile-cases">Cases & Applications</button>
+      <div class="tabs">
+        <button class="tab active" data-profile-tab="profile-overview">Overview</button>
+        <button class="tab" data-profile-tab="profile-business">Business Details</button>
+        <button class="tab" data-profile-tab="profile-ownership">Ownership & Control</button>
+        <button class="tab" data-profile-tab="profile-screening">Screening</button>
+        <button class="tab" data-profile-tab="profile-accounts">Accounts</button>
+        <button class="tab" data-profile-tab="profile-cases">Cases & Applications</button>
+      </div>
+
+      <div class="tab-content active" id="profile-tab-profile-overview">
+        <div class="detail-grid">
+          <article class="detail-card">
+            <div class="section-head">
+              <h3>Client Overview</h3>
+              <span class="badge green">Current</span>
+            </div>
+            <dl class="kv">
+              <div><dt>Legal Entity Name</dt><dd id="profileOvName">Apex Digital LLC</dd></div>
+              <div><dt>Entity Type</dt><dd id="profileOvEntityType">LLC</dd></div>
+              <div><dt>Jurisdiction</dt><dd id="profileOvJurisdiction">Delaware, US</dd></div>
+              <div><dt>Risk Tier</dt><dd id="profileOvRiskTier">Moderate</dd></div>
+              <div><dt>Last Review Date</dt><dd id="profileLastReview">2025-12-11</dd></div>
+              <div><dt>Next Review Date</dt><dd id="profileNextReview">2026-12-11</dd></div>
+            </dl>
+          </article>
+
+          <article class="detail-card">
+            <div class="section-head">
+              <h3>KYC Status</h3>
+              <span class="badge blue">Live</span>
+            </div>
+            <dl class="kv">
+              <div><dt>Relationship Status</dt><dd id="profileRelationshipText">Active Customer</dd></div>
+              <div><dt>Open Cases</dt><dd id="profileOpenCases">1</dd></div>
+              <div><dt>Total Accounts</dt><dd id="profileAccountCount">2</dd></div>
+              <div><dt>Screening Status</dt><dd id="profileScreeningStatus">No active alerts</dd></div>
+              <div><dt>Ownership Status</dt><dd id="profileOwnershipStatus">Current</dd></div>
+              <div><dt>Last Completed Review</dt><dd id="profileLastCompletedReview">Periodic Refresh</dd></div>
+            </dl>
+          </article>
+
+          <article class="detail-card full">
+            <div class="section-head">
+              <h3>Profile Summary</h3>
+              <span class="badge gray">Master Record</span>
+            </div>
+            <p class="body-copy" id="profileSummary"></p>
+          </article>
         </div>
+      </div>
 
-        <div class="tab-content active" id="profile-tab-profile-overview">
-          <div class="detail-grid">
-            <article class="detail-card">
-              <div class="section-head">
-                <h3>Client Overview</h3>
-                <span class="badge green">Current</span>
-              </div>
-              <dl class="kv">
-                <div><dt>Legal Entity Name</dt><dd id="profileOvName">Apex Digital LLC</dd></div>
-                <div><dt>Entity Type</dt><dd id="profileOvEntityType">LLC</dd></div>
-                <div><dt>Jurisdiction</dt><dd id="profileOvJurisdiction">Delaware, US</dd></div>
-                <div><dt>Risk Tier</dt><dd id="profileOvRiskTier">Moderate</dd></div>
-                <div><dt>Last Review Date</dt><dd id="profileLastReview">2025-12-11</dd></div>
-                <div><dt>Next Review Date</dt><dd id="profileNextReview">2026-12-11</dd></div>
-              </dl>
-            </article>
-
-            <article class="detail-card">
-              <div class="section-head">
-                <h3>KYC Status</h3>
-                <span class="badge blue">Live</span>
-              </div>
-              <dl class="kv">
-                <div><dt>Relationship Status</dt><dd id="profileRelationshipText">Active Customer</dd></div>
-                <div><dt>Open Cases</dt><dd id="profileOpenCases">1</dd></div>
-                <div><dt>Total Accounts</dt><dd id="profileAccountCount">2</dd></div>
-                <div><dt>Screening Status</dt><dd id="profileScreeningStatus">No active alerts</dd></div>
-                <div><dt>Ownership Status</dt><dd id="profileOwnershipStatus">Current</dd></div>
-                <div><dt>Last Completed Review</dt><dd id="profileLastCompletedReview">Periodic Refresh</dd></div>
-              </dl>
-            </article>
-
-            <article class="detail-card full">
-              <div class="section-head">
-                <h3>Profile Summary</h3>
-                <span class="badge gray">Master Record</span>
-              </div>
-              <p class="body-copy" id="profileSummary">
-                Apex Digital LLC is an active customer with a current onboarding file, domestic formation, and moderate risk profile. One open onboarding-related case remains in progress pending missing registry evidence.
-              </p>
-            </article>
-          </div>
+      <div class="tab-content" id="profile-tab-profile-business">
+        <div class="detail-grid">
+          <article class="detail-card full">
+            <div class="section-head">
+              <h3>Business Details</h3>
+              <span class="badge green">Verified</span>
+            </div>
+            <dl class="kv">
+              <div><dt>Legal Entity Name</dt><dd id="profileBizName">Apex Digital LLC</dd></div>
+              <div><dt>Trading Name / DBA</dt><dd id="profileBizDba">Apex Digital</dd></div>
+              <div><dt>Legal Entity Type</dt><dd id="profileBizType">LLC</dd></div>
+              <div><dt>Date of Formation</dt><dd id="profileBizFormation">2020-07-14</dd></div>
+              <div><dt>Country of Incorporation</dt><dd id="profileBizCountry">United States</dd></div>
+              <div><dt>State / Province</dt><dd id="profileBizState">Delaware</dd></div>
+              <div><dt>Registration Number</dt><dd id="profileBizReg">REG-2020-88421</dd></div>
+              <div><dt>Operating Address</dt><dd id="profileBizAddress">244 Harbor Avenue, Boston, MA, United States</dd></div>
+              <div><dt>Industry / Sector</dt><dd id="profileBizIndustry">Crypto Services</dd></div>
+            </dl>
+          </article>
         </div>
+      </div>
 
-        <div class="tab-content" id="profile-tab-profile-business">
-          <div class="detail-grid">
-            <article class="detail-card full">
-              <div class="section-head">
-                <h3>Business Details</h3>
-                <span class="badge green">Verified</span>
-              </div>
-              <dl class="kv">
-                <div><dt>Legal Entity Name</dt><dd id="profileBizName">Apex Digital LLC</dd></div>
-                <div><dt>Trading Name / DBA</dt><dd id="profileBizDba">Apex Digital</dd></div>
-                <div><dt>Legal Entity Type</dt><dd id="profileBizType">LLC</dd></div>
-                <div><dt>Date of Formation</dt><dd id="profileBizFormation">2020-07-14</dd></div>
-                <div><dt>Country of Incorporation</dt><dd id="profileBizCountry">United States</dd></div>
-                <div><dt>State / Province</dt><dd id="profileBizState">Delaware</dd></div>
-                <div><dt>Registration Number</dt><dd id="profileBizReg">REG-2020-88421</dd></div>
-                <div><dt>Operating Address</dt><dd id="profileBizAddress">244 Harbor Avenue, Boston, MA, United States</dd></div>
-                <div><dt>Industry / Sector</dt><dd id="profileBizIndustry">Crypto Services</dd></div>
-              </dl>
-            </article>
-          </div>
+      <div class="tab-content" id="profile-tab-profile-ownership">
+        <div class="detail-grid">
+          <article class="detail-card">
+            <div class="section-head">
+              <h3>Ownership Summary</h3>
+              <span class="badge gold">Review Complete</span>
+            </div>
+            <dl class="kv">
+              <div><dt>25%+ Beneficial Owners</dt><dd id="profileOwnUbo">2</dd></div>
+              <div><dt>Controllers</dt><dd id="profileOwnControllers">1</dd></div>
+              <div><dt>Ownership Structure</dt><dd id="profileOwnStructure">Direct ownership</dd></div>
+              <div><dt>Complexity</dt><dd id="profileOwnComplexity">Low</dd></div>
+            </dl>
+          </article>
+
+          <article class="detail-card full">
+            <div class="section-head">
+              <h3>Ownership Notes</h3>
+              <span class="badge gray">On File</span>
+            </div>
+            <p class="body-copy" id="profileOwnershipNotes"></p>
+          </article>
         </div>
+      </div>
+
+      <div class="tab-content" id="profile-tab-profile-screening">
+        <div class="detail-grid">
+          <article class="detail-card">
+            <div class="section-head">
+              <h3>Sanctions</h3>
+              <span class="badge green">Cleared</span>
+            </div>
+            <p class="body-copy" id="profileSanctions"></p>
+          </article>
+
+          <article class="detail-card">
+            <div class="section-head">
+              <h3>PEP</h3>
+              <span class="badge gold">Low Review</span>
+            </div>
+            <p class="body-copy" id="profilePep"></p>
+          </article>
+
+          <article class="detail-card full">
+            <div class="section-head">
+              <h3>Adverse Media</h3>
+              <span class="badge green">No Material Issue</span>
+            </div>
+            <p class="body-copy" id="profileMedia"></p>
+          </article>
+        </div>
+      </div>
+
+      <div class="tab-content" id="profile-tab-profile-accounts">
+        <div class="detail-grid">
+          <article class="detail-card full">
+            <div class="section-head">
+              <h3>Accounts</h3>
+              <span class="badge blue">Client Level</span>
+            </div>
+            <div class="table-wrap">
+              <table class="queue-table enterprise">
+                <thead>
+                  <tr>
+                    <th>Account Name</th>
+                    <th>Account Type</th>
+                    <th>Status</th>
+                    <th>Purpose</th>
+                    <th>Opened Date</th>
+                  </tr>
+                </thead>
+                <tbody id="profileAccountsBody"></tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="tab-content" id="profile-tab-profile-cases">
+        <div class="detail-grid">
+          <article class="detail-card full">
+            <div class="section-head">
+              <h3>Cases & Applications</h3>
+              <span class="badge gray">Entity History</span>
+            </div>
+            <div class="table-wrap">
+              <table class="queue-table enterprise">
+                <thead>
+                  <tr>
+                    <th>Case ID</th>
+                    <th>Case Type</th>
+                    <th>Status</th>
+                    <th>Opened</th>
+                    <th>Outcome</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="profileCasesBody"></tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
         <div class="tab-content" id="profile-tab-profile-ownership">
           <div class="detail-grid">
