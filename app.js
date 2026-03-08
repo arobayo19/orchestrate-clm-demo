@@ -512,6 +512,95 @@ const clients = [
 
 let currentClient = clients[0];
 let currentCase = cases[0];
+function renderClientProfile(clientObj) {
+  currentClient = clientObj;
+
+  if (profileClientName) profileClientName.textContent = clientObj.name || "-";
+
+  if (profileRelationshipStatus) {
+    profileRelationshipStatus.className = `badge ${clientObj.relationshipClass || "gray"}`;
+    profileRelationshipStatus.textContent = clientObj.relationshipStatus || "-";
+  }
+
+  if (profileRiskTier) {
+    profileRiskTier.className = `badge ${clientObj.riskClass || "gray"}`;
+    profileRiskTier.textContent = `${clientObj.riskTier || "-"} Risk`;
+  }
+
+  if (profileEntityType) {
+    profileEntityType.className = "badge gray";
+    profileEntityType.textContent = clientObj.entityType || "-";
+  }
+
+  if (profileOvName) profileOvName.textContent = clientObj.legalName || "-";
+  if (profileOvEntityType) profileOvEntityType.textContent = clientObj.entityType || "-";
+  if (profileOvJurisdiction) profileOvJurisdiction.textContent = clientObj.jurisdiction || "-";
+  if (profileOvRiskTier) profileOvRiskTier.textContent = clientObj.riskTier || "-";
+  if (profileLastReview) profileLastReview.textContent = clientObj.lastReviewDate || "-";
+  if (profileNextReview) profileNextReview.textContent = clientObj.nextReviewDate || "-";
+  if (profileRelationshipText) profileRelationshipText.textContent = clientObj.relationshipStatus || "-";
+  if (profileOpenCases) profileOpenCases.textContent = clientObj.openCases ?? "0";
+  if (profileAccountCount) profileAccountCount.textContent = clientObj.accounts?.length ?? "0";
+  if (profileScreeningStatus) profileScreeningStatus.textContent = clientObj.screeningStatus || "-";
+  if (profileOwnershipStatus) profileOwnershipStatus.textContent = clientObj.ownershipStatus || "-";
+  if (profileLastCompletedReview) profileLastCompletedReview.textContent = clientObj.lastCompletedReview || "-";
+  if (profileSummary) profileSummary.textContent = clientObj.summary || "-";
+
+  if (profileBizName) profileBizName.textContent = clientObj.legalName || "-";
+  if (profileBizDba) profileBizDba.textContent = clientObj.businessDba || "-";
+  if (profileBizType) profileBizType.textContent = clientObj.entityType || "-";
+  if (profileBizFormation) profileBizFormation.textContent = clientObj.formationDate || "-";
+  if (profileBizCountry) profileBizCountry.textContent = clientObj.incorporationCountry || "-";
+  if (profileBizState) profileBizState.textContent = clientObj.incorporationState || "-";
+  if (profileBizReg) profileBizReg.textContent = clientObj.registrationNumber || "-";
+  if (profileBizAddress) profileBizAddress.textContent = clientObj.operatingAddress || "-";
+  if (profileBizIndustry) profileBizIndustry.textContent = clientObj.industry || "-";
+
+  if (profileOwnUbo) profileOwnUbo.textContent = clientObj.ownershipUbo || "-";
+  if (profileOwnControllers) profileOwnControllers.textContent = clientObj.ownershipControllers || "-";
+  if (profileOwnStructure) profileOwnStructure.textContent = clientObj.ownershipStructure || "-";
+  if (profileOwnComplexity) profileOwnComplexity.textContent = clientObj.ownershipComplexity || "-";
+  if (profileOwnershipNotes) profileOwnershipNotes.textContent = clientObj.ownershipNotes || "-";
+
+  if (profileSanctions) profileSanctions.textContent = clientObj.sanctions || "-";
+  if (profilePep) profilePep.textContent = clientObj.pep || "-";
+  if (profileMedia) profileMedia.textContent = clientObj.media || "-";
+
+  if (profileAccountsBody) {
+    profileAccountsBody.innerHTML = "";
+    (clientObj.accounts || []).forEach((account) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${account.accountName || "-"}</td>
+        <td>${account.accountType || "-"}</td>
+        <td><span class="badge ${account.statusClass || "gray"}">${account.status || "-"}</span></td>
+        <td>${account.purpose || "-"}</td>
+        <td>${account.openedDate || "-"}</td>
+      `;
+      profileAccountsBody.appendChild(tr);
+    });
+  }
+
+  if (profileCasesBody) {
+    profileCasesBody.innerHTML = "";
+    (clientObj.history || []).forEach((item) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${item.caseId || "-"}</td>
+        <td>${item.caseType || "-"}</td>
+        <td><span class="badge ${item.statusClass || "gray"}">${item.status || "-"}</span></td>
+        <td>${item.opened || "-"}</td>
+        <td>${item.outcome || "-"}</td>
+        <td><button class="open-link profile-case-open" data-case="${item.caseId}">Open Case</button></td>
+      `;
+      profileCasesBody.appendChild(tr);
+    });
+
+    profileCasesBody.querySelectorAll(".profile-case-open").forEach((btn) => {
+      btn.addEventListener("click", () => openCase(btn.dataset.case));
+    });
+  }
+}
 function openClientProfile(clientId) {
   const found = clients.find((c) => c.id === clientId);
   if (!found) return;
