@@ -483,3 +483,12 @@ clientDirectorySearch?.addEventListener("input", renderClientDirectory);
 
 renderClientDirectory();
 renderClientProfile(clients[0]);
+document.querySelectorAll(".profile-tab").forEach((tab) => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".profile-tab").forEach((t) => t.classList.remove("active"));
+    document.querySelectorAll(".profile-tab-content").forEach((c) => c.classList.remove("active"));
+
+    tab.classList.add("active");
+    document.getElementById(`profile-tab-${tab.dataset.profileTab}`)?.classList.add("active");
+  });
+});
