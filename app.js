@@ -2,7 +2,6 @@
 const views = {
   dashboard: { id: "dashboard-view", eyebrow: "Overview", title: "Dashboard" },
   directory: { id: "client-directory-view", eyebrow: "Clients", title: "Client Directory" },
-  profile: { id: "kyc-profile-view", eyebrow: "Clients", title: "KYC Profile" },
   intake: { id: "intake-view", eyebrow: "Intake Queue", title: "Onboarding Queue" },
   workspace: { id: "workspace-view", eyebrow: "Case Management", title: "Case Workspace" },
   escalations: { id: "escalations-view", eyebrow: "Case Management", title: "Escalations" },
@@ -394,6 +393,328 @@ const cases = [
   agents: [["Screening Agent","Sanctions alert triaged for analyst review"]]
 }
 ];
+const clients = [
+  {
+    id: "CLIENT-001",
+    name: "Apex Digital LLC",
+    legalName: "Apex Digital LLC",
+    entityType: "LLC",
+    jurisdiction: "Delaware, US",
+    riskTier: "Moderate",
+    riskClass: "gold",
+    relationshipStatus: "Active Customer",
+    relationshipClass: "green",
+    lastReviewDate: "2025-12-11",
+    nextReviewDate: "2026-12-11",
+    openCases: 1,
+    screeningStatus: "No active alerts",
+    ownershipStatus: "Current",
+    lastCompletedReview: "Periodic Refresh",
+    summary: "Active digital asset client with one open onboarding case pending completion of missing registry evidence.",
+    businessDba: "Apex Digital",
+    formationDate: "2020-07-14",
+    incorporationCountry: "United States",
+    incorporationState: "Delaware",
+    registrationNumber: "REG-2020-88421",
+    operatingAddress: "244 Harbor Avenue, Boston, MA, United States",
+    industry: "Crypto Services",
+    ownershipUbo: "2",
+    ownershipControllers: "1",
+    ownershipStructure: "Direct ownership",
+    ownershipComplexity: "Low",
+    ownershipNotes: "Two direct beneficial owners identified. No layered legal entity chain, no nominee ownership, and no shell-company concerns identified in the current file.",
+    sanctions: "No sanctions matches returned for the entity or associated control persons.",
+    pep: "No direct PEP match. Prior low-confidence related-party review closed with no escalation.",
+    media: "No unresolved adverse media issue remains open on the client profile.",
+    accounts: [
+      {
+        accountName: "Operating Account",
+        accountType: "Operating Account",
+        status: "Active",
+        statusClass: "green",
+        purpose: "Operating account",
+        openedDate: "2025-12-11"
+      },
+      {
+        accountName: "Custody Account",
+        accountType: "Crypto Custody",
+        status: "Pending Activation",
+        statusClass: "gold",
+        purpose: "Crypto trading / custody",
+        openedDate: "2025-12-12"
+      }
+    ],
+    history: [
+      {
+        caseId: "CASE-2026-00128",
+        caseType: "Onboarding Application",
+        status: "Completeness Review",
+        statusClass: "blue",
+        opened: "2026-01-11",
+        outcome: "Open"
+      }
+    ]
+  },
+  {
+    id: "CLIENT-002",
+    name: "North Harbor Ventures LP",
+    legalName: "North Harbor Ventures LP",
+    entityType: "Limited Partnership",
+    jurisdiction: "Cayman Islands",
+    riskTier: "High",
+    riskClass: "red",
+    relationshipStatus: "Pending Onboarding",
+    relationshipClass: "gold",
+    lastReviewDate: "Not yet onboarded",
+    nextReviewDate: "TBD",
+    openCases: 1,
+    screeningStatus: "Not started",
+    ownershipStatus: "Pending docs",
+    lastCompletedReview: "None",
+    summary: "Prospective client with one onboarding application in pending-client-response state.",
+    businessDba: "North Harbor",
+    formationDate: "2019-03-11",
+    incorporationCountry: "Cayman Islands",
+    incorporationState: "-",
+    registrationNumber: "CAY-LP-44318",
+    operatingAddress: "Maple House, George Town, Cayman Islands",
+    industry: "Investment Management",
+    ownershipUbo: "Pending",
+    ownershipControllers: "1",
+    ownershipStructure: "Layered structure under review",
+    ownershipComplexity: "High",
+    ownershipNotes: "Ownership and control package remains incomplete pending client response.",
+    sanctions: "No screening completed yet due to incomplete onboarding package.",
+    pep: "PEP review not started.",
+    media: "Adverse media review not started.",
+    accounts: [
+      {
+        accountName: "Fund Treasury Account",
+        accountType: "Treasury",
+        status: "Pending",
+        statusClass: "gold",
+        purpose: "Investment / treasury management",
+        openedDate: "Not opened"
+      }
+    ],
+    history: [
+      {
+        caseId: "CASE-2026-00127",
+        caseType: "Onboarding Application",
+        status: "Pending Client Response",
+        statusClass: "gold",
+        opened: "2026-01-10",
+        outcome: "Open"
+      }
+    ]
+  },
+  {
+    id: "CLIENT-003",
+    name: "Meridian Capital Partners",
+    legalName: "Meridian Capital Partners",
+    entityType: "LLC",
+    jurisdiction: "Delaware, US",
+    riskTier: "Moderate",
+    riskClass: "gold",
+    relationshipStatus: "Active Customer",
+    relationshipClass: "green",
+    lastReviewDate: "2026-01-08",
+    nextReviewDate: "2027-01-08",
+    openCases: 1,
+    screeningStatus: "Pending provider results",
+    ownershipStatus: "Current",
+    lastCompletedReview: "Annual Review",
+    summary: "Active investment advisory client currently in standard CDD review.",
+    businessDba: "Meridian Capital",
+    formationDate: "2021-01-09",
+    incorporationCountry: "United States",
+    incorporationState: "Delaware",
+    registrationNumber: "REG-2021-11390",
+    operatingAddress: "120 Federal Street, Boston, MA, United States",
+    industry: "Investment Management",
+    ownershipUbo: "1",
+    ownershipControllers: "1",
+    ownershipStructure: "Direct ownership",
+    ownershipComplexity: "Low",
+    ownershipNotes: "Ownership and control are complete and reconciled.",
+    sanctions: "Pending screening results from connected provider.",
+    pep: "No PEP concerns identified.",
+    media: "No material negative media found.",
+    accounts: [
+      {
+        accountName: "Advisory Operating Account",
+        accountType: "Operating Account",
+        status: "Active",
+        statusClass: "green",
+        purpose: "Operating account",
+        openedDate: "2024-05-03"
+      },
+      {
+        accountName: "Settlement Account",
+        accountType: "Settlement",
+        status: "Active",
+        statusClass: "green",
+        purpose: "Payments / collections",
+        openedDate: "2024-05-03"
+      }
+    ],
+    history: [
+      {
+        caseId: "CASE-2026-00125",
+        caseType: "Periodic Review",
+        status: "In CDD Review",
+        statusClass: "blue",
+        opened: "2026-01-12",
+        outcome: "Open"
+      }
+    ]
+  }
+];
+let currentClient = clients[0];
+
+function renderClientProfile(clientObj) {
+  currentClient = clientObj;
+
+  if (profileClientName) profileClientName.textContent = clientObj.name || "-";
+
+  if (profileRelationshipStatus) {
+    profileRelationshipStatus.className = `badge ${clientObj.relationshipClass || "gray"}`;
+    profileRelationshipStatus.textContent = clientObj.relationshipStatus || "-";
+  }
+
+  if (profileRiskTier) {
+    profileRiskTier.className = `badge ${clientObj.riskClass || "gray"}`;
+    profileRiskTier.textContent = `${clientObj.riskTier || "-"} Risk`;
+  }
+
+  if (profileEntityType) profileEntityType.textContent = clientObj.entityType || "-";
+
+  if (profileOvName) profileOvName.textContent = clientObj.legalName || "-";
+  if (profileOvEntityType) profileOvEntityType.textContent = clientObj.entityType || "-";
+  if (profileOvJurisdiction) profileOvJurisdiction.textContent = clientObj.jurisdiction || "-";
+  if (profileOvRiskTier) profileOvRiskTier.textContent = clientObj.riskTier || "-";
+  if (profileLastReview) profileLastReview.textContent = clientObj.lastReviewDate || "-";
+  if (profileNextReview) profileNextReview.textContent = clientObj.nextReviewDate || "-";
+  if (profileRelationshipText) profileRelationshipText.textContent = clientObj.relationshipStatus || "-";
+  if (profileOpenCases) profileOpenCases.textContent = clientObj.openCases ?? "0";
+  if (profileAccountCount) profileAccountCount.textContent = clientObj.accounts?.length ?? "0";
+  if (profileScreeningStatus) profileScreeningStatus.textContent = clientObj.screeningStatus || "-";
+  if (profileOwnershipStatus) profileOwnershipStatus.textContent = clientObj.ownershipStatus || "-";
+  if (profileLastCompletedReview) profileLastCompletedReview.textContent = clientObj.lastCompletedReview || "-";
+  if (profileSummary) profileSummary.textContent = clientObj.summary || "-";
+
+  if (profileBizName) profileBizName.textContent = clientObj.legalName || "-";
+  if (profileBizDba) profileBizDba.textContent = clientObj.businessDba || "-";
+  if (profileBizType) profileBizType.textContent = clientObj.entityType || "-";
+  if (profileBizFormation) profileBizFormation.textContent = clientObj.formationDate || "-";
+  if (profileBizCountry) profileBizCountry.textContent = clientObj.incorporationCountry || "-";
+  if (profileBizState) profileBizState.textContent = clientObj.incorporationState || "-";
+  if (profileBizReg) profileBizReg.textContent = clientObj.registrationNumber || "-";
+  if (profileBizAddress) profileBizAddress.textContent = clientObj.operatingAddress || "-";
+  if (profileBizIndustry) profileBizIndustry.textContent = clientObj.industry || "-";
+
+  if (profileOwnUbo) profileOwnUbo.textContent = clientObj.ownershipUbo || "-";
+  if (profileOwnControllers) profileOwnControllers.textContent = clientObj.ownershipControllers || "-";
+  if (profileOwnStructure) profileOwnStructure.textContent = clientObj.ownershipStructure || "-";
+  if (profileOwnComplexity) profileOwnComplexity.textContent = clientObj.ownershipComplexity || "-";
+  if (profileOwnershipNotes) profileOwnershipNotes.textContent = clientObj.ownershipNotes || "-";
+
+  if (profileSanctions) profileSanctions.textContent = clientObj.sanctions || "-";
+  if (profilePep) profilePep.textContent = clientObj.pep || "-";
+  if (profileMedia) profileMedia.textContent = clientObj.media || "-";
+
+  if (profileAccountsBody) {
+    profileAccountsBody.innerHTML = "";
+    (clientObj.accounts || []).forEach((account) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${account.accountName || "-"}</td>
+        <td>${account.accountType || "-"}</td>
+        <td><span class="badge ${account.statusClass || "gray"}">${account.status || "-"}</span></td>
+        <td>${account.purpose || "-"}</td>
+        <td>${account.openedDate || "-"}</td>
+      `;
+      profileAccountsBody.appendChild(tr);
+    });
+  }
+
+  if (profileCasesBody) {
+    profileCasesBody.innerHTML = "";
+    (clientObj.history || []).forEach((item) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${item.caseId || "-"}</td>
+        <td>${item.caseType || "-"}</td>
+        <td><span class="badge ${item.statusClass || "gray"}">${item.status || "-"}</span></td>
+        <td>${item.opened || "-"}</td>
+        <td>${item.outcome || "-"}</td>
+        <td><button class="open-link profile-case-open" data-case="${item.caseId}">Open Case</button></td>
+      `;
+      profileCasesBody.appendChild(tr);
+    });
+
+    profileCasesBody.querySelectorAll(".profile-case-open").forEach((btn) => {
+      btn.addEventListener("click", () => openCase(btn.dataset.case));
+    });
+  }
+}
+
+function openClientProfile(clientId) {
+  const found = clients.find((c) => c.id === clientId);
+  if (!found) return;
+  renderClientProfile(found);
+}
+
+function renderClientDirectory() {
+  if (!clientDirectoryBody) return;
+
+  clientDirectoryBody.innerHTML = "";
+  const searchValue = (clientDirectorySearch?.value || "").toLowerCase().trim();
+
+  const visibleClients = clients.filter((client) => {
+    const haystack = `
+      ${client.name}
+      ${client.legalName}
+      ${client.entityType}
+      ${client.jurisdiction}
+      ${(client.accounts || []).map(a => a.accountName).join(" ")}
+      ${(client.history || []).map(h => h.caseId).join(" ")}
+    `.toLowerCase();
+
+    return !searchValue || haystack.includes(searchValue);
+  });
+
+  visibleClients.forEach((client) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>
+        <div class="client-cell">
+          <div class="client-name profile-open-link" data-client="${client.id}">
+            ${client.name}
+          </div>
+          <div class="client-sub">${client.id}</div>
+        </div>
+      </td>
+      <td>${client.entityType}</td>
+      <td>${client.jurisdiction}</td>
+      <td><span class="badge ${client.riskClass}">${client.riskTier}</span></td>
+      <td>${client.lastReviewDate}</td>
+      <td>${client.nextReviewDate}</td>
+      <td>${client.accounts?.length || 0}</td>
+      <td>${client.openCases}</td>
+      <td><button class="open-link profile-open-link" data-client="${client.id}">View Profile</button></td>
+    `;
+    clientDirectoryBody.appendChild(tr);
+  });
+
+  document.querySelectorAll(".profile-open-link").forEach((btn) => {
+    btn.addEventListener("click", () => openClientProfile(btn.dataset.client));
+  });
+
+  if (visibleClients.length === 1) {
+    renderClientProfile(visibleClients[0]);
+  }
+}
 function getLastAction(caseObj) {
   if (!caseObj.activityLog || !caseObj.activityLog.length) return ["No activity", ""];
   const [time, title] = caseObj.activityLog[caseObj.activityLog.length - 1];
@@ -427,6 +748,50 @@ const queueBody = document.getElementById("queueBody");
 const monitoringQueueBody = document.getElementById("monitoringQueueBody");
 const triggersQueueBody = document.getElementById("triggersQueueBody");
 const screeningQueueBody = document.getElementById("screeningQueueBody");
+const clientDirectorySearch = document.getElementById("clientDirectorySearch");
+const clientDirectoryBody = document.getElementById("clientDirectoryBody");
+
+const profileClientName = document.getElementById("profileClientName");
+const profileRelationshipStatus = document.getElementById("profileRelationshipStatus");
+const profileRiskTier = document.getElementById("profileRiskTier");
+const profileEntityType = document.getElementById("profileEntityType");
+
+const profileOvName = document.getElementById("profileOvName");
+const profileOvEntityType = document.getElementById("profileOvEntityType");
+const profileOvJurisdiction = document.getElementById("profileOvJurisdiction");
+const profileOvRiskTier = document.getElementById("profileOvRiskTier");
+const profileLastReview = document.getElementById("profileLastReview");
+const profileNextReview = document.getElementById("profileNextReview");
+const profileRelationshipText = document.getElementById("profileRelationshipText");
+const profileOpenCases = document.getElementById("profileOpenCases");
+const profileAccountCount = document.getElementById("profileAccountCount");
+const profileScreeningStatus = document.getElementById("profileScreeningStatus");
+const profileOwnershipStatus = document.getElementById("profileOwnershipStatus");
+const profileLastCompletedReview = document.getElementById("profileLastCompletedReview");
+const profileSummary = document.getElementById("profileSummary");
+
+const profileBizName = document.getElementById("profileBizName");
+const profileBizDba = document.getElementById("profileBizDba");
+const profileBizType = document.getElementById("profileBizType");
+const profileBizFormation = document.getElementById("profileBizFormation");
+const profileBizCountry = document.getElementById("profileBizCountry");
+const profileBizState = document.getElementById("profileBizState");
+const profileBizReg = document.getElementById("profileBizReg");
+const profileBizAddress = document.getElementById("profileBizAddress");
+const profileBizIndustry = document.getElementById("profileBizIndustry");
+
+const profileOwnUbo = document.getElementById("profileOwnUbo");
+const profileOwnControllers = document.getElementById("profileOwnControllers");
+const profileOwnStructure = document.getElementById("profileOwnStructure");
+const profileOwnComplexity = document.getElementById("profileOwnComplexity");
+const profileOwnershipNotes = document.getElementById("profileOwnershipNotes");
+
+const profileSanctions = document.getElementById("profileSanctions");
+const profilePep = document.getElementById("profilePep");
+const profileMedia = document.getElementById("profileMedia");
+
+const profileAccountsBody = document.getElementById("profileAccountsBody");
+const profileCasesBody = document.getElementById("profileCasesBody");
 const caseSearch = document.getElementById("caseSearch");
 const statusFilter = document.getElementById("statusFilter");
 const pipelineFilter = document.getElementById("pipelineFilter");
@@ -895,6 +1260,20 @@ function renderQueueForTarget(targetId, queueType) {
     btn.addEventListener("click", () => openCase(btn.dataset.case));
   });
 }
+clientDirectorySearch?.addEventListener("input", renderClientDirectory);
+
+document.querySelectorAll(".profile-tab").forEach((tab) => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".profile-tab").forEach((t) => t.classList.remove("active"));
+    document.querySelectorAll(".profile-tab-content").forEach((c) => c.classList.remove("active"));
+
+    tab.classList.add("active");
+    document.getElementById(`profile-tab-${tab.dataset.profileTab}`)?.classList.add("active");
+  });
+});
+
+renderClientDirectory();
+renderClientProfile(clients[0]);
 renderPriorityList();
 renderQueue();
 renderCase(currentCase);
