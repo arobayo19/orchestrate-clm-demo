@@ -509,7 +509,91 @@ const clients = [
     ]
   }
 ];
+const priorityList = document.getElementById("priorityList");
+const queueBody = document.getElementById("queueBody");
+const monitoringQueueBody = document.getElementById("monitoringQueueBody");
+const triggersQueueBody = document.getElementById("triggersQueueBody");
+const screeningQueueBody = document.getElementById("screeningQueueBody");
 
+const clientDirectorySearch = document.getElementById("clientDirectorySearch");
+const clientDirectoryBody = document.getElementById("clientDirectoryBody");
+
+const pageEyebrow = document.getElementById("pageEyebrow");
+const pageTitle = document.getElementById("pageTitle");
+
+const caseSearch = document.getElementById("caseSearch");
+const statusFilter = document.getElementById("statusFilter");
+const pipelineFilter = document.getElementById("pipelineFilter");
+const priorityFilter = document.getElementById("priorityFilter");
+const jurisdictionFilter = document.getElementById("jurisdictionFilter");
+const assigneeFilter = document.getElementById("assigneeFilter");
+const resetFiltersBtn = document.getElementById("resetFiltersBtn");
+const sortAgingBtn = document.getElementById("sortAgingBtn");
+const queueChips = document.querySelectorAll(".queue-chip");
+
+const caseId = document.getElementById("caseId");
+const caseClientName = document.getElementById("caseClientName");
+const caseStatus = document.getElementById("caseStatus");
+const casePipeline = document.getElementById("casePipeline");
+const casePriority = document.getElementById("casePriority");
+
+const ovLegalName = document.getElementById("ovLegalName");
+const ovEntityType = document.getElementById("ovEntityType");
+const ovJurisdiction = document.getElementById("ovJurisdiction");
+const ovRiskTier = document.getElementById("ovRiskTier");
+const ovEddTriggered = document.getElementById("ovEddTriggered");
+const overviewChecks = document.getElementById("overviewChecks");
+const overviewSummary = document.getElementById("overviewSummary");
+
+const documentsList = document.getElementById("documentsList");
+const ownershipEntity = document.getElementById("ownershipEntity");
+const ownershipNotes = document.getElementById("ownershipNotes");
+const screenSanctions = document.getElementById("screenSanctions");
+const screenPep = document.getElementById("screenPep");
+const screenMedia = document.getElementById("screenMedia");
+const riskNarrative = document.getElementById("riskNarrative");
+const riskFactors = document.getElementById("riskFactors");
+const auditTimeline = document.getElementById("auditTimeline");
+const agentFeed = document.getElementById("agentFeed");
+
+const profileClientName = document.getElementById("profileClientName");
+const profileRelationshipStatus = document.getElementById("profileRelationshipStatus");
+const profileRiskTier = document.getElementById("profileRiskTier");
+const profileEntityType = document.getElementById("profileEntityType");
+const profileOvName = document.getElementById("profileOvName");
+const profileOvEntityType = document.getElementById("profileOvEntityType");
+const profileOvJurisdiction = document.getElementById("profileOvJurisdiction");
+const profileOvRiskTier = document.getElementById("profileOvRiskTier");
+const profileLastReview = document.getElementById("profileLastReview");
+const profileNextReview = document.getElementById("profileNextReview");
+const profileRelationshipText = document.getElementById("profileRelationshipText");
+const profileOpenCases = document.getElementById("profileOpenCases");
+const profileAccountCount = document.getElementById("profileAccountCount");
+const profileScreeningStatus = document.getElementById("profileScreeningStatus");
+const profileOwnershipStatus = document.getElementById("profileOwnershipStatus");
+const profileLastCompletedReview = document.getElementById("profileLastCompletedReview");
+const profileSummary = document.getElementById("profileSummary");
+
+const profileBizName = document.getElementById("profileBizName");
+const profileBizDba = document.getElementById("profileBizDba");
+const profileBizType = document.getElementById("profileBizType");
+const profileBizFormation = document.getElementById("profileBizFormation");
+const profileBizCountry = document.getElementById("profileBizCountry");
+const profileBizState = document.getElementById("profileBizState");
+const profileBizReg = document.getElementById("profileBizReg");
+const profileBizAddress = document.getElementById("profileBizAddress");
+const profileBizIndustry = document.getElementById("profileBizIndustry");
+
+const profileOwnUbo = document.getElementById("profileOwnUbo");
+const profileOwnControllers = document.getElementById("profileOwnControllers");
+const profileOwnStructure = document.getElementById("profileOwnStructure");
+const profileOwnComplexity = document.getElementById("profileOwnComplexity");
+const profileOwnershipNotes = document.getElementById("profileOwnershipNotes");
+const profileSanctions = document.getElementById("profileSanctions");
+const profilePep = document.getElementById("profilePep");
+const profileMedia = document.getElementById("profileMedia");
+const profileAccountsBody = document.getElementById("profileAccountsBody");
+const profileCasesBody = document.getElementById("profileCasesBody");
 let currentClient = clients[0];
 let currentCase = cases[0];
 function renderClientProfile(clientObj) {
