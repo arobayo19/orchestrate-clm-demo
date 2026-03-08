@@ -1047,3 +1047,10 @@ h3{
   z-index:3;
   padding:0 12px;
 }
+.profile-tab-content{
+  display:none;
+}
+
+.profile-tab-content.active{
+  display:block;
+}
