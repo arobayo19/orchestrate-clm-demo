@@ -841,7 +841,55 @@ function renderCase(caseObj) {
 
   if (get("ownershipEntity")) get("ownershipEntity").textContent = caseObj.client;
   if (get("ownershipNotes")) get("ownershipNotes").textContent = caseObj.ownershipNotes;
-  // render workspace org chart (calls into inline-script helper if available)
+
+  // Populate UBO + controller tables from matching CLIENTS record (inline script)
+  if (typeof CLIENTS !== 'undefined') {
+    const cr = CLIENTS.find(c => c.name === caseObj.client);
+    const own = cr?.ownership;
+
+    const uboBody  = get("wsUboBody");
+    const ctrlBody = get("wsCtrlBody");
+    const uboCount  = get("wsUboCount");
+    const ctrlCount = get("wsCtrlCount");
+
+    if (uboBody && own?.uboCards?.length) {
+      uboCount && (uboCount.textContent = own.uboCards.length + ' identified');
+      uboBody.innerHTML = own.uboCards.map(u => {
+        const idCls  = u.idVerif?.includes('Pending') ? 'gold' : 'green';
+        const scrCls = u.screening?.startsWith('Clear') ? 'green' : 'gold';
+        return `<tr>
+          <td><strong>${u.name}</strong></td>
+          <td>${u.stake || '—'}</td>
+          <td>${u.nationality || '—'}</td>
+          <td><span class="badge ${idCls}">${u.idVerif || '—'}</span></td>
+          <td><span class="badge ${scrCls}">${u.screening || '—'}</span></td>
+        </tr>`;
+      }).join('');
+    } else if (uboBody) {
+      uboCount && (uboCount.textContent = caseObj.beneficialOwnersCount || '—');
+      uboBody.innerHTML = `<tr><td colspan="5" style="color:var(--muted);text-align:center;padding:14px">${caseObj.beneficialOwnersCount?.includes('Pending') ? 'Pending client response' : 'No UBO data on file'}</td></tr>`;
+    }
+
+    if (ctrlBody && own?.controllerCards?.length) {
+      ctrlCount && (ctrlCount.textContent = own.controllerCards.length + ' identified');
+      ctrlBody.innerHTML = own.controllerCards.map(c => {
+        const idCls  = c.idVerif?.includes('Pending') ? 'gold' : 'green';
+        const scrCls = c.screening?.startsWith('Clear') ? 'green' : 'gold';
+        return `<tr>
+          <td><strong>${c.name}</strong></td>
+          <td>${c.role || '—'}</td>
+          <td>${c.signingAuthority || '—'}</td>
+          <td><span class="badge ${idCls}">${c.idVerif || '—'}</span></td>
+          <td><span class="badge ${scrCls}">${c.screening || '—'}</span></td>
+        </tr>`;
+      }).join('');
+    } else if (ctrlBody) {
+      ctrlCount && (ctrlCount.textContent = caseObj.controlPersonCount || '—');
+      ctrlBody.innerHTML = `<tr><td colspan="5" style="color:var(--muted);text-align:center;padding:14px">${caseObj.controlPersonCount?.includes('Pending') ? 'Pending client response' : 'No control person data on file'}</td></tr>`;
+    }
+  }
+
+  // render workspace org chart
   if (typeof renderWorkspaceOwnershipChart === 'function') {
     renderWorkspaceOwnershipChart(caseObj);
   }
