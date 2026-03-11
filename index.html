@@ -532,7 +532,7 @@
       display: flex; align-items: center; justify-content: space-between;
       background: #fff; border: 1px solid var(--border);
       border-radius: 12px; padding: 14px 20px;
-      margin-bottom: 14px; gap: 16px; flex-wrap: wrap;
+      margin-bottom: 10px; gap: 16px; flex-wrap: wrap;
     }
     .ws-case-header-left { display: flex; flex-direction: column; gap: 5px; }
     .ws-case-header-right { display: flex; gap: 8px; flex-shrink: 0; }
@@ -542,6 +542,50 @@
       font-weight: 700; color: var(--text); letter-spacing: .03em;
     }
     .ws-case-client { font-size: 18px; font-weight: 800; color: var(--text); }
+
+    /* Workflow Progress Banner */
+    .workflow-banner {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px 20px;
+      margin-bottom: 14px; overflow-x: auto;
+    }
+    .workflow-steps {
+      display: flex; align-items: center; gap: 0; min-width: max-content;
+    }
+    .wf-step {
+      display: flex; align-items: center; gap: 0; flex-shrink: 0;
+    }
+    .wf-step-inner {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 4px; padding: 0 4px;
+    }
+    .wf-dot {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; flex-shrink: 0;
+      border: 2px solid var(--border);
+      background: #fff; color: var(--muted);
+      transition: all 0.2s;
+    }
+    .wf-dot.done {
+      background: var(--green); border-color: var(--green); color: #fff;
+    }
+    .wf-dot.active {
+      background: #fff; border-color: var(--green); color: var(--green);
+      box-shadow: 0 0 0 3px rgba(30,138,82,0.15);
+    }
+    .wf-label {
+      font-size: 10.5px; font-weight: 600; white-space: nowrap;
+      color: var(--muted); text-align: center;
+    }
+    .wf-label.done  { color: var(--green); }
+    .wf-label.active { color: var(--green); font-weight: 700; }
+    .wf-connector {
+      height: 2px; width: 48px; flex-shrink: 0;
+      background: var(--border); margin-bottom: 14px;
+      transition: background 0.2s;
+    }
+    .wf-connector.done { background: var(--green); }
 
     /* Tabs */
     .ws-tabs {
@@ -1688,6 +1732,13 @@
           </div>
         </div>
 
+        <!-- Workflow Progress Banner -->
+        <div class="workflow-banner" id="workflowBanner">
+          <div class="workflow-steps" id="workflowSteps">
+            <!-- populated by renderCase() -->
+          </div>
+        </div>
+
         <!-- Case tabs -->
         <div class="ws-tabs">
           <button class="tab active" data-tab="overview">Overview</button>
@@ -2009,7 +2060,59 @@
       </section>
 
       <section class="view" id="escalations-view">
-        <div class="panel"><div class="panel-head"><h2>Escalations</h2></div><p class="body-copy">Cases requiring senior reviewer, BSA officer, or policy override approval.</p></div>
+
+        <!-- Escalations sub-tabs -->
+        <div style="display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:18px;overflow-x:auto;" id="escalSubTabs">
+          <button class="escal-tab active" data-escal="human" style="padding:9px 18px;font-size:13px;font-weight:600;color:var(--green);background:none;border:none;border-bottom:2px solid var(--green);margin-bottom:-2px;cursor:pointer;white-space:nowrap;">
+            ⚠ Human Action Required
+          </button>
+          <button class="escal-tab" data-escal="compliance" style="padding:9px 18px;font-size:13px;font-weight:600;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;cursor:pointer;white-space:nowrap;">
+            🔍 Compliance Review
+          </button>
+        </div>
+
+        <!-- Human Action Required pane -->
+        <div id="escal-human">
+          <div class="panel" style="margin-bottom:14px;">
+            <div class="panel-head panel-head-spread">
+              <div>
+                <h2>Human Action Required</h2>
+                <p class="panel-subtext" style="margin:4px 0 0">Cases blocked pending analyst disposition, missing documents, or ambiguous screening results.</p>
+              </div>
+              <span class="badge red" id="escalHumanCount">0</span>
+            </div>
+            <div class="table-wrap">
+              <table class="queue-table enterprise">
+                <thead>
+                  <tr><th>Case</th><th>Client</th><th>Reason for Escalation</th><th>Risk</th><th>Aging</th><th>Assignee</th><th>Action Required</th><th></th></tr>
+                </thead>
+                <tbody id="escalHumanBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Compliance Review pane -->
+        <div id="escal-compliance" style="display:none;">
+          <div class="panel" style="margin-bottom:14px;">
+            <div class="panel-head panel-head-spread">
+              <div>
+                <h2>Compliance Review Queue</h2>
+                <p class="panel-subtext" style="margin:4px 0 0">Cases requiring BSA Officer, MLCO, or senior compliance sign-off before a final decision can be issued.</p>
+              </div>
+              <span class="badge gold" id="escalComplianceCount">0</span>
+            </div>
+            <div class="table-wrap">
+              <table class="queue-table enterprise">
+                <thead>
+                  <tr><th>Case</th><th>Client</th><th>Review Reason</th><th>Risk</th><th>Pipeline</th><th>Reviewer</th><th>Status</th><th></th></tr>
+                </thead>
+                <tbody id="escalComplianceBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
       </section>
 
       <section class="view" id="monitoring-view">
@@ -2120,6 +2223,7 @@ const cases = [
     eddTriggered: "No",
     mainRiskFactorsSummary: "Crypto services, OTC activity",
     status: "Completeness Review",
+    workflowStage: "assigned",
     statusClass: "blue",
     pipeline: "Standard CDD",
     pipelineClass: "gray",
@@ -2189,6 +2293,10 @@ const cases = [
   {
     id: "CASE-2026-00127",
     client: "North Harbor Ventures LP",
+    escalationType: "human",
+    escalationReason: "Outstanding document package — UBO declaration, director ID, and Good Standing Certificate not received.",
+    escalationAction: "Obtain missing documents from client to unblock EDD",
+    complianceReview: false,
     queueType: "onboarding",
     legalName: "North Harbor Ventures LP",
     formationDate: "2019-03-11",
@@ -2208,6 +2316,7 @@ const cases = [
     eddTriggered: "Likely",
     mainRiskFactorsSummary: "Offshore entity, fund structure, layered ownership",
     status: "Pending Client Response",
+    workflowStage: "assigned",
     statusClass: "gold",
     pipeline: "Standard CDD",
     pipelineClass: "gray",
@@ -2272,6 +2381,12 @@ const cases = [
   {
     id: "CASE-2026-00126",
     client: "Solstice Exchange Ltd",
+    escalationType: "human",
+    escalationReason: "Unresolved sanctions match (confidence 0.61) and adverse media require analyst disposition before EDD can advance.",
+    escalationAction: "Disposition screening match and adverse media finding",
+    complianceReview: true,
+    complianceReviewer: "BSA Officer",
+    complianceReason: "EDD pipeline with unresolved sanctions match — BSA Officer sign-off required before case can be closed.",
     queueType: "onboarding",
     legalName: "Solstice Exchange Ltd",
     formationDate: "2018-11-23",
@@ -2291,6 +2406,7 @@ const cases = [
     eddTriggered: "Yes",
     mainRiskFactorsSummary: "Cross-border trading, complex ownership, screening uncertainty",
     status: "Pending Human Review",
+    workflowStage: "edd_review",
     statusClass: "red",
     pipeline: "EDD Review",
     pipelineClass: "red",
@@ -2375,6 +2491,7 @@ const cases = [
     eddTriggered: "No",
     mainRiskFactorsSummary: "Investment advisory, domestic entity, low ownership complexity",
     status: "In CDD Review",
+    workflowStage: "cdd_review",
     statusClass: "blue",
     pipeline: "Standard CDD",
     pipelineClass: "gray",
@@ -2442,6 +2559,7 @@ const cases = [
     client: "Global Freight Holdings",
     queueType: "periodic",
     status: "Periodic Review Due",
+    workflowStage: "assigned",
     statusClass: "gold",
     pipeline: "Periodic Refresh",
     pipelineClass: "gray",
@@ -2482,6 +2600,7 @@ const cases = [
     client: "Atlas Commodities Ltd",
     queueType: "periodic",
     status: "Periodic Review Started",
+    workflowStage: "cdd_review",
     statusClass: "blue",
     pipeline: "Periodic Refresh",
     pipelineClass: "gray",
@@ -2520,8 +2639,13 @@ const cases = [
   {
     id: "CASE-2026-00131",
     client: "Nova Biotech Ltd",
+    escalationType: "human",
+    escalationReason: "Beneficial ownership change — new UBO requires full ID verification, source of wealth documentation, and screening.",
+    escalationAction: "Complete re-CDD for new beneficial owner",
+    complianceReview: false,
     queueType: "trigger",
     status: "Trigger Event",
+    workflowStage: "cdd_review",
     statusClass: "red",
     pipeline: "Trigger Review",
     pipelineClass: "red",
@@ -2557,8 +2681,13 @@ const cases = [
   {
     id: "CASE-2026-00132",
     client: "Eastern Trading Co",
+    escalationType: "human",
+    escalationReason: "Potential OFAC SDN match (confidence 0.78) — formal analyst disposition required. Account under enhanced monitoring.",
+    escalationAction: "Formally disposition SDN match with documented rationale. Escalate to BSA Officer if confirmed.",
+    complianceReview: false,
     queueType: "screening",
     status: "Screening Alert",
+    workflowStage: "edd_review",
     statusClass: "red",
     pipeline: "Alert Review",
     pipelineClass: "red",
@@ -2969,6 +3098,7 @@ function setActiveView(viewKey) {
   if (pageTitle) pageTitle.textContent = target.title;
 
   if (viewKey === "intake") renderQueue();
+  if (viewKey === "escalations") renderEscalations();
   if (viewKey === "monitoring") renderQueueForTarget("monitoringQueueBody", "periodic");
   if (viewKey === "triggers") renderQueueForTarget("triggersQueueBody", "trigger");
   if (viewKey === "screening") renderQueueForTarget("screeningQueueBody", "screening");
@@ -3259,6 +3389,62 @@ function renderCase(caseObj) {
     });
   }
 
+  // ── Workflow Progress Banner ──
+  const workflowStepsEl = get("workflowSteps");
+  if (workflowStepsEl) {
+    // Define steps per queue type
+    const onboardingSteps = [
+      { key: 'new',              label: 'New' },
+      { key: 'assigned',         label: 'Assigned' },
+      { key: 'cdd_review',       label: 'CDD Review' },
+      { key: 'edd_review',       label: 'EDD Review' },
+      { key: 'compliance_review',label: 'Compliance\nReview' },
+      { key: 'completed',        label: 'Completed' },
+    ];
+    const periodicSteps = [
+      { key: 'new',              label: 'Scheduled' },
+      { key: 'assigned',         label: 'Assigned' },
+      { key: 'cdd_review',       label: 'In Review' },
+      { key: 'edd_review',       label: 'EDD Review' },
+      { key: 'compliance_review',label: 'Compliance\nReview' },
+      { key: 'completed',        label: 'Completed' },
+    ];
+    const triggerSteps = [
+      { key: 'new',              label: 'Triggered' },
+      { key: 'assigned',         label: 'Assigned' },
+      { key: 'cdd_review',       label: 'Re-CDD' },
+      { key: 'edd_review',       label: 'EDD Review' },
+      { key: 'compliance_review',label: 'Compliance\nReview' },
+      { key: 'completed',        label: 'Completed' },
+    ];
+    const steps = caseObj.queueType === 'periodic' ? periodicSteps
+                : caseObj.queueType === 'trigger'  ? triggerSteps
+                : onboardingSteps;
+
+    const currentStage = caseObj.workflowStage || 'new';
+    const stageOrder   = ['new','assigned','cdd_review','edd_review','compliance_review','completed'];
+    const currentIdx   = stageOrder.indexOf(currentStage);
+
+    workflowStepsEl.innerHTML = steps.map((step, i) => {
+      const stepIdx = stageOrder.indexOf(step.key);
+      const isDone   = stepIdx < currentIdx;
+      const isActive = stepIdx === currentIdx;
+      const dotCls   = isDone ? 'done' : isActive ? 'active' : '';
+      const lblCls   = isDone ? 'done' : isActive ? 'active' : '';
+      const labelLines = step.label.split('\n');
+      const connector = i < steps.length - 1
+        ? `<div class="wf-connector ${isDone ? 'done' : ''}"></div>`
+        : '';
+      return `<div class="wf-step">
+        <div class="wf-step-inner">
+          <div class="wf-dot ${dotCls}">${isDone ? '✓' : i + 1}</div>
+          <div class="wf-label ${lblCls}">${labelLines.join('<br>')}</div>
+        </div>
+        ${connector}
+      </div>`;
+    }).join('');
+  }
+
   // Reset workspace tabs to overview
   document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
   document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
@@ -3320,6 +3506,72 @@ document.querySelectorAll(".queue-chip").forEach((chip) => {
     chip.classList.add("active");
     activeStatusChip = chip.dataset.statusFilter;
     renderQueue();
+  });
+});
+
+function renderEscalations() {
+  const humanBody      = document.getElementById("escalHumanBody");
+  const complianceBody = document.getElementById("escalComplianceBody");
+  const humanCount     = document.getElementById("escalHumanCount");
+  const complianceCount= document.getElementById("escalComplianceCount");
+
+  const humanCases      = cases.filter(c => c.escalationType === "human");
+  const complianceCases = cases.filter(c => c.complianceReview === true);
+
+  if (humanCount) humanCount.textContent = humanCases.length;
+  if (complianceCount) complianceCount.textContent = complianceCases.length;
+
+  if (humanBody) {
+    humanBody.innerHTML = humanCases.length ? humanCases.map(item => {
+      const risk = getRiskBadge(item.riskScore);
+      return `<tr>
+        <td style="font-family:'JetBrains Mono',monospace;font-size:12px">${item.id}</td>
+        <td><strong>${item.client}</strong><div style="font-size:11px;color:var(--muted)">${item.entityType || ''} · ${item.jurisdiction || ''}</div></td>
+        <td style="font-size:12px;max-width:320px">${item.escalationReason}</td>
+        <td><span class="badge ${risk.className}">${risk.label}</span><div style="font-size:11px;color:var(--muted);margin-top:4px">Score ${item.riskScore}</div></td>
+        <td>${item.aging}</td>
+        <td>${item.assignee || '—'}</td>
+        <td style="font-size:12px;color:var(--text);font-weight:600">${item.escalationAction}</td>
+        <td><button class="open-link" data-case="${item.id}">Open Case</button></td>
+      </tr>`;
+    }).join('') : `<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:24px">No cases currently require human action.</td></tr>`;
+    humanBody.querySelectorAll(".open-link").forEach(btn =>
+      btn.addEventListener("click", () => openCase(btn.dataset.case)));
+  }
+
+  if (complianceBody) {
+    complianceBody.innerHTML = complianceCases.length ? complianceCases.map(item => {
+      const risk = getRiskBadge(item.riskScore);
+      return `<tr>
+        <td style="font-family:'JetBrains Mono',monospace;font-size:12px">${item.id}</td>
+        <td><strong>${item.client}</strong></td>
+        <td style="font-size:12px;max-width:280px">${item.complianceReason}</td>
+        <td><span class="badge ${risk.className}">${risk.label}</span></td>
+        <td><span class="badge ${item.pipelineClass}">${item.pipeline}</span></td>
+        <td>${item.complianceReviewer || 'BSA Officer'}</td>
+        <td><span class="badge gold">Pending Sign-off</span></td>
+        <td><button class="open-link" data-case="${item.id}">Open Case</button></td>
+      </tr>`;
+    }).join('') : `<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:24px">No cases pending compliance sign-off.</td></tr>`;
+    complianceBody.querySelectorAll(".open-link").forEach(btn =>
+      btn.addEventListener("click", () => openCase(btn.dataset.case)));
+  }
+}
+
+// Escalation sub-tab switching
+document.querySelectorAll(".escal-tab").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".escal-tab").forEach(t => {
+      t.style.color = 'var(--muted)';
+      t.style.borderBottomColor = 'transparent';
+      t.classList.remove("active");
+    });
+    btn.style.color = 'var(--green)';
+    btn.style.borderBottomColor = 'var(--green)';
+    btn.classList.add("active");
+    const target = btn.dataset.escal;
+    document.getElementById("escal-human").style.display      = target === "human"      ? "" : "none";
+    document.getElementById("escal-compliance").style.display = target === "compliance" ? "" : "none";
   });
 });
 
@@ -4168,10 +4420,10 @@ renderQueue();
       }
       const twoLines = line2.length > 0;
       return [
-        `<rect x="${cx-w/2}" y="${cy-h/2}" width="${w}" height="${h}" rx="${rx}" fill="#111816"/>`,
-        `<text x="${cx}" y="${cy + (twoLines ? -16 : -6)}" text-anchor="middle" style="${F};font-size:15px;font-weight:700;fill:#fff">${line1}</text>`,
-        twoLines ? `<text x="${cx}" y="${cy + 6}" text-anchor="middle" style="${F};font-size:15px;font-weight:700;fill:#fff">${line2}</text>` : '',
-        `<text x="${cx}" y="${cy + (twoLines ? 26 : 16)}" text-anchor="middle" style="${F};font-size:12px;fill:#9BA8A0">${sublabel}</text>`,
+        `<rect x="${cx-w/2}" y="${cy-h/2}" width="${w}" height="${h}" rx="${rx}" fill="#ffffff" stroke="#2BB567" stroke-width="2.5"/>`,
+        `<text x="${cx}" y="${cy + (twoLines ? -14 : -6)}" text-anchor="middle" style="${F};font-size:15px;font-weight:700;fill:#1A1E1C">${line1}</text>`,
+        twoLines ? `<text x="${cx}" y="${cy + 8}" text-anchor="middle" style="${F};font-size:15px;font-weight:700;fill:#1A1E1C">${line2}</text>` : '',
+        `<text x="${cx}" y="${cy + (twoLines ? 26 : 14)}" text-anchor="middle" style="${F};font-size:12px;fill:#6B7670">${sublabel}</text>`,
       ].join('\n');
     };
 
