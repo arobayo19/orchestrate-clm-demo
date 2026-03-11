@@ -1795,17 +1795,71 @@
 
         <!-- ── OWNERSHIP TAB ── -->
         <div class="tab-content" id="tab-ownership">
-          <div class="panel">
+
+          <!-- Chart card -->
+          <div class="panel" style="margin-bottom:14px;">
             <div class="panel-head panel-head-spread">
               <h2>Ownership Structure</h2>
               <span class="badge gray" id="ownershipEntity">—</span>
             </div>
             <div class="ws-chart-wrap" id="wsOwnChartWrap"></div>
-            <div style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px;">
-              <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--green);margin-bottom:8px;">Ownership Notes</div>
-              <p class="body-copy" id="ownershipNotes">—</p>
-            </div>
           </div>
+
+          <!-- UBO + Controller detail side by side -->
+          <div class="ws-two-col" style="margin-bottom:14px;">
+
+            <!-- Beneficial Owners -->
+            <div class="panel">
+              <div class="panel-head panel-head-spread">
+                <h2>Beneficial Owners</h2>
+                <span class="badge gray" id="wsUboCount">—</span>
+              </div>
+              <table class="mini-table" id="wsUboTable">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Stake</th>
+                    <th>Nationality</th>
+                    <th>ID Verification</th>
+                    <th>Screening</th>
+                  </tr>
+                </thead>
+                <tbody id="wsUboBody">
+                  <tr><td colspan="5" style="color:var(--muted);text-align:center;padding:14px">No UBO data available</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Control Persons -->
+            <div class="panel">
+              <div class="panel-head panel-head-spread">
+                <h2>Control Persons</h2>
+                <span class="badge gray" id="wsCtrlCount">—</span>
+              </div>
+              <table class="mini-table" id="wsCtrlTable">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Title / Role</th>
+                    <th>Signing Authority</th>
+                    <th>ID Verification</th>
+                    <th>Screening</th>
+                  </tr>
+                </thead>
+                <tbody id="wsCtrlBody">
+                  <tr><td colspan="5" style="color:var(--muted);text-align:center;padding:14px">No control person data available</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+
+          <!-- Notes -->
+          <div class="panel">
+            <div class="panel-head"><h2>Ownership Notes</h2></div>
+            <p class="body-copy" id="ownershipNotes">—</p>
+          </div>
+
         </div>
 
         <!-- ── SCREENING TAB ── -->
@@ -2724,6 +2778,20 @@
     const gapX = Math.max(uboOvW + 40, (W - 80) / n);
     const startX = W / 2 - ((n - 1) * gapX) / 2;
 
+    // ── Layout — wide viewBox so rendered text is proportionally small ──
+    const W = 1100;
+    const uboOvW = 160, uboOvH = 58;
+    const entityW = 210, entityH = 52;
+    const entityRx = 14;
+    const entityX = W / 2;
+    const entityY = isComplex ? 300 : 240;
+    const gpY    = isComplex ? 175 : null;
+    const uboY   = 52;
+    const H = entityY + entityH / 2 + 28;
+    const n = Math.max(ubos.length, 1);
+    const gapX = Math.max(uboOvW + 60, (W - 120) / n);
+    const startX = W / 2 - ((n - 1) * gapX) / 2;
+
     const F = `font-family:"Inter",sans-serif`;
 
     // ── Helpers ──
@@ -2732,54 +2800,46 @@
         fill="${fill}" stroke="${stroke}" stroke-width="1.5"
         ${dashed ? 'stroke-dasharray="5 3"' : ''}/>`;
 
-    const darkPill = (cx, cy, w, h, rx, label, sublabel) => `
-      <rect x="${cx-w/2}" y="${cy-h/2}" width="${w}" height="${h}" rx="${rx}"
-        fill="#1A1E1C" stroke="none"/>
-      <text x="${cx}" y="${cy - 7}" text-anchor="middle"
-        style="${F};font-size:13px;font-weight:700;fill:#fff">${label}</text>
-      <text x="${cx}" y="${cy + 9}" text-anchor="middle"
-        style="${F};font-size:11px;fill:#9BA8A0">${sublabel}</text>`;
+    const darkPill = (cx, cy, w, h, rx, label, sublabel) =>
+      `<rect x="${cx-w/2}" y="${cy-h/2}" width="${w}" height="${h}" rx="${rx}" fill="#1A1E1C"/>
+       <text x="${cx}" y="${cy-6}" text-anchor="middle" style="${F};font-size:10.5px;font-weight:700;fill:#fff">${label}</text>
+       <text x="${cx}" y="${cy+8}" text-anchor="middle" style="${F};font-size:9px;fill:#9BA8A0">${sublabel}</text>`;
 
-    const nodeLabel = (cx, cy, name, sub, stroke) => `
-      <text x="${cx}" y="${cy - 6}" text-anchor="middle"
-        style="${F};font-size:13px;font-weight:600;fill:#1A1E1C">${name}</text>
-      <text x="${cx}" y="${cy + 10}" text-anchor="middle"
-        style="${F};font-size:11px;fill:#6B7670">${sub}</text>`;
+    const nodeLabel = (cx, cy, name, sub) =>
+      `<text x="${cx}" y="${cy-5}" text-anchor="middle" style="${F};font-size:10.5px;font-weight:600;fill:#1A1E1C">${name}</text>
+       <text x="${cx}" y="${cy+8}" text-anchor="middle" style="${F};font-size:9px;fill:#6B7670">${sub}</text>`;
 
     const pctBadge = (cx, cy, label, pending = false) => {
       const bg = pending ? '#FEF3D7' : '#E8F8EE';
       const border = pending ? '#D0A85C' : '#2BB567';
       const color = pending ? '#7A5200' : '#14632C';
-      const pw = label.length * 7 + 18;
-      return `
-        <rect x="${cx - pw/2}" y="${cy - 11}" width="${pw}" height="22" rx="11"
-          fill="${bg}" stroke="${border}" stroke-width="1.5"/>
-        <text x="${cx}" y="${cy + 5}" text-anchor="middle"
-          style="${F};font-size:11.5px;font-weight:700;fill:${color}">${label}</text>`;
+      const pw = label.length * 6 + 14;
+      return `<rect x="${cx-pw/2}" y="${cy-9}" width="${pw}" height="18" rx="9" fill="${bg}" stroke="${border}" stroke-width="1.2"/>
+              <text x="${cx}" y="${cy+4}" text-anchor="middle" style="${F};font-size:9.5px;font-weight:700;fill:${color}">${label}</text>`;
     };
 
     const connector = (x1, y1, x2, y2, pending = false) =>
       `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"
-        stroke="#2BB567" stroke-width="1.5" opacity="0.55"
-        ${pending ? 'stroke-dasharray="5 3"' : ''}/>`;
+        stroke="#2BB567" stroke-width="1.5" opacity="0.5"
+        ${pending ? 'stroke-dasharray="6 3"' : ''}/>`;
 
     let parts = [];
 
-    // ── Draw entity node (bottom) ──
+    // ── Entity node (bottom) ──
     parts.push(darkPill(entityX, entityY, entityW, entityH, entityRx,
-      entityName.length > 20 ? entityName.slice(0,20)+'…' : entityName,
+      entityName.length > 22 ? entityName.slice(0,22)+'…' : entityName,
       entityType + ' · Applicant Entity'));
 
-    // ── GP intermediate node (complex only) ──
+    // ── GP node (complex only) ──
     if (isComplex && gpY !== null) {
       const gpX = entityX;
       const ctrl = own.controllerCards?.[0];
-      const gpLabel = ctrl ? (ctrl.name.length > 18 ? ctrl.name.slice(0,18)+'…' : ctrl.name) : 'General Partner';
+      const gpLabel = ctrl ? (ctrl.name.length > 20 ? ctrl.name.slice(0,20)+'…' : ctrl.name) : 'General Partner';
       parts.push(oval(gpX, gpY, uboOvW + 20, uboOvH, '#D0A85C', '#FEF9ED', true));
-      parts.push(nodeLabel(gpX, gpY, gpLabel, 'General Partner', '#D0A85C'));
-      // GP → Entity line
+      parts.push(nodeLabel(gpX, gpY, gpLabel, 'General Partner'));
       parts.push(connector(gpX, gpY + uboOvH/2, entityX, entityY - entityH/2, true));
-      parts.push(pctBadge(gpX + (entityX - gpX)/2, gpY + uboOvH/2 + (entityY - entityH/2 - gpY - uboOvH/2)/2, 'GP', true));
+      const gpMidY = gpY + uboOvH/2 + (entityY - entityH/2 - gpY - uboOvH/2) * 0.45;
+      parts.push(pctBadge(gpX, gpMidY, 'GP', true));
     }
 
     // ── UBO nodes (top row) ──
@@ -2788,19 +2848,15 @@
       const ny = uboY;
       const pending = u.idVerif?.includes('Pending');
       const stroke = pending ? '#D0A85C' : '#2BB567';
-      const fill = pending ? '#FEF9ED' : '#F0FBF4';
+      const fill   = pending ? '#FEF9ED' : '#F0FBF4';
 
-      // Oval node
       parts.push(oval(nx, ny, uboOvW, uboOvH, stroke, fill, pending));
-      parts.push(nodeLabel(nx, ny, u.name.length > 14 ? u.name.slice(0,14)+'…' : u.name, 'Individual', stroke));
+      parts.push(nodeLabel(nx, ny, u.name.length > 18 ? u.name.slice(0,18)+'…' : u.name, 'Individual'));
 
-      // Connector → entity (or GP if complex)
-      const targetX = isComplex ? entityX : entityX;
       const targetY = isComplex ? (gpY - uboOvH/2) : entityY - entityH/2;
-      parts.push(connector(nx, ny + uboOvH/2, targetX, targetY, pending));
+      parts.push(connector(nx, ny + uboOvH/2, entityX, targetY, pending));
 
-      // % badge at midpoint
-      const midX = nx + (targetX - nx) * 0.45;
+      const midX = nx + (entityX - nx) * 0.45;
       const midY = ny + uboOvH/2 + (targetY - ny - uboOvH/2) * 0.45;
       parts.push(pctBadge(midX, midY, u.stake || '?', pending));
     });
