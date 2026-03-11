@@ -1987,7 +1987,7 @@
      (self-contained; does not depend on app.js data)
   ═══════════════════════════════════════════════════════ */
 
-  const CLIENTS = [
+  window.CLIENTS = [
     {
       id: 'CLIENT-001',
       name: 'Apex Digital LLC',
@@ -2412,7 +2412,7 @@
   ];
 
   /* ─── helpers ─── */
-  const riskBadgeClass = r => ({ High:'red', Moderate:'gold', Low:'green' }[r] || 'gray');
+  function riskBadgeClass(r) { return ({ High:'red', Moderate:'gold', Low:'green' }[r] || 'gray'); }
 
   function kvRows(pairs) {
     return pairs.map(([k,v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('');
@@ -2426,7 +2426,8 @@
   function renderTable(list) {
     const tbody = document.getElementById('dirBody');
     const count = document.getElementById('dirCount');
-    count.textContent = `${list.length} client${list.length !== 1 ? 's' : ''}`;
+    if (!tbody) return;
+    if (count) count.textContent = `${list.length} client${list.length !== 1 ? 's' : ''}`;
 
     if (!list.length) {
       tbody.innerHTML = `<tr><td colspan="9"><div class="dir-empty">No clients match your search.</div></td></tr>`;
