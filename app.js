@@ -780,6 +780,10 @@ function setActiveView(viewKey) {
   if (viewKey === "monitoring") renderQueueForTarget("monitoringQueueBody", "periodic");
   if (viewKey === "triggers") renderQueueForTarget("triggersQueueBody", "trigger");
   if (viewKey === "screening") renderQueueForTarget("screeningQueueBody", "screening");
+  // directory is owned by inline script — trigger its render when switching to it
+  if (viewKey === "directory" && typeof renderTable !== 'undefined' && typeof CLIENTS !== 'undefined') {
+    renderTable(CLIENTS);
+  }
 }
 
 function renderCase(caseObj) {
@@ -855,14 +859,14 @@ function renderCase(caseObj) {
     if (uboBody && own?.uboCards?.length) {
       uboCount && (uboCount.textContent = own.uboCards.length + ' identified');
       uboBody.innerHTML = own.uboCards.map(u => {
-        const idCls  = u.idVerif?.includes('Pending') ? 'gold' : 'green';
+        const idCls  = u.idVerif?.includes('Pending') || u.idVerif?.includes('pending') ? 'gold' : 'green';
         const scrCls = u.screening?.startsWith('Clear') ? 'green' : 'gold';
         return `<tr>
           <td><strong>${u.name}</strong></td>
           <td>${u.stake || '—'}</td>
           <td>${u.nationality || '—'}</td>
           <td><span class="badge ${idCls}">${u.idVerif || '—'}</span></td>
-          <td><span class="badge ${scrCls}">${u.screening || '—'}</span></td>
+          <td><span class="badge ${scrCls}">${u.screening?.split('—')[0]?.trim() || u.screening || '—'}</span></td>
         </tr>`;
       }).join('');
     } else if (uboBody) {
@@ -873,12 +877,12 @@ function renderCase(caseObj) {
     if (ctrlBody && own?.controllerCards?.length) {
       ctrlCount && (ctrlCount.textContent = own.controllerCards.length + ' identified');
       ctrlBody.innerHTML = own.controllerCards.map(c => {
-        const idCls  = c.idVerif?.includes('Pending') ? 'gold' : 'green';
+        const idCls  = c.idVerif?.includes('Pending') || c.idVerif?.includes('pending') ? 'gold' : 'green';
         const scrCls = c.screening?.startsWith('Clear') ? 'green' : 'gold';
         return `<tr>
           <td><strong>${c.name}</strong></td>
-          <td>${c.role || '—'}</td>
-          <td>${c.signingAuthority || '—'}</td>
+          <td>${c.title || c.role || '—'}</td>
+          <td>${c.signingAuth || c.signingAuthority || '—'}</td>
           <td><span class="badge ${idCls}">${c.idVerif || '—'}</span></td>
           <td><span class="badge ${scrCls}">${c.screening || '—'}</span></td>
         </tr>`;
@@ -1038,8 +1042,5 @@ function renderQueueForTarget(targetId, queueType) {
 document.getElementById("clientDirectorySearch")?.addEventListener("input", renderClientDirectory);
 
 // Init
-renderClientDirectory();
-renderClientProfile(clients[0]);
 renderPriorityList();
 renderQueue();
-renderCase(currentCase);
