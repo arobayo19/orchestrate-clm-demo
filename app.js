@@ -780,9 +780,13 @@ function setActiveView(viewKey) {
   if (viewKey === "monitoring") renderQueueForTarget("monitoringQueueBody", "periodic");
   if (viewKey === "triggers") renderQueueForTarget("triggersQueueBody", "trigger");
   if (viewKey === "screening") renderQueueForTarget("screeningQueueBody", "screening");
-  // directory is owned by inline script — trigger its render when switching to it
-  if (viewKey === "directory" && typeof renderTable !== 'undefined' && typeof CLIENTS !== 'undefined') {
-    renderTable(CLIENTS);
+  if (viewKey === "directory") {
+    // directory owned by inline script — call safely after it has initialised
+    setTimeout(() => {
+      if (typeof renderTable === 'function' && typeof CLIENTS !== 'undefined') {
+        renderTable(CLIENTS);
+      }
+    }, 0);
   }
 }
 
