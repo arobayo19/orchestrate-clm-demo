@@ -1882,21 +1882,101 @@
 
         <!-- ── RISK ASSESSMENT TAB ── -->
         <div class="tab-content" id="tab-risk">
-          <div class="ws-two-col">
+
+          <!-- Row 1: Score + Factors -->
+          <div class="ws-two-col" style="margin-bottom:14px;">
             <div class="panel">
               <div class="panel-head panel-head-spread">
                 <h2>Risk Assessment</h2>
+                <span class="badge gray" id="riskReviewTypeBadge">—</span>
               </div>
               <dl class="kv" style="margin-bottom:16px;">
-                <div><dt>Risk Score</dt><dd id="riskScore">—</dd></div>
+                <div><dt>Overall Risk Score</dt><dd id="riskScore">—</dd></div>
+                <div><dt>Risk Tier</dt><dd id="riskTierDisplay">—</dd></div>
+                <div><dt>EDD Required</dt><dd id="riskEddDisplay">—</dd></div>
+                <div><dt>Assigned Analyst</dt><dd id="riskAnalyst">—</dd></div>
               </dl>
               <p class="body-copy" id="riskNarrative">—</p>
             </div>
             <div class="panel">
               <div class="panel-head"><h2>Risk Factors</h2></div>
-              <div class="chip-group" id="riskFactors"></div>
+              <div class="chip-group" id="riskFactors" style="margin-bottom:20px;"></div>
+              <div class="panel-head" style="margin-top:8px;"><h2>Mitigating Controls</h2></div>
+              <div class="chip-group" id="riskMitigants"></div>
             </div>
           </div>
+
+          <!-- Row 2: CDD / Onboarding Review Checklist (shown for onboarding) -->
+          <div id="riskOnboardingSection" style="display:none;margin-bottom:14px;">
+            <div class="panel">
+              <div class="panel-head panel-head-spread">
+                <h2>CDD / EDD Review — Onboarding Checklist</h2>
+                <span class="badge blue">New Account</span>
+              </div>
+              <table class="mini-table">
+                <thead>
+                  <tr><th>Review Item</th><th>Requirement</th><th>Finding</th><th>Status</th></tr>
+                </thead>
+                <tbody id="riskCddBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Row 2b: Periodic Review — Expected vs Actual (shown for periodic) -->
+          <div id="riskPeriodicSection" style="display:none;margin-bottom:14px;">
+            <div class="panel">
+              <div class="panel-head panel-head-spread">
+                <h2>Periodic Review — Expected vs Actual (EvA)</h2>
+                <span class="badge gray">Periodic Refresh</span>
+              </div>
+              <table class="mini-table">
+                <thead>
+                  <tr><th>Review Area</th><th>Expected Profile</th><th>Actual / Observed</th><th>Variance</th><th>Action Required</th></tr>
+                </thead>
+                <tbody id="riskPeriodicBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Row 2c: Trigger Review — Change Event Analysis (shown for trigger) -->
+          <div id="riskTriggerSection" style="display:none;margin-bottom:14px;">
+            <div class="panel">
+              <div class="panel-head panel-head-spread">
+                <h2>Trigger Review — Change Event Analysis</h2>
+                <span class="badge red">Trigger Event</span>
+              </div>
+              <table class="mini-table">
+                <thead>
+                  <tr><th>Trigger Type</th><th>Details</th><th>CDD Impact</th><th>Action Required</th><th>Status</th></tr>
+                </thead>
+                <tbody id="riskTriggerBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Row 3: AI-generated EvA Summary (all types) -->
+          <div class="panel">
+            <div class="panel-head panel-head-spread">
+              <h2>AI Agent — Review Summary</h2>
+              <span class="badge green">Draft Generated</span>
+            </div>
+            <p class="body-copy" style="margin-bottom:12px;color:var(--muted);font-size:12px;">
+              AI-generated summary based on case data, document extractions, screening results, and activity profile. Analyst should review, edit, and confirm before submitting decision.
+            </p>
+            <textarea id="riskAiSummary" style="
+              width:100%; box-sizing:border-box;
+              min-height:130px; padding:12px 14px;
+              font-family:'Inter',sans-serif; font-size:13px; line-height:1.6;
+              color:var(--text); background:var(--panel-2);
+              border:1px solid var(--border); border-radius:8px;
+              resize:vertical; outline:none;
+            " placeholder="AI summary will appear here…"></textarea>
+            <div style="margin-top:10px;display:flex;gap:8px;justify-content:flex-end;">
+              <button class="open-link" id="riskSummaryEditBtn" style="background:none;border:1px solid var(--border);color:var(--text);">Edit Draft</button>
+              <button class="open-link" id="riskSummaryConfirmBtn">Confirm &amp; Attach to Case</button>
+            </div>
+          </div>
+
         </div>
 
         <!-- ── ACTIVITY LOG TAB ── -->
@@ -1979,9 +2059,1265 @@
     </main>
   </div>
 
-  <script src="app.js"></script>
-
   <script>
+  /* ══ app.js inlined ══ */
+const views = {
+  dashboard: { id: "dashboard-view", eyebrow: "Overview", title: "Dashboard" },
+  directory: { id: "client-directory-view", eyebrow: "Clients", title: "Client Directory" },
+  intake: { id: "intake-view", eyebrow: "Intake Queue", title: "Onboarding Queue" },
+  workspace: { id: "workspace-view", eyebrow: "Case Management", title: "Case Workspace" },
+  escalations: { id: "escalations-view", eyebrow: "Case Management", title: "Escalations" },
+  monitoring: { id: "monitoring-view", eyebrow: "Intake Queue", title: "Periodic Reviews Queue" },
+  triggers: { id: "triggers-view", eyebrow: "Intake Queue", title: "Trigger Reviews Queue" },
+  screening: { id: "screening-view", eyebrow: "Intake Queue", title: "Screening Queue" },
+  agents: { id: "agents-view", eyebrow: "AI Agents", title: "Automation Activity" },
+  audit: { id: "audit-view", eyebrow: "System", title: "Audit Trail" }
+};
+
+const cases = [
+  {
+    id: "CASE-2026-00128",
+    client: "Apex Digital LLC",
+    queueType: "onboarding",
+    legalName: "Apex Digital LLC",
+    formationDate: "2020-07-14",
+    registrationNumber: "REG-2020-88421",
+    taxId: "12-3456789",
+    registeredAddress: "244 Harbor Avenue, Boston, MA, United States",
+    businessDescription: "Digital asset exchange and institutional settlement services.",
+    industry: "Crypto Services",
+    purposeOfAccount: "Brokerage & Custody",
+    sourceOfFunds: "Operating Revenue",
+    beneficialOwnersCount: "2 identified",
+    controlPersonCount: "1 identified",
+    authorizedUsersCount: "2 identified",
+    ownershipStructureSummary: "Direct ownership, no layered entities",
+    complexityFlag: "None",
+    riskTier: "Moderate",
+    eddTriggered: "No",
+    mainRiskFactorsSummary: "Crypto services, OTC activity",
+    status: "Completeness Review",
+    statusClass: "blue",
+    pipeline: "Standard CDD",
+    pipelineClass: "gray",
+    aging: "2h 12m / target 4h",
+    priority: "Escalated",
+    priorityClass: "gold",
+    assignee: "Ops Queue",
+    entityType: "LLC",
+    jurisdiction: "Delaware, US",
+    activity: "Digital asset exchange",
+    expected: "OTC trading, custody, settlement",
+    summary: "Application received from onboarding portal. AI extraction completed on formation and tax documents. Corporate registry evidence still pending before case can advance into full CDD review.",
+    checks: [
+      ["Document completeness", "Missing registry confirmation", "gold"],
+      ["Entity verification", "In progress", "blue"],
+      ["Address verification", "Verified", "green"],
+      ["Screening status", "Pending review", "gold"]
+    ],
+    documents: [
+      ["Certificate of Formation", "Parsed · 96% confidence · Entity name, formation date, jurisdiction extracted", "green"],
+      ["Operating Agreement", "Parsed · 91% confidence · Ownership sections mapped", "green"],
+      ["W-9", "Parsed · 98% confidence · EIN extracted and matched", "green"],
+      ["Corporate Registry Evidence", "Outstanding document request sent to client", "gold"]
+    ],
+    ownershipNotes: "Two direct beneficial owners identified from operating agreement. Percentages total 75%. Remaining 25% is held across minority shareholders below threshold. No nominee or shell ownership identified at this stage.",
+    sanctions: "No sanctions matches returned for the entity or named control persons.",
+    pep: "No direct PEP match. One related-party name requires low-confidence watchlist review.",
+    media: "One tangential media mention identified with no direct allegation tied to the entity. Disposition pending analyst confirmation.",
+    riskScore: 63,
+    riskNarrative: "Risk is elevated by industry profile and expected transaction activity, but partially mitigated by domestic formation, complete tax documentation, and a currently understandable ownership structure.",
+    riskFactors: ["Crypto services", "Moderate geography risk", "OTC activity", "Incomplete registry evidence"],
+    riskMitigants: ["Domestic formation", "Complete tax documentation", "2 UBOs identified", "AML officer in place"],
+    riskAnalyst: "Ops Queue",
+    riskCddChecklist: [
+      ["Entity Identification", "Legal name, jurisdiction, formation date, reg. number", "Extracted from Certificate of Formation — all fields matched", "green"],
+      ["Business Activity Verification", "Nature of business and primary revenue sources confirmed", "Digital asset exchange confirmed — MSB registration on file", "green"],
+      ["Purpose of Account", "Documented account purpose aligned with business activity", "Brokerage & Custody — consistent with business model", "green"],
+      ["Source of Funds", "Primary revenue source documented and plausible", "Operating Revenue — consistent with active MSB", "green"],
+      ["Beneficial Ownership", "All UBOs ≥25% identified, verified, and screened", "2 UBOs identified (75% total). Minority shareholders below threshold", "gold"],
+      ["Control Persons", "Authorised signatories and control persons identified and verified", "Sarah Kim — CEO/Auth. Signatory confirmed. ID verified", "green"],
+      ["Screening — Sanctions", "Entity and all named parties screened against OFAC/UN lists", "No matches returned for entity or named principals", "green"],
+      ["Screening — PEP", "All UBOs and controllers screened for PEP status", "One related-party low-confidence review pending analyst confirmation", "gold"],
+      ["Adverse Media", "Entity and principals reviewed for material negative media", "One tangential mention noted — not entity-specific. Pending analyst disposition", "gold"],
+      ["Document Completeness", "Full corporate document package received and validated", "Corporate Registry Evidence outstanding — client request sent", "gold"],
+      ["EDD Trigger Assessment", "Determine if EDD is required based on risk profile", "EDD not triggered. Moderate risk. Standard CDD pipeline applies", "green"],
+    ],
+    riskAiSummary: "Apex Digital LLC presents a moderate CDD risk profile. The entity is a FinCEN-registered MSB operating a digital asset exchange in Massachusetts. Ownership is direct and substantially documented — two beneficial owners controlling 75% of the entity have been identified, verified, and screened with no material findings. The primary outstanding item is a missing corporate registry confirmation which has been requested from the client. Preliminary screening is largely clear, with one related-party low-confidence watchlist item pending analyst review. No EDD has been triggered at this stage. Recommend advancing to full CDD review upon receipt of the outstanding document.",
+    activityLog: [
+      ["11:08 UTC", "Application received", "Case created from onboarding portal payload."],
+      ["11:09 UTC", "Document Classification Agent", "Classified 4 uploaded files and routed them for extraction."],
+      ["11:11 UTC", "Ownership Mapping Agent", "Mapped beneficial ownership from operating agreement."],
+      ["11:13 UTC", "Deficiency Notice Agent", "Generated request for missing corporate registry evidence."]
+    ],
+    audit: [
+      ["11:08 UTC", "System", "Created case record and started intake SLA timer."],
+      ["11:09 UTC", "Document Extraction Agent", "Extracted entity name, formation date, EIN, and ownership references."],
+      ["11:12 UTC", "Screening Agent", "Submitted screening request for entity and associated parties."],
+      ["11:14 UTC", "Orchestration Agent", "Retained case in intake due to missing registry evidence."]
+    ],
+    agents: [
+      ["Document Extraction Agent", "Completed parsing on 3 of 4 files. Confidence threshold met."],
+      ["Ownership Mapping Agent", "Resolved direct 25%+ owners. No opaque ownership detected."],
+      ["Screening Agent", "Entity screening complete. Related-party review still pending."],
+      ["Deficiency Notice Agent", "Client request sent for missing registry evidence."]
+    ]
+  },
+  {
+    id: "CASE-2026-00127",
+    client: "North Harbor Ventures LP",
+    queueType: "onboarding",
+    legalName: "North Harbor Ventures LP",
+    formationDate: "2019-03-11",
+    registrationNumber: "CAY-LP-44318",
+    taxId: "Pending",
+    registeredAddress: "Maple House, George Town, Cayman Islands",
+    businessDescription: "Investment vehicle for subscriptions, treasury movements, and fund redemptions.",
+    industry: "Investment Management",
+    purposeOfAccount: "Custody Only",
+    sourceOfFunds: "Capital Contributions",
+    beneficialOwnersCount: "Pending full review",
+    controlPersonCount: "1 identified",
+    authorizedUsersCount: "Pending",
+    ownershipStructureSummary: "Layered fund structure under review",
+    complexityFlag: "Layered ownership",
+    riskTier: "High",
+    eddTriggered: "Likely",
+    mainRiskFactorsSummary: "Offshore entity, fund structure, layered ownership",
+    status: "Pending Client Response",
+    statusClass: "gold",
+    pipeline: "Standard CDD",
+    pipelineClass: "gray",
+    aging: "1d 4h",
+    priority: "FIFO",
+    priorityClass: "gray",
+    assignee: "Client Pending",
+    entityType: "Limited Partnership",
+    jurisdiction: "Cayman Islands",
+    activity: "Investment vehicle",
+    expected: "Treasury movements, subscriptions, redemptions",
+    summary: "Application is paused pending director ID upload and updated proof of address. Intake remains open and aging continues until required materials are received.",
+    checks: [
+      ["Document completeness", "Pending client response", "gold"],
+      ["Entity verification", "Not started", "gray"],
+      ["Address verification", "Pending", "gold"],
+      ["Screening status", "Queued", "gray"]
+    ],
+    documents: [
+      ["Formation Certificate", "Uploaded · pending extraction", "blue"],
+      ["Partnership Agreement", "Uploaded · pending extraction", "blue"],
+      ["Director ID", "Missing document", "gold"]
+    ],
+    ownershipNotes: "Preliminary structure indicates layered fund ownership and nominee-style management rights requiring deeper review once full documents are received.",
+    sanctions: "No screening run until completeness requirements are met.",
+    pep: "Not started.",
+    media: "Not started.",
+    riskScore: 74,
+    riskNarrative: "Preliminary risk is higher due to offshore jurisdiction and fund structure complexity. Case may require EDD after missing materials are received.",
+    riskFactors: ["Offshore entity", "Fund structure", "Layered ownership"],
+    riskMitigants: ["CIMA registered fund", "Professional trustee as registered agent"],
+    riskAnalyst: "Client Pending",
+    riskCddChecklist: [
+      ["Entity Identification", "Legal name, jurisdiction, reg. number confirmed", "LP formation certificate uploaded — pending extraction", "gold"],
+      ["Business Activity Verification", "Fund purpose and investment mandate documented", "Investment mandate partially described in LP agreement — pending full extraction", "gold"],
+      ["Purpose of Account", "Account purpose documented and aligned to fund activity", "Custody only — consistent with fund mandate. To be re-confirmed on full review", "gold"],
+      ["Source of Funds", "Capital contributions — LPs and GP identified", "Pending — UBO and LP schedule not yet received", "red"],
+      ["Beneficial Ownership", "All UBOs ≥25% identified through GP look-through", "GP look-through analysis not yet possible — UBO declaration outstanding", "red"],
+      ["Control Persons", "GP directors and authorised signatories identified", "North Harbor GP Ltd identified as General Partner — director ID outstanding", "gold"],
+      ["Screening — Sanctions", "Entity and all named parties screened", "Screening not started — waiting for complete document package", "gray"],
+      ["Screening — PEP", "All UBOs and GP directors screened for PEP status", "Not started", "gray"],
+      ["Adverse Media", "Entity and principals reviewed for adverse media", "Not started", "gray"],
+      ["Document Completeness", "Full onboarding package received", "Director ID, UBO declaration, Good Standing Certificate — all outstanding", "red"],
+      ["EDD Trigger Assessment", "Determine EDD requirement", "EDD likely required — offshore jurisdiction, complex structure, pending PEP review", "red"],
+    ],
+    riskAiSummary: "North Harbor Ventures LP is an offshore Cayman Islands limited partnership in early-stage onboarding. The entity presents a high CDD risk profile driven by its offshore jurisdiction, complex multi-layer fund structure, and incomplete documentation package. Beneficial ownership through the GP has not yet been established — UBO declarations and director identification remain outstanding. Screening has not commenced. EDD is likely to be required pending receipt of full documentation and completion of GP look-through analysis. The case is currently paused awaiting client response. No advancement should occur until the outstanding document set is received and reviewed.",
+    activityLog: [
+      ["09:44 UTC", "Application received", "Case created from client onboarding submission."],
+      ["09:47 UTC", "Completeness Review Agent", "Detected missing director ID and stale address evidence."],
+      ["09:50 UTC", "Deficiency Notice Agent", "Generated client request with missing items list."]
+    ],
+    audit: [
+      ["09:44 UTC", "System", "Created intake case and logged submission payload."],
+      ["09:47 UTC", "Completeness Review Agent", "Marked required onboarding package incomplete."],
+      ["09:50 UTC", "Deficiency Notice Agent", "Sent request for additional documents to client portal."]
+    ],
+    agents: [
+      ["Completeness Review Agent", "Flagged missing control-person identity evidence."],
+      ["Deficiency Notice Agent", "Awaiting client response in portal."]
+    ]
+  },
+  {
+    id: "CASE-2026-00126",
+    client: "Solstice Exchange Ltd",
+    queueType: "screening",
+    legalName: "Solstice Exchange Ltd",
+    formationDate: "2018-11-23",
+    registrationNumber: "SG-88411-EX",
+    taxId: "84-9382741",
+    registeredAddress: "88 Market Street, Singapore",
+    businessDescription: "Digital asset infrastructure provider supporting institutional cross-border trading flows.",
+    industry: "Crypto Services",
+    purposeOfAccount: "Brokerage & Custody",
+    sourceOfFunds: "Operating Revenue",
+    beneficialOwnersCount: "UBOs identified",
+    controlPersonCount: "1 identified",
+    authorizedUsersCount: "3 identified",
+    ownershipStructureSummary: "Intermediary holding company in chain",
+    complexityFlag: "Complex ownership",
+    riskTier: "High",
+    eddTriggered: "Yes",
+    mainRiskFactorsSummary: "Cross-border trading, complex ownership, screening uncertainty",
+    status: "Pending Human Review",
+    statusClass: "red",
+    pipeline: "EDD Review",
+    pipelineClass: "red",
+    aging: "6h 51m / target 4h",
+    priority: "High Risk",
+    priorityClass: "red",
+    assignee: "Ana M.",
+    entityType: "Corporation",
+    jurisdiction: "Singapore",
+    activity: "Digital asset infrastructure",
+    expected: "Cross-border institutional trading flows",
+    summary: "Case escalated to human review following adverse media hit and sanctions match requiring analyst disposition. EDD remains open.",
+    checks: [
+      ["EDD trigger", "Adverse media + screening match", "red"],
+      ["Entity verification", "Verified", "green"],
+      ["Address verification", "Verified", "green"],
+      ["Screening status", "Human disposition required", "red"]
+    ],
+    documents: [
+      ["Certificate of Incorporation", "Verified", "green"],
+      ["Share Register", "Parsed · layered ownership flagged", "gold"],
+      ["Financial Statements", "Reviewed for source of funds consistency", "green"]
+    ],
+    ownershipNotes: "Ownership chain includes one intermediary holding company. UBOs identified, but one associated entity sits in a higher-risk jurisdiction and requires annotation in final report.",
+    sanctions: "Potential sanctions match returned on associated entity. AI triage classified as uncertain; human disposition required.",
+    pep: "No direct PEP match.",
+    media: "Material adverse media identified regarding historic regulatory inquiry; relevance assessed as moderate pending analyst review.",
+    riskScore: 86,
+    riskNarrative: "High risk driven by cross-border activity, complex ownership, and unresolved screening findings. Senior approval likely required even if screening is cleared.",
+    riskFactors: ["Cross-border trading", "Complex ownership", "Screening uncertainty", "Adverse media"],
+    riskMitigants: ["MAS-regulated jurisdiction", "Certificate of Incorporation verified", "Financial statements reviewed"],
+    riskAnalyst: "Ana M.",
+    riskCddChecklist: [
+      ["Entity Identification", "Legal name, jurisdiction, formation date confirmed", "Certificate of Incorporation verified — all key fields extracted", "green"],
+      ["Business Activity Verification", "Institutional trading mandate and revenue sources confirmed", "Digital asset infrastructure confirmed — cross-border institutional flows documented", "green"],
+      ["Purpose of Account", "Account purpose documented and reviewed", "Brokerage & Custody — consistent with institutional trading activity", "green"],
+      ["Source of Funds", "Revenue sources reviewed for consistency with financial statements", "Operating revenue — reviewed against financials. Consistent at entity level", "green"],
+      ["Beneficial Ownership", "All UBOs ≥25% identified, verified, screened", "UBOs identified. One associated entity in higher-risk jurisdiction requiring annotation", "gold"],
+      ["Control Persons", "All control persons and signatories identified and verified", "1 control person identified and ID verified", "green"],
+      ["Screening — Sanctions", "Full sanctions screening completed", "Possible sanctions match on associated entity — confidence score 0.61. Human disposition required", "red"],
+      ["Screening — PEP", "All named parties PEP-screened", "No direct PEP match — clear", "green"],
+      ["Adverse Media", "Material adverse media reviewed and dispositioned", "Historical regulatory inquiry identified — moderate relevance. Analyst review in progress", "red"],
+      ["Document Completeness", "Full EDD document package assembled", "Core documents complete. Share register flagged — layered ownership annotated", "gold"],
+      ["EDD Trigger Assessment", "EDD required — adverse media + screening match", "EDD open and active. Senior approval likely required upon case resolution", "red"],
+    ],
+    riskAiSummary: "Solstice Exchange Ltd is a Singapore-based digital asset infrastructure provider currently under EDD review following adverse media and an unresolved screening match. Core entity identification and document verification are substantially complete. However, a potential sanctions match on an associated entity with a confidence score of 0.61 requires analyst disposition before the case can advance. Additionally, a historical regulatory inquiry has been identified in adverse media — assessed at moderate relevance pending analyst review. The ownership structure includes an intermediary holding company with a UBO in a higher-risk jurisdiction. Senior approval will likely be required upon clearance. Recommend analyst completes screening disposition and adverse media assessment before progressing.",
+    activityLog: [
+      ["08:11 UTC", "Screening Agent", "Returned uncertain match on associated entity."],
+      ["08:16 UTC", "Adverse Media Agent", "Compiled regulatory inquiry references and categorized severity."],
+      ["08:25 UTC", "Orchestration Agent", "Escalated case into pending human review."]
+    ],
+    audit: [
+      ["08:11 UTC", "Screening Agent", "Logged possible sanctions match with confidence score 0.61."],
+      ["08:16 UTC", "Adverse Media Agent", "Attached media source references and relevance notes."],
+      ["08:25 UTC", "Orchestration Agent", "Changed case status to Pending Human Review."]
+    ],
+    agents: [
+      ["Screening Agent", "Disposition blocked until human analyst decision."],
+      ["Adverse Media Agent", "Generated review package for analyst."],
+      ["Risk Summary Agent", "Marked case as high risk pending final screening outcome."]
+    ]
+  },
+  {
+    id: "CASE-2026-00125",
+    client: "Meridian Capital Partners",
+    queueType: "periodic",
+    legalName: "Meridian Capital Partners",
+    formationDate: "2021-01-09",
+    registrationNumber: "REG-2021-11390",
+    taxId: "91-2245780",
+    registeredAddress: "120 Federal Street, Boston, MA, United States",
+    businessDescription: "Institutional investment advisory firm supporting treasury transfers and investment subscriptions.",
+    industry: "Investment Management",
+    purposeOfAccount: "Custody Only",
+    sourceOfFunds: "Operating Revenue",
+    beneficialOwnersCount: "1 identified",
+    controlPersonCount: "1 identified",
+    authorizedUsersCount: "1 identified",
+    ownershipStructureSummary: "Direct ownership and fully reconciled",
+    complexityFlag: "None",
+    riskTier: "Moderate",
+    eddTriggered: "No",
+    mainRiskFactorsSummary: "Investment advisory, domestic entity, low ownership complexity",
+    status: "In CDD Review",
+    statusClass: "blue",
+    pipeline: "Standard CDD",
+    pipelineClass: "gray",
+    aging: "3h 18m",
+    priority: "FIFO",
+    priorityClass: "gray",
+    assignee: "Jordan T.",
+    entityType: "LLC",
+    jurisdiction: "Delaware, US",
+    activity: "Institutional investment advisory",
+    expected: "Treasury transfers and investment subscriptions",
+    summary: "CDD extraction and validation are underway. Entity documents and ownership information are complete, with screening still in progress.",
+    checks: [
+      ["Document completeness", "Complete", "green"],
+      ["Entity verification", "Verified", "green"],
+      ["Address verification", "Verified", "green"],
+      ["Screening status", "Pending screening", "gold"]
+    ],
+    documents: [
+      ["Certificate of Formation", "Verified", "green"],
+      ["Operating Agreement", "Ownership extracted and reconciled", "green"],
+      ["W-9", "Verified against EIN data", "green"]
+    ],
+    ownershipNotes: "Ownership structure is direct and fully reconciled. One control person identified with no additional complexity.",
+    sanctions: "Pending screening results from connected provider.",
+    pep: "No PEP concerns identified at intake.",
+    media: "No material negative media found so far.",
+    riskScore: 52,
+    riskNarrative: "Moderate operational risk due to transaction profile, but otherwise mitigated by straightforward structure and complete onboarding data.",
+    riskFactors: ["Investment advisory", "Domestic entity", "Low ownership complexity"],
+    riskMitigants: ["SEC-registered RIA", "Long-standing customer", "Consistent activity history", "No prior adverse findings"],
+    riskAnalyst: "Jordan T.",
+    riskPeriodicEvA: [
+      ["Transaction Volume", "$10K–$50K/month operating; $1M+ custody", "Operating: $38K avg. Custody: $1.2M avg.", "Within expected range", "None"],
+      ["Transaction Count", "10–50/month operating; 100+/month custody", "Operating: 22/month. Custody: 118/month", "Within expected range", "None"],
+      ["Counterparty Profile", "Institutional clients — SEC-registered advisers and funds", "All counterparties consistent with advisory mandate — no new high-risk jurisdictions", "No variance", "None"],
+      ["Business Activity", "Investment advisory — fee income, subscription/redemption flows", "Activity pattern unchanged. Fee income consistent year-over-year", "No variance", "None"],
+      ["Ownership Structure", "Two UBOs — David Osei 51%, Elena Varga 28%", "Ownership confirmed unchanged via client attestation", "No variance", "None"],
+      ["Control Persons", "David Osei — managing partner, full signing authority", "Confirmed active. No changes reported", "No variance", "None"],
+      ["Screening — Sanctions", "Clean at last review (2026-01-08)", "Re-screened — no new matches", "No variance", "None"],
+      ["Screening — PEP", "No PEP matches at last review", "Re-screened — no new PEP matches", "No variance", "None"],
+      ["Adverse Media", "No adverse media at last review", "One positive industry article noted — no adverse findings", "No variance", "None"],
+      ["Regulatory Status", "SEC Form ADV current, annual filing", "ADV renewal due April 2026 — within grace period. NYDFS registration current", "Minor — renewal approaching", "Monitor ADV renewal by 2026-04-01"],
+      ["Document Refresh", "Updated CDD package per periodic schedule", "All documents current except Updated UBO Declaration — pending trigger review outcome", "Minor gap", "Await updated declaration from trigger review"],
+    ],
+    riskAiSummary: "Meridian Capital Partners LLC has completed its scheduled periodic CDD review. The entity's activity profile remains consistent with the approved expected activity profile — transaction volumes and counterparty types are within established ranges with no material variances observed. Ownership remains unchanged with both UBOs confirmed. Screening returns are clean with no new sanctions, PEP, or adverse media findings. Two minor items are noted: the SEC Form ADV annual renewal is approaching (due April 2026) and an updated UBO declaration is outstanding pending the related trigger review. Neither item requires escalation at this stage. Recommend periodic review be marked complete with a follow-up to confirm ADV renewal and updated declaration receipt.",
+    activityLog: [
+      ["10:18 UTC", "CDD Review started", "Case entered standard CDD workflow."],
+      ["10:24 UTC", "Entity Verification Agent", "Verified formation and address records."],
+      ["10:31 UTC", "Screening Agent", "Submitted sanctions and adverse media screening requests."]
+    ],
+    audit: [
+      ["10:18 UTC", "System", "Moved case into In CDD Review."],
+      ["10:24 UTC", "Entity Verification Agent", "Verified entity details against public registry."],
+      ["10:31 UTC", "Screening Agent", "Submitted screening request."]
+    ],
+    agents: [
+      ["Entity Verification Agent", "Entity and address checks passed."],
+      ["Screening Agent", "Awaiting provider results."],
+      ["Risk Summary Agent", "Preliminary risk profile generated."]
+    ]
+  },
+  {
+    id: "CASE-2026-00129",
+    client: "Global Freight Holdings",
+    queueType: "periodic",
+    status: "Periodic Review Due",
+    statusClass: "gold",
+    pipeline: "Periodic Refresh",
+    pipelineClass: "gray",
+    aging: "3d",
+    priority: "Scheduled",
+    priorityClass: "gray",
+    assignee: "Review Queue",
+    entityType: "Corporation",
+    jurisdiction: "United Kingdom",
+    activity: "Global logistics provider",
+    expected: "Freight settlement and treasury activity",
+    summary: "Scheduled periodic refresh triggered by annual review cycle.",
+    riskScore: 58,
+    riskNarrative: "Moderate risk customer with global operations.",
+    riskFactors: ["Cross-border activity"],
+    riskMitigants: ["Long-standing customer", "UK-registered entity", "Consistent freight activity"],
+    riskAnalyst: "Review Queue",
+    riskPeriodicEvA: [
+      ["Transaction Volume", "£500K–£2M/month freight settlement", "£1.1M avg last 6 months", "Within expected range", "None"],
+      ["Transaction Count", "50–150 cross-border payments/month", "82/month avg", "Within expected range", "None"],
+      ["Counterparty Profile", "Established freight and logistics counterparties", "Counterparty list stable — no new high-risk jurisdictions added", "No variance", "None"],
+      ["Business Activity", "International freight settlement and treasury", "Activity pattern unchanged year-over-year", "No variance", "None"],
+      ["Ownership Structure", "Group-level ownership — stable", "Pending confirmation of ownership at periodic review stage", "Minor gap", "Request updated ownership attestation"],
+      ["Screening", "Clean at last periodic review", "Re-screening queued — results pending", "Pending", "Complete screening before closing review"],
+      ["Adverse Media", "No material adverse media at last review", "Media scan queued", "Pending", "Complete scan before closing review"],
+    ],
+    riskAiSummary: "Global Freight Holdings is due for its annual periodic CDD review. The entity is a long-standing active customer with a consistent freight settlement activity profile. Transaction volumes and counterparty relationships appear stable based on account activity. Ownership confirmation and updated screening have been queued as part of the periodic refresh workflow. No material concerns are anticipated based on prior review history, but review must not be closed until ownership attestation is received and screening results are confirmed clean.",
+    checks: [["Periodic review", "Scheduled", "gold"]],
+    documents: [],
+    ownershipNotes: "Pending periodic review.",
+    sanctions: "No active alerts.", pep: "No matches.", media: "No adverse media.",
+    activityLog: [["09:00 UTC", "Periodic Review Agent", "Scheduled lifecycle review initiated"]],
+    audit: [["09:00 UTC", "System", "Opened periodic review case"]],
+    agents: [["Periodic Review Agent", "Customer risk review initiated"]]
+  },
+  {
+    id: "CASE-2026-00130",
+    client: "Atlas Commodities Ltd",
+    queueType: "periodic",
+    status: "Periodic Review Started",
+    statusClass: "blue",
+    pipeline: "Periodic Refresh",
+    pipelineClass: "gray",
+    aging: "5h",
+    priority: "FIFO",
+    priorityClass: "gray",
+    assignee: "Jordan T.",
+    entityType: "Corporation",
+    jurisdiction: "Canada",
+    activity: "Commodity trading",
+    expected: "Energy settlement payments",
+    summary: "Customer profile refresh triggered by risk review cadence.",
+    riskScore: 64,
+    riskNarrative: "Elevated industry risk due to commodities exposure.",
+    riskFactors: ["Commodity sector"],
+    riskMitigants: ["Canadian entity", "Established customer relationship", "Energy sector AML controls"],
+    riskAnalyst: "Jordan T.",
+    riskPeriodicEvA: [
+      ["Transaction Volume", "CAD $1M–$5M/month energy settlement", "CAD $2.3M avg last quarter", "Within expected range", "None"],
+      ["Transaction Count", "20–80 energy settlement payments/month", "41/month avg", "Within expected range", "None"],
+      ["Counterparty Profile", "Canadian energy producers and pipeline operators", "One new counterparty in UAE added last quarter — requires review", "Minor variance", "Assess new UAE counterparty against country risk policy"],
+      ["Business Activity", "Commodity trading — energy sector settlement", "Trading volumes consistent. No unusual patterns observed", "No variance", "None"],
+      ["Ownership Structure", "Group-level corporate ownership", "Pending ownership re-confirmation at refresh", "Minor gap", "Request updated ownership attestation"],
+      ["Screening", "Clean at prior review", "Re-screening in progress", "Pending", "Await results before closing"],
+      ["Adverse Media", "No adverse media at last review", "One industry press item re: commodity pricing — not entity-specific", "No variance", "None"],
+    ],
+    riskAiSummary: "Atlas Commodities Ltd is undergoing its scheduled periodic CDD refresh. Transaction activity is broadly consistent with the approved expected activity profile. One new counterparty in the UAE was identified in account activity last quarter — this should be assessed against the firm's country risk policy before the review is closed. Screening is in progress. No material adverse findings are anticipated given the entity's clean prior review history, but the UAE counterparty item and ownership re-confirmation should be resolved before the periodic review is signed off.",
+    checks: [["Periodic review", "In progress", "blue"]],
+    documents: [],
+    ownershipNotes: "Pending refresh.",
+    sanctions: "No active alerts.", pep: "No matches.", media: "No adverse media.",
+    activityLog: [["11:02 UTC", "Periodic Review Agent", "Refresh review workflow started"]],
+    audit: [["11:02 UTC", "System", "Periodic refresh review initiated"]],
+    agents: [["Periodic Review Agent", "Scheduled lifecycle refresh review running"]]
+  },
+  {
+    id: "CASE-2026-00131",
+    client: "Nova Biotech Ltd",
+    queueType: "trigger",
+    status: "Trigger Event",
+    statusClass: "red",
+    pipeline: "Trigger Review",
+    pipelineClass: "red",
+    aging: "2h",
+    priority: "High Risk",
+    priorityClass: "red",
+    assignee: "Ana M.",
+    entityType: "Corporation",
+    jurisdiction: "Germany",
+    activity: "Biotech manufacturing",
+    expected: "Supplier payments and grants",
+    summary: "Trigger review opened due to beneficial ownership update.",
+    riskScore: 72,
+    riskNarrative: "Ownership change requires re-verification.",
+    riskFactors: ["Ownership change"],
+    riskMitigants: ["German registered entity", "Biotech sector — regulated industry", "Prior clean CDD history"],
+    riskAnalyst: "Ana M.",
+    riskTriggerEvents: [
+      ["Beneficial Ownership Change", "Client self-reported change in shareholding structure — new investor acquiring 30% stake", "Re-verification of all UBOs required. New 30% shareholder must be identified, verified, and screened. Prior UBO percentages must be reconciled", "Request ID verification and source of wealth for new UBO. Update ownership register", "Open"],
+      ["Screening Re-run", "Ownership change requires full re-screen of new and existing UBOs", "Re-screen entity and all named UBOs including new shareholder against OFAC, EU, UN lists and PEP databases", "Submit full screening package for new owner", "In Progress"],
+      ["Document Refresh", "Updated ownership documentation required", "New shareholder agreement or cap table update required. Board resolution confirming change required", "Obtain updated shareholder register and board resolution from client", "Open"],
+      ["Account Activity Review", "Assess if activity profile changes with new ownership", "No material change in transaction patterns observed since trigger event", "Monitor account for 90 days post-ownership change", "Monitoring"],
+    ],
+    riskAiSummary: "Nova Biotech Ltd has self-reported a beneficial ownership change involving the acquisition of a 30% stake by a new investor. This trigger event requires a focused re-CDD covering the new UBO — full identification, verification, source of wealth documentation, and screening are required before the case can be closed. Existing UBO stakes must also be reconciled. A board resolution and updated shareholder register have been requested from the client. No changes to the entity's core business activity or account usage profile have been observed. The case should not be closed until all new UBO verification is complete and screening is confirmed clear.",
+    checks: [["Trigger event", "Ownership change detected", "red"]],
+    documents: [],
+    ownershipNotes: "Ownership update pending re-verification.",
+    sanctions: "No active alerts.", pep: "No matches.", media: "No adverse media.",
+    activityLog: [["12:10 UTC", "Trigger Detection Agent", "Ownership update detected"]],
+    audit: [["12:10 UTC", "System", "Trigger review opened"]],
+    agents: [["Trigger Review Agent", "Ownership change workflow initiated"]]
+  },
+  {
+    id: "CASE-2026-00132",
+    client: "Eastern Trading Co",
+    queueType: "screening",
+    status: "Screening Alert",
+    statusClass: "red",
+    pipeline: "Alert Review",
+    pipelineClass: "red",
+    aging: "1h",
+    priority: "High Risk",
+    priorityClass: "red",
+    assignee: "Screening Queue",
+    entityType: "LLC",
+    jurisdiction: "UAE",
+    activity: "International trading",
+    expected: "Cross-border payments",
+    summary: "Sanctions screening alert requiring analyst review.",
+    riskScore: 81,
+    riskNarrative: "Potential sanctions match flagged by screening provider.",
+    riskFactors: ["Sanctions alert"],
+    riskMitigants: ["UAE — FATF-monitored jurisdiction", "Prior account activity reviewed"],
+    riskAnalyst: "Screening Queue",
+    riskTriggerEvents: [
+      ["Sanctions Screening Alert", "Automated screening returned a potential match against an OFAC SDN entry for a similarly named trading entity", "Match confidence rated 0.78 — above escalation threshold. Name, country, and business type overlap identified. Date of birth discrepancy noted which may indicate a different entity", "Analyst must disposition the match — confirm or clear against full SDN record. Document rationale", "Open — Human Disposition Required"],
+      ["Account Activity Hold", "Pending screening resolution, account activity is under enhanced monitoring", "No recent transactions flagged as suspicious. Last activity was a standard cross-border payment to a known counterparty", "Maintain enhanced monitoring. Do not release hold until screening disposition is confirmed", "Active"],
+      ["Entity Re-verification", "Sanctions alert triggers re-verification of entity incorporation and ownership details", "Certificate of Incorporation on file — current. Ownership details require re-confirmation given screening uncertainty", "Request current ownership attestation and confirm no change in UBOs", "Open"],
+    ],
+    riskAiSummary: "Eastern Trading Co has triggered a screening alert with a potential OFAC SDN match rated at 0.78 confidence. The match was generated on the basis of name similarity, country of incorporation (UAE), and overlapping business type (international trading). A date of birth discrepancy between the SDN entry and client records has been noted, which may indicate a false positive — however, this must be formally assessed and documented by an analyst before any disposition can be made. The account is currently under enhanced monitoring. No suspicious transaction activity has been identified in recent account history. Recommend immediate analyst review of the SDN match and formal disposition documentation. If confirmed as false positive, case can be cleared; if confirmed as true match, case must be escalated to BSA Officer for mandatory reporting review.",
+    checks: [["Screening alert", "Potential sanctions match", "red"]],
+    documents: [],
+    ownershipNotes: "Screening in progress.",
+    sanctions: "Potential sanctions match — requires analyst disposition.",
+    pep: "Under review.", media: "No adverse media.",
+    activityLog: [["12:45 UTC", "Screening Agent", "Potential sanctions match detected"]],
+    audit: [["12:45 UTC", "System", "Screening alert case opened"]],
+    agents: [["Screening Agent", "Sanctions alert triaged for analyst review"]]
+  }
+];
+
+const clients = [
+  {
+    id: "CLIENT-001",
+    name: "Apex Digital LLC",
+    legalName: "Apex Digital LLC",
+    entityType: "LLC",
+    jurisdiction: "Delaware, US",
+    riskTier: "Moderate",
+    riskClass: "gold",
+    relationshipStatus: "Active Customer",
+    relationshipClass: "green",
+    lastReviewDate: "2025-12-11",
+    nextReviewDate: "2026-12-11",
+    openCases: 1,
+    screeningStatus: "No active alerts",
+    ownershipStatus: "Current",
+    lastCompletedReview: "Periodic Refresh",
+    summary: "Active digital asset client with one open onboarding case pending completion of missing registry evidence.",
+    businessDba: "Apex Digital",
+    formationDate: "2020-07-14",
+    incorporationCountry: "United States",
+    incorporationState: "Delaware",
+    registrationNumber: "REG-2020-88421",
+    operatingAddress: "244 Harbor Avenue, Boston, MA, United States",
+    industry: "Crypto Services",
+    ownershipUbo: "2",
+    ownershipControllers: "1",
+    ownershipStructure: "Direct ownership",
+    ownershipComplexity: "Low",
+    ownershipNotes: "Two direct beneficial owners identified. No layered legal entity chain, no nominee ownership, and no shell-company concerns identified in the current file.",
+    sanctions: "No sanctions matches returned for the entity or associated control persons.",
+    pep: "No direct PEP match. Prior low-confidence related-party review closed with no escalation.",
+    media: "No unresolved adverse media issue remains open on the client profile.",
+    accounts: [
+      { accountName: "Operating Account", accountType: "Operating Account", status: "Active", statusClass: "green", purpose: "Operating account", openedDate: "2025-12-11" },
+      { accountName: "Custody Account", accountType: "Crypto Custody", status: "Pending Activation", statusClass: "gold", purpose: "Crypto trading / custody", openedDate: "2025-12-12" }
+    ],
+    history: [
+      { caseId: "CASE-2026-00128", caseType: "Onboarding Application", status: "Completeness Review", statusClass: "blue", opened: "2026-01-11", outcome: "Open" }
+    ]
+  },
+  {
+    id: "CLIENT-002",
+    name: "North Harbor Ventures LP",
+    legalName: "North Harbor Ventures LP",
+    entityType: "Limited Partnership",
+    jurisdiction: "Cayman Islands",
+    riskTier: "High",
+    riskClass: "red",
+    relationshipStatus: "Pending Onboarding",
+    relationshipClass: "gold",
+    lastReviewDate: "Not yet onboarded",
+    nextReviewDate: "TBD",
+    openCases: 1,
+    screeningStatus: "Not started",
+    ownershipStatus: "Pending docs",
+    lastCompletedReview: "None",
+    summary: "Prospective client with one onboarding application in pending-client-response state.",
+    businessDba: "North Harbor",
+    formationDate: "2019-03-11",
+    incorporationCountry: "Cayman Islands",
+    incorporationState: "-",
+    registrationNumber: "CAY-LP-44318",
+    operatingAddress: "Maple House, George Town, Cayman Islands",
+    industry: "Investment Management",
+    ownershipUbo: "Pending",
+    ownershipControllers: "1",
+    ownershipStructure: "Layered structure under review",
+    ownershipComplexity: "High",
+    ownershipNotes: "Ownership and control package remains incomplete pending client response.",
+    sanctions: "No screening completed yet due to incomplete onboarding package.",
+    pep: "PEP review not started.",
+    media: "Adverse media review not started.",
+    accounts: [
+      { accountName: "Fund Treasury Account", accountType: "Treasury", status: "Pending", statusClass: "gold", purpose: "Investment / treasury management", openedDate: "Not opened" }
+    ],
+    history: [
+      { caseId: "CASE-2026-00127", caseType: "Onboarding Application", status: "Pending Client Response", statusClass: "gold", opened: "2026-01-10", outcome: "Open" }
+    ]
+  },
+  {
+    id: "CLIENT-003",
+    name: "Meridian Capital Partners",
+    legalName: "Meridian Capital Partners",
+    entityType: "LLC",
+    jurisdiction: "Delaware, US",
+    riskTier: "Moderate",
+    riskClass: "gold",
+    relationshipStatus: "Active Customer",
+    relationshipClass: "green",
+    lastReviewDate: "2026-01-08",
+    nextReviewDate: "2027-01-08",
+    openCases: 1,
+    screeningStatus: "Pending provider results",
+    ownershipStatus: "Current",
+    lastCompletedReview: "Annual Review",
+    summary: "Active investment advisory client currently in standard CDD review.",
+    businessDba: "Meridian Capital",
+    formationDate: "2021-01-09",
+    incorporationCountry: "United States",
+    incorporationState: "Delaware",
+    registrationNumber: "REG-2021-11390",
+    operatingAddress: "120 Federal Street, Boston, MA, United States",
+    industry: "Investment Management",
+    ownershipUbo: "1",
+    ownershipControllers: "1",
+    ownershipStructure: "Direct ownership",
+    ownershipComplexity: "Low",
+    ownershipNotes: "Ownership and control are complete and reconciled.",
+    sanctions: "Pending screening results from connected provider.",
+    pep: "No PEP concerns identified.",
+    media: "No material negative media found.",
+    accounts: [
+      { accountName: "Advisory Operating Account", accountType: "Operating Account", status: "Active", statusClass: "green", purpose: "Operating account", openedDate: "2024-05-03" },
+      { accountName: "Settlement Account", accountType: "Settlement", status: "Active", statusClass: "green", purpose: "Payments / collections", openedDate: "2024-05-03" }
+    ],
+    history: [
+      { caseId: "CASE-2026-00125", caseType: "Periodic Review", status: "In CDD Review", statusClass: "blue", opened: "2026-01-12", outcome: "Open" }
+    ]
+  }
+];
+
+let currentClient = clients[0];
+
+function renderClientProfile(clientObj) {
+  currentClient = clientObj;
+  const get = (id) => document.getElementById(id);
+
+  if (get("profileClientName")) get("profileClientName").textContent = clientObj.name || "-";
+  if (get("profileRelationshipStatus")) { get("profileRelationshipStatus").className = `badge ${clientObj.relationshipClass || "gray"}`; get("profileRelationshipStatus").textContent = clientObj.relationshipStatus || "-"; }
+  if (get("profileRiskTier")) { get("profileRiskTier").className = `badge ${clientObj.riskClass || "gray"}`; get("profileRiskTier").textContent = `${clientObj.riskTier || "-"} Risk`; }
+  if (get("profileEntityType")) get("profileEntityType").textContent = clientObj.entityType || "-";
+
+  if (get("profileOvName")) get("profileOvName").textContent = clientObj.legalName || "-";
+  if (get("profileOvEntityType")) get("profileOvEntityType").textContent = clientObj.entityType || "-";
+  if (get("profileOvJurisdiction")) get("profileOvJurisdiction").textContent = clientObj.jurisdiction || "-";
+  if (get("profileOvRiskTier")) get("profileOvRiskTier").textContent = clientObj.riskTier || "-";
+  if (get("profileLastReview")) get("profileLastReview").textContent = clientObj.lastReviewDate || "-";
+  if (get("profileNextReview")) get("profileNextReview").textContent = clientObj.nextReviewDate || "-";
+  if (get("profileRelationshipText")) get("profileRelationshipText").textContent = clientObj.relationshipStatus || "-";
+  if (get("profileOpenCases")) get("profileOpenCases").textContent = clientObj.openCases ?? "0";
+  if (get("profileAccountCount")) get("profileAccountCount").textContent = clientObj.accounts?.length ?? "0";
+  if (get("profileScreeningStatus")) get("profileScreeningStatus").textContent = clientObj.screeningStatus || "-";
+  if (get("profileOwnershipStatus")) get("profileOwnershipStatus").textContent = clientObj.ownershipStatus || "-";
+  if (get("profileLastCompletedReview")) get("profileLastCompletedReview").textContent = clientObj.lastCompletedReview || "-";
+  if (get("profileSummary")) get("profileSummary").textContent = clientObj.summary || "-";
+
+  if (get("profileBizName")) get("profileBizName").textContent = clientObj.legalName || "-";
+  if (get("profileBizDba")) get("profileBizDba").textContent = clientObj.businessDba || "-";
+  if (get("profileBizType")) get("profileBizType").textContent = clientObj.entityType || "-";
+  if (get("profileBizFormation")) get("profileBizFormation").textContent = clientObj.formationDate || "-";
+  if (get("profileBizCountry")) get("profileBizCountry").textContent = clientObj.incorporationCountry || "-";
+  if (get("profileBizState")) get("profileBizState").textContent = clientObj.incorporationState || "-";
+  if (get("profileBizReg")) get("profileBizReg").textContent = clientObj.registrationNumber || "-";
+  if (get("profileBizAddress")) get("profileBizAddress").textContent = clientObj.operatingAddress || "-";
+  if (get("profileBizIndustry")) get("profileBizIndustry").textContent = clientObj.industry || "-";
+
+  if (get("profileOwnUbo")) get("profileOwnUbo").textContent = clientObj.ownershipUbo || "-";
+  if (get("profileOwnControllers")) get("profileOwnControllers").textContent = clientObj.ownershipControllers || "-";
+  if (get("profileOwnStructure")) get("profileOwnStructure").textContent = clientObj.ownershipStructure || "-";
+  if (get("profileOwnComplexity")) get("profileOwnComplexity").textContent = clientObj.ownershipComplexity || "-";
+  if (get("profileOwnershipNotes")) get("profileOwnershipNotes").textContent = clientObj.ownershipNotes || "-";
+
+  if (get("profileSanctions")) get("profileSanctions").textContent = clientObj.sanctions || "-";
+  if (get("profilePep")) get("profilePep").textContent = clientObj.pep || "-";
+  if (get("profileMedia")) get("profileMedia").textContent = clientObj.media || "-";
+
+  const profileAccountsBody = get("profileAccountsBody");
+  if (profileAccountsBody) {
+    profileAccountsBody.innerHTML = "";
+    (clientObj.accounts || []).forEach((account) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>${account.accountName||"-"}</td><td>${account.accountType||"-"}</td><td><span class="badge ${account.statusClass||"gray"}">${account.status||"-"}</span></td><td>${account.purpose||"-"}</td><td>${account.openedDate||"-"}</td>`;
+      profileAccountsBody.appendChild(tr);
+    });
+  }
+
+  const profileCasesBody = get("profileCasesBody");
+  if (profileCasesBody) {
+    profileCasesBody.innerHTML = "";
+    (clientObj.history || []).forEach((item) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>${item.caseId||"-"}</td><td>${item.caseType||"-"}</td><td><span class="badge ${item.statusClass||"gray"}">${item.status||"-"}</span></td><td>${item.opened||"-"}</td><td>${item.outcome||"-"}</td><td><button class="open-link profile-case-open" data-case="${item.caseId}">Open Case</button></td>`;
+      profileCasesBody.appendChild(tr);
+    });
+    profileCasesBody.querySelectorAll(".profile-case-open").forEach((btn) => {
+      btn.addEventListener("click", () => openCase(btn.dataset.case));
+    });
+  }
+}
+
+function openClientProfile(clientId) {
+  const found = clients.find((c) => c.id === clientId);
+  if (!found) return;
+  renderClientProfile(found);
+}
+
+function renderClientDirectory() {
+  const clientDirectoryBody = document.getElementById("clientDirectoryBody");
+  const clientDirectorySearch = document.getElementById("clientDirectorySearch");
+  if (!clientDirectoryBody) return;
+
+  clientDirectoryBody.innerHTML = "";
+  const searchValue = (clientDirectorySearch?.value || "").toLowerCase().trim();
+
+  const visibleClients = clients.filter((client) => {
+    const haystack = `${client.name} ${client.legalName} ${client.entityType} ${client.jurisdiction} ${(client.accounts||[]).map(a=>a.accountName).join(" ")} ${(client.history||[]).map(h=>h.caseId).join(" ")}`.toLowerCase();
+    return !searchValue || haystack.includes(searchValue);
+  });
+
+  visibleClients.forEach((client) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><div class="client-cell"><div class="client-name profile-open-link" data-client="${client.id}">${client.name}</div><div class="client-sub">${client.id}</div></div></td>
+      <td>${client.entityType}</td>
+      <td>${client.jurisdiction}</td>
+      <td><span class="badge ${client.riskClass}">${client.riskTier}</span></td>
+      <td>${client.lastReviewDate}</td>
+      <td>${client.nextReviewDate}</td>
+      <td>${client.accounts?.length||0}</td>
+      <td>${client.openCases}</td>
+      <td><button class="open-link profile-open-link" data-client="${client.id}">View Profile</button></td>
+    `;
+    clientDirectoryBody.appendChild(tr);
+  });
+
+  document.querySelectorAll(".profile-open-link").forEach((btn) => {
+    btn.addEventListener("click", () => openClientProfile(btn.dataset.client));
+  });
+
+  if (visibleClients.length === 1) renderClientProfile(visibleClients[0]);
+}
+
+function getLastAction(caseObj) {
+  if (!caseObj.activityLog || !caseObj.activityLog.length) return ["No activity", ""];
+  const [time, title] = caseObj.activityLog[caseObj.activityLog.length - 1];
+  return [title, time];
+}
+
+function getRiskBadge(score) {
+  if (score >= 80) return { label: "High", className: "red" };
+  if (score >= 60) return { label: "Moderate", className: "gold" };
+  return { label: "Low", className: "green" };
+}
+
+function parseAgingHours(agingText) {
+  const lower = agingText.toLowerCase();
+  let total = 0;
+  const dayMatch = lower.match(/(\d+)d/);
+  const hourMatch = lower.match(/(\d+)h/);
+  const minMatch = lower.match(/(\d+)m/);
+  if (dayMatch) total += Number(dayMatch[1]) * 24;
+  if (hourMatch) total += Number(hourMatch[1]);
+  if (minMatch) total += Number(minMatch[1]) / 60;
+  return total;
+}
+
+function isSLARisk(caseObj) {
+  return caseObj.priority === "Escalated" || parseAgingHours(caseObj.aging) >= 4;
+}
+
+let currentCase = cases[0];
+let activeStatusChip = "all";
+let sortByAgingDesc = true;
+
+function renderPriorityList() {
+  const priorityList = document.getElementById("priorityList");
+  if (!priorityList) return;
+  priorityList.innerHTML = "";
+  cases.forEach((item) => {
+    const row = document.createElement("div");
+    row.className = "simple-row";
+    row.innerHTML = `<div class="left"><strong>${item.client}</strong><span>${item.status} · ${item.pipeline}</span></div><div class="right">${item.id}</div>`;
+    row.addEventListener("click", () => openCase(item.id));
+    priorityList.appendChild(row);
+  });
+}
+
+function renderQueueCounts() {
+  const counts = {
+    all: cases.length,
+    completeness: cases.filter(c => c.status === "Completeness Review").length,
+    pendingClient: cases.filter(c => c.status === "Pending Client Response").length,
+    cdd: cases.filter(c => c.status === "In CDD Review").length,
+    screening: cases.filter(c => c.status === "Pending Screening").length,
+    human: cases.filter(c => c.status === "Pending Human Review").length,
+    sla: cases.filter(c => isSLARisk(c)).length
+  };
+  const byId = (id) => document.getElementById(id);
+  if (byId("countAll")) byId("countAll").textContent = counts.all;
+  if (byId("countCompleteness")) byId("countCompleteness").textContent = counts.completeness;
+  if (byId("countPendingClient")) byId("countPendingClient").textContent = counts.pendingClient;
+  if (byId("countCDD")) byId("countCDD").textContent = counts.cdd;
+  if (byId("countScreening")) byId("countScreening").textContent = counts.screening;
+  if (byId("countHuman")) byId("countHuman").textContent = counts.human;
+  if (byId("countSLA")) byId("countSLA").textContent = counts.sla;
+}
+
+function renderQueue() {
+  const queueBody = document.getElementById("queueBody");
+  const caseSearch = document.getElementById("caseSearch");
+  const statusFilter = document.getElementById("statusFilter");
+  const pipelineFilter = document.getElementById("pipelineFilter");
+  const priorityFilter = document.getElementById("priorityFilter");
+  const jurisdictionFilter = document.getElementById("jurisdictionFilter");
+  const assigneeFilter = document.getElementById("assigneeFilter");
+  if (!queueBody) return;
+  queueBody.innerHTML = "";
+
+  const searchValue = (caseSearch?.value || "").toLowerCase().trim();
+  const statusValue = statusFilter?.value || "all";
+  const pipelineValue = pipelineFilter?.value || "all";
+  const priorityValue = priorityFilter?.value || "all";
+  const jurisdictionValue = jurisdictionFilter?.value || "all";
+  const assigneeValue = assigneeFilter?.value || "all";
+
+  let visibleCases = [...cases].filter((item) => {
+    const searchable = `${item.client} ${item.id} ${item.activity} ${item.jurisdiction}`.toLowerCase();
+    return (
+      (!searchValue || searchable.includes(searchValue)) &&
+      (statusValue === "all" || item.status === statusValue) &&
+      (pipelineValue === "all" || item.pipeline === pipelineValue) &&
+      (priorityValue === "all" || item.priority === priorityValue) &&
+      (jurisdictionValue === "all" || item.jurisdiction === jurisdictionValue) &&
+      (assigneeValue === "all" || item.assignee === assigneeValue) &&
+      (activeStatusChip === "all" ? true : activeStatusChip === "sla-risk" ? isSLARisk(item) : item.status === activeStatusChip)
+    );
+  });
+
+  visibleCases.sort((a, b) => {
+    const aH = parseAgingHours(a.aging), bH = parseAgingHours(b.aging);
+    return sortByAgingDesc ? bH - aH : aH - bH;
+  });
+
+  visibleCases.forEach((item) => {
+    const risk = getRiskBadge(item.riskScore);
+    const [lastActionLabel, lastActionTime] = getLastAction(item);
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><div class="client-cell"><div class="client-name">${item.client}</div><div class="client-sub">${item.id}</div><div class="client-meta">${item.activity||""}</div></div></td>
+      <td><span class="badge ${item.statusClass}">${item.status}</span></td>
+      <td><span class="badge ${item.pipelineClass}">${item.pipeline}</span></td>
+      <td><div class="risk-cell"><span class="badge ${risk.className}">${risk.label}</span><div class="table-note">Score ${item.riskScore}</div></div></td>
+      <td>${item.jurisdiction||""}</td>
+      <td><div>${item.aging}</div><div class="${isSLARisk(item)?"sla-flag":"sla-safe"}" style="margin-top:8px;">${isSLARisk(item)?"SLA Risk":"On Track"}</div></td>
+      <td>${item.assignee||""}</td>
+      <td><div class="last-action">${lastActionLabel}<span>${lastActionTime}</span></div></td>
+      <td><button class="open-link" data-case="${item.id}">Open</button></td>
+    `;
+    queueBody.appendChild(tr);
+  });
+
+  document.querySelectorAll("#queueBody .open-link").forEach((btn) => {
+    btn.addEventListener("click", () => openCase(btn.dataset.case));
+  });
+
+  renderQueueCounts();
+}
+
+function setActiveView(viewKey) {
+  document.querySelectorAll(".view").forEach((el) => el.classList.remove("active"));
+  document.querySelectorAll(".nav-item").forEach((el) => el.classList.remove("active"));
+
+  const target = views[viewKey];
+  if (!target) return;
+
+  document.getElementById(target.id)?.classList.add("active");
+  document.querySelector(`.nav-item[data-view="${viewKey}"]`)?.classList.add("active");
+
+  const pageEyebrow = document.getElementById("pageEyebrow");
+  const pageTitle = document.getElementById("pageTitle");
+  if (pageEyebrow) pageEyebrow.textContent = target.eyebrow;
+  if (pageTitle) pageTitle.textContent = target.title;
+
+  if (viewKey === "intake") renderQueue();
+  if (viewKey === "monitoring") renderQueueForTarget("monitoringQueueBody", "periodic");
+  if (viewKey === "triggers") renderQueueForTarget("triggersQueueBody", "trigger");
+  if (viewKey === "screening") renderQueueForTarget("screeningQueueBody", "screening");
+  if (viewKey === "directory") {
+    // directory owned by inline script — call safely after it has initialised
+    setTimeout(() => {
+      if (typeof renderTable === 'function' && typeof CLIENTS !== 'undefined') {
+        renderTable(CLIENTS);
+      }
+    }, 0);
+  }
+}
+
+function renderCase(caseObj) {
+  currentCase = caseObj;
+  const get = (id) => document.getElementById(id);
+
+  if (get("caseId")) get("caseId").textContent = caseObj.id;
+  if (get("caseClientName")) get("caseClientName").textContent = caseObj.client;
+  if (get("caseStatus")) { get("caseStatus").className = `badge ${caseObj.statusClass}`; get("caseStatus").textContent = caseObj.status; }
+  if (get("casePipeline")) { get("casePipeline").className = `badge ${caseObj.pipelineClass}`; get("casePipeline").textContent = caseObj.pipeline; }
+  if (get("casePriority")) { get("casePriority").className = `badge ${caseObj.priorityClass}`; get("casePriority").textContent = caseObj.priority; }
+
+  if (get("ovLegalName")) get("ovLegalName").textContent = caseObj.legalName || caseObj.client;
+  if (get("ovEntityType")) get("ovEntityType").textContent = caseObj.entityType || "-";
+  if (get("ovJurisdiction")) get("ovJurisdiction").textContent = caseObj.jurisdiction || "-";
+  if (get("ovFormationDate")) get("ovFormationDate").textContent = caseObj.formationDate || "-";
+  if (get("ovRegistrationNumber")) get("ovRegistrationNumber").textContent = caseObj.registrationNumber || "-";
+  if (get("ovTaxId")) get("ovTaxId").textContent = caseObj.taxId || "-";
+  if (get("ovRegisteredAddress")) get("ovRegisteredAddress").textContent = caseObj.registeredAddress || "-";
+  if (get("ovBusinessDescription")) get("ovBusinessDescription").textContent = caseObj.businessDescription || "-";
+  if (get("ovIndustry")) get("ovIndustry").textContent = caseObj.industry || "-";
+  if (get("ovPurpose")) get("ovPurpose").textContent = caseObj.purposeOfAccount || "-";
+  if (get("ovExpected")) get("ovExpected").textContent = caseObj.expected || "-";
+  if (get("ovSourceOfFunds")) get("ovSourceOfFunds").textContent = caseObj.sourceOfFunds || "-";
+
+  if (get("ovBeneficialOwners")) get("ovBeneficialOwners").textContent = caseObj.beneficialOwnersCount || "-";
+  if (get("ovControlPerson")) get("ovControlPerson").textContent = caseObj.controlPersonCount || "-";
+  if (get("ovAuthorizedUsers")) get("ovAuthorizedUsers").textContent = caseObj.authorizedUsersCount || "-";
+  if (get("ovOwnershipStructure")) get("ovOwnershipStructure").textContent = caseObj.ownershipStructureSummary || "-";
+  if (get("ovComplexityFlag")) get("ovComplexityFlag").textContent = caseObj.complexityFlag || "-";
+
+  if (get("ovRiskScoreSummary")) get("ovRiskScoreSummary").textContent = caseObj.riskScore || "-";
+  if (get("ovRiskTier")) get("ovRiskTier").textContent = caseObj.riskTier || "-";
+  if (get("ovEddTriggered")) get("ovEddTriggered").textContent = caseObj.eddTriggered || "-";
+  if (get("ovMainRiskFactors")) get("ovMainRiskFactors").textContent = caseObj.mainRiskFactorsSummary || "-";
+
+  if (get("overviewSummary")) get("overviewSummary").textContent = caseObj.summary;
+
+  const overviewChecks = get("overviewChecks");
+  if (overviewChecks) {
+    overviewChecks.innerHTML = "";
+    (caseObj.checks || []).forEach(([label, result, cls]) => {
+      const li = document.createElement("li");
+      li.innerHTML = `<span>${label}</span><span class="badge ${cls}">${result}</span>`;
+      overviewChecks.appendChild(li);
+    });
+  }
+
+  const documentsList = get("documentsList");
+  if (documentsList) {
+    documentsList.innerHTML = "";
+    (caseObj.documents || []).forEach(([name, meta, cls]) => {
+      const item = document.createElement("div");
+      item.className = "doc-item";
+      item.innerHTML = `<div class="doc-meta"><strong>${name}</strong><span>${meta}</span></div><span class="badge ${cls}">${cls==="green"?"Verified":cls==="gold"?"Review":"In Progress"}</span>`;
+      documentsList.appendChild(item);
+    });
+  }
+
+  if (get("ownershipEntity")) get("ownershipEntity").textContent = caseObj.client;
+  if (get("ownershipNotes")) get("ownershipNotes").textContent = caseObj.ownershipNotes;
+
+  // Populate UBO + controller tables from matching CLIENTS record (inline script)
+  if (typeof CLIENTS !== 'undefined') {
+    const cr = CLIENTS.find(c => c.name === caseObj.client);
+    const own = cr?.ownership;
+
+    const uboBody  = get("wsUboBody");
+    const ctrlBody = get("wsCtrlBody");
+    const uboCount  = get("wsUboCount");
+    const ctrlCount = get("wsCtrlCount");
+
+    if (uboBody && own?.uboCards?.length) {
+      uboCount && (uboCount.textContent = own.uboCards.length + ' identified');
+      uboBody.innerHTML = own.uboCards.map(u => {
+        const idCls  = u.idVerif?.includes('Pending') || u.idVerif?.includes('pending') ? 'gold' : 'green';
+        const scrCls = u.screening?.startsWith('Clear') ? 'green' : 'gold';
+        return `<tr>
+          <td><strong>${u.name}</strong></td>
+          <td>${u.stake || '—'}</td>
+          <td>${u.nationality || '—'}</td>
+          <td><span class="badge ${idCls}">${u.idVerif || '—'}</span></td>
+          <td><span class="badge ${scrCls}">${u.screening?.split('—')[0]?.trim() || u.screening || '—'}</span></td>
+        </tr>`;
+      }).join('');
+    } else if (uboBody) {
+      uboCount && (uboCount.textContent = caseObj.beneficialOwnersCount || '—');
+      uboBody.innerHTML = `<tr><td colspan="5" style="color:var(--muted);text-align:center;padding:14px">${caseObj.beneficialOwnersCount?.includes('Pending') ? 'Pending client response' : 'No UBO data on file'}</td></tr>`;
+    }
+
+    if (ctrlBody && own?.controllerCards?.length) {
+      ctrlCount && (ctrlCount.textContent = own.controllerCards.length + ' identified');
+      ctrlBody.innerHTML = own.controllerCards.map(c => {
+        const idCls  = c.idVerif?.includes('Pending') || c.idVerif?.includes('pending') ? 'gold' : 'green';
+        const scrCls = c.screening?.startsWith('Clear') ? 'green' : 'gold';
+        return `<tr>
+          <td><strong>${c.name}</strong></td>
+          <td>${c.title || c.role || '—'}</td>
+          <td>${c.signingAuth || c.signingAuthority || '—'}</td>
+          <td><span class="badge ${idCls}">${c.idVerif || '—'}</span></td>
+          <td><span class="badge ${scrCls}">${c.screening || '—'}</span></td>
+        </tr>`;
+      }).join('');
+    } else if (ctrlBody) {
+      ctrlCount && (ctrlCount.textContent = caseObj.controlPersonCount || '—');
+      ctrlBody.innerHTML = `<tr><td colspan="5" style="color:var(--muted);text-align:center;padding:14px">${caseObj.controlPersonCount?.includes('Pending') ? 'Pending client response' : 'No control person data on file'}</td></tr>`;
+    }
+  }
+
+  // render workspace org chart
+  if (typeof renderWorkspaceOwnershipChart === 'function') {
+    renderWorkspaceOwnershipChart(caseObj);
+  }
+  if (get("screenSanctions")) get("screenSanctions").textContent = caseObj.sanctions;
+  if (get("screenPep")) get("screenPep").textContent = caseObj.pep;
+  if (get("screenMedia")) get("screenMedia").textContent = caseObj.media;
+  if (get("riskScore")) get("riskScore").textContent = caseObj.riskScore;
+  if (get("riskNarrative")) get("riskNarrative").textContent = caseObj.riskNarrative;
+
+  // Risk tier + EDD display
+  const riskTierEl = get("riskTierDisplay");
+  if (riskTierEl) {
+    const tier = caseObj.riskTier || getRiskBadge(caseObj.riskScore).label;
+    const cls  = tier === 'High' ? 'red' : tier === 'Moderate' ? 'gold' : 'green';
+    riskTierEl.innerHTML = `<span class="badge ${cls}">${tier}</span>`;
+  }
+  if (get("riskEddDisplay")) get("riskEddDisplay").textContent = caseObj.eddTriggered || '—';
+  if (get("riskAnalyst"))    get("riskAnalyst").textContent    = caseObj.riskAnalyst  || caseObj.assignee || '—';
+
+  // Review type badge
+  const reviewTypeBadge = get("riskReviewTypeBadge");
+  if (reviewTypeBadge) {
+    const qt = caseObj.queueType;
+    const label = qt === 'onboarding' ? 'New Account CDD' : qt === 'periodic' ? 'Periodic Review' : qt === 'trigger' ? 'Trigger Review' : qt === 'screening' ? 'Screening Review' : '—';
+    const cls   = qt === 'onboarding' ? 'blue' : qt === 'periodic' ? 'gray' : qt === 'trigger' ? 'red' : 'gold';
+    reviewTypeBadge.className = `badge ${cls}`;
+    reviewTypeBadge.textContent = label;
+  }
+
+  // Risk factors chips
+  const riskFactors = get("riskFactors");
+  if (riskFactors) {
+    riskFactors.innerHTML = "";
+    (caseObj.riskFactors || []).forEach((factor) => {
+      const chip = document.createElement("span");
+      chip.className = "chip";
+      chip.textContent = factor;
+      riskFactors.appendChild(chip);
+    });
+  }
+
+  // Mitigating controls chips
+  const riskMitigants = get("riskMitigants");
+  if (riskMitigants) {
+    riskMitigants.innerHTML = "";
+    (caseObj.riskMitigants || []).forEach((m) => {
+      const chip = document.createElement("span");
+      chip.className = "chip";
+      chip.style.background = "#E8F8EE";
+      chip.style.color = "#14632C";
+      chip.style.borderColor = "#2BB567";
+      chip.textContent = m;
+      riskMitigants.appendChild(chip);
+    });
+  }
+
+  // Show/hide correct section based on queue type
+  const onbSection  = get("riskOnboardingSection");
+  const perSection  = get("riskPeriodicSection");
+  const trigSection = get("riskTriggerSection");
+  if (onbSection)  onbSection.style.display  = 'none';
+  if (perSection)  perSection.style.display  = 'none';
+  if (trigSection) trigSection.style.display = 'none';
+
+  const qt = caseObj.queueType;
+
+  if ((qt === 'onboarding' || qt === 'screening') && caseObj.riskCddChecklist) {
+    if (onbSection) onbSection.style.display = '';
+    const cddBody = get("riskCddBody");
+    if (cddBody) {
+      const statusMap = { green: 'Complete', gold: 'In Progress / Partial', red: 'Outstanding / Not Started', gray: 'Not Started', blue: 'Pending' };
+      cddBody.innerHTML = caseObj.riskCddChecklist.map(([item, req, finding, cls]) =>
+        `<tr>
+          <td><strong>${item}</strong></td>
+          <td style="color:var(--muted);font-size:12px">${req}</td>
+          <td style="font-size:12px">${finding}</td>
+          <td><span class="badge ${cls}">${statusMap[cls] || cls}</span></td>
+        </tr>`
+      ).join('');
+    }
+  }
+
+  if (qt === 'periodic' && caseObj.riskPeriodicEvA) {
+    if (perSection) perSection.style.display = '';
+    const perBody = get("riskPeriodicBody");
+    if (perBody) {
+      perBody.innerHTML = caseObj.riskPeriodicEvA.map(([area, expected, actual, variance, action]) => {
+        const vCls = variance === 'No variance' ? 'green' : variance === 'Pending' ? 'gray' : 'gold';
+        return `<tr>
+          <td><strong>${area}</strong></td>
+          <td style="font-size:12px;color:var(--muted)">${expected}</td>
+          <td style="font-size:12px">${actual}</td>
+          <td><span class="badge ${vCls}">${variance}</span></td>
+          <td style="font-size:12px">${action}</td>
+        </tr>`;
+      }).join('');
+    }
+  }
+
+  if (qt === 'trigger' && caseObj.riskTriggerEvents) {
+    if (trigSection) trigSection.style.display = '';
+    const trigBody = get("riskTriggerBody");
+    if (trigBody) {
+      trigBody.innerHTML = caseObj.riskTriggerEvents.map(([type, details, impact, action, status]) => {
+        const sCls = status.includes('Open') ? 'red' : status.includes('Progress') ? 'blue' : status === 'Monitoring' ? 'gold' : 'gray';
+        return `<tr>
+          <td><strong>${type}</strong></td>
+          <td style="font-size:12px">${details}</td>
+          <td style="font-size:12px;color:var(--muted)">${impact}</td>
+          <td style="font-size:12px">${action}</td>
+          <td><span class="badge ${sCls}">${status}</span></td>
+        </tr>`;
+      }).join('');
+    }
+  }
+
+  // AI Summary text box
+  const riskAiSummary = get("riskAiSummary");
+  if (riskAiSummary) riskAiSummary.value = caseObj.riskAiSummary || '';
+
+  const activityTimeline = get("activityTimeline");
+  if (activityTimeline) {
+    activityTimeline.innerHTML = "";
+    (caseObj.activityLog || []).forEach(([time, title, text]) => {
+      const item = document.createElement("div");
+      item.className = "timeline-item";
+      item.innerHTML = `<div class="timeline-time">${time}</div><div class="timeline-body"><strong>${title}</strong><span>${text}</span></div>`;
+      activityTimeline.appendChild(item);
+    });
+  }
+
+  const auditTimeline = get("auditTimeline");
+  if (auditTimeline) {
+    auditTimeline.innerHTML = "";
+    (caseObj.audit || []).forEach(([time, actor, text]) => {
+      const item = document.createElement("div");
+      item.className = "timeline-item";
+      item.innerHTML = `<div class="timeline-time">${time}</div><div class="timeline-body"><strong>${actor}</strong><span>${text}</span></div>`;
+      auditTimeline.appendChild(item);
+    });
+  }
+
+  const agentFeed = get("agentFeed");
+  if (agentFeed) {
+    agentFeed.innerHTML = "";
+    (caseObj.agents || []).forEach(([name, text]) => {
+      const card = document.createElement("div");
+      card.className = "agent-card";
+      card.innerHTML = `<strong>${name}</strong><span>${text}</span>`;
+      agentFeed.appendChild(card);
+    });
+  }
+
+  // Reset workspace tabs to overview
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+  document.querySelector(".tab[data-tab='overview']")?.classList.add("active");
+  document.getElementById("tab-overview")?.classList.add("active");
+}
+
+function openCase(caseIdValue) {
+  const found = cases.find((c) => c.id === caseIdValue);
+  if (!found) return;
+  renderCase(found);
+  setActiveView("workspace");
+}
+
+// Nav
+document.querySelectorAll(".nav-item").forEach((btn) => {
+  btn.addEventListener("click", () => setActiveView(btn.dataset.view));
+});
+
+// Workspace tabs
+document.querySelectorAll(".tab").forEach((tab) => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach((t) => t.classList.remove("active"));
+    document.querySelectorAll(".tab-content").forEach((c) => c.classList.remove("active"));
+    tab.classList.add("active");
+    document.getElementById(`tab-${tab.dataset.tab}`)?.classList.add("active");
+  });
+});
+
+// Queue filters
+document.getElementById("caseSearch")?.addEventListener("input", renderQueue);
+document.getElementById("statusFilter")?.addEventListener("change", renderQueue);
+document.getElementById("pipelineFilter")?.addEventListener("change", renderQueue);
+document.getElementById("priorityFilter")?.addEventListener("change", renderQueue);
+document.getElementById("jurisdictionFilter")?.addEventListener("change", renderQueue);
+document.getElementById("assigneeFilter")?.addEventListener("change", renderQueue);
+
+document.getElementById("resetFiltersBtn")?.addEventListener("click", () => {
+  ["caseSearch","statusFilter","pipelineFilter","priorityFilter","jurisdictionFilter","assigneeFilter"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.tagName === "INPUT" ? el.value = "" : el.value = "all";
+  });
+  activeStatusChip = "all";
+  document.querySelectorAll(".queue-chip").forEach(c => c.classList.remove("active"));
+  document.querySelector('.queue-chip[data-status-filter="all"]')?.classList.add("active");
+  renderQueue();
+});
+
+document.getElementById("sortAgingBtn")?.addEventListener("click", () => {
+  sortByAgingDesc = !sortByAgingDesc;
+  const btn = document.getElementById("sortAgingBtn");
+  if (btn) btn.textContent = sortByAgingDesc ? "Sort by Aging" : "Sort by Aging ↑";
+  renderQueue();
+});
+
+document.querySelectorAll(".queue-chip").forEach((chip) => {
+  chip.addEventListener("click", () => {
+    document.querySelectorAll(".queue-chip").forEach(c => c.classList.remove("active"));
+    chip.classList.add("active");
+    activeStatusChip = chip.dataset.statusFilter;
+    renderQueue();
+  });
+});
+
+function renderQueueForTarget(targetId, queueType) {
+  const targetBody = document.getElementById(targetId);
+  if (!targetBody) return;
+  targetBody.innerHTML = "";
+
+  cases.filter(item => item.queueType === queueType).forEach((item) => {
+    const risk = getRiskBadge(item.riskScore);
+    const [lastActionLabel, lastActionTime] = getLastAction(item);
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><div class="client-cell"><div class="client-name">${item.client}</div><div class="client-sub">${item.id}</div><div class="client-meta">${item.activity||""}</div></div></td>
+      <td><span class="badge ${item.statusClass}">${item.status}</span></td>
+      <td><span class="badge ${item.pipelineClass}">${item.pipeline}</span></td>
+      <td><div class="risk-cell"><span class="badge ${risk.className}">${risk.label}</span><div class="table-note">Score ${item.riskScore}</div></div></td>
+      <td>${item.jurisdiction||""}</td>
+      <td><div>${item.aging}</div><div class="${isSLARisk(item)?"sla-flag":"sla-safe"}" style="margin-top:8px;">${isSLARisk(item)?"SLA Risk":"On Track"}</div></td>
+      <td>${item.assignee||""}</td>
+      <td><div class="last-action">${lastActionLabel}<span>${lastActionTime}</span></div></td>
+      <td><button class="open-link" data-case="${item.id}">Open</button></td>
+    `;
+    targetBody.appendChild(tr);
+  });
+
+  targetBody.querySelectorAll(".open-link").forEach((btn) => {
+    btn.addEventListener("click", () => openCase(btn.dataset.case));
+  });
+}
+
+document.getElementById("clientDirectorySearch")?.addEventListener("input", renderClientDirectory);
+
+// Init
+renderPriorityList();
+renderQueue();
+
+  /* ══ end app.js ══ */
   /* ═══════════════════════════════════════════════════════
      CLIENT DIRECTORY — search + click-to-profile logic
      (self-contained; does not depend on app.js data)
@@ -2757,69 +4093,74 @@
   function buildOwnershipChartSVG(own, entityName, entityType) {
     const ubos = own.uboCards || [];
     const isComplex = own.complexity?.toLowerCase().includes('high');
-    const isPending = own.reviewStatus !== 'Review Complete';
 
-    // ── Layout — wide viewBox so rendered text is proportionally small ──
-    const W = 1100;
-    const uboOvW = 160, uboOvH = 58;
-    const entityW = 210, entityH = 52;
-    const entityRx = 14;
+    // ── Canvas ──
+    const W = 800;
+    const nodeW = 180, nodeH = 72, nodeRx = 36;   // large pill nodes like screenshot
+    const entityW = 260, entityH = 72, entityRx = 16;
     const entityX = W / 2;
-    const entityY = isComplex ? 300 : 240;
-    const gpY    = isComplex ? 175 : null;
-    const uboY   = 52;
-    const H = entityY + entityH / 2 + 28;
+    const entityY = isComplex ? 380 : 300;
+    const gpY     = isComplex ? 210 : null;
+    const uboY    = 60;
+    const H = entityY + entityH / 2 + 40;
     const n = Math.max(ubos.length, 1);
-    const gapX = Math.max(uboOvW + 60, (W - 120) / n);
+    const gapX = Math.max(nodeW + 80, (W - 100) / n);
     const startX = W / 2 - ((n - 1) * gapX) / 2;
 
     const F = `font-family:"Inter",sans-serif`;
 
     // ── Helpers ──
-    const oval = (cx, cy, rw, rh, stroke, fill, dashed = false) =>
-      `<ellipse cx="${cx}" cy="${cy}" rx="${rw/2}" ry="${rh/2}"
-        fill="${fill}" stroke="${stroke}" stroke-width="1.5"
-        ${dashed ? 'stroke-dasharray="5 3"' : ''}/>`;
+    // Large rounded pill node (UBO / GP style)
+    const pillNode = (cx, cy, w, h, rx, stroke, fill, dashed = false) =>
+      `<rect x="${cx - w/2}" y="${cy - h/2}" width="${w}" height="${h}" rx="${rx}"
+        fill="${fill}" stroke="${stroke}" stroke-width="2"
+        ${dashed ? 'stroke-dasharray="6 3"' : ''}/>`;
 
-    const darkPill = (cx, cy, w, h, rx, label, sublabel) =>
-      `<rect x="${cx-w/2}" y="${cy-h/2}" width="${w}" height="${h}" rx="${rx}" fill="#1A1E1C"/>
-       <text x="${cx}" y="${cy-6}" text-anchor="middle" style="${F};font-size:10.5px;font-weight:700;fill:#fff">${label}</text>
-       <text x="${cx}" y="${cy+8}" text-anchor="middle" style="${F};font-size:9px;fill:#9BA8A0">${sublabel}</text>`;
+    // Dark rounded rect entity node
+    const entityNode = (cx, cy, w, h, rx, label, sublabel) => {
+      const lines = label.length > 20 ? [label.slice(0, 20), label.slice(20)] : [label, ''];
+      const hasTwo = lines[1].trim().length > 0;
+      return `<rect x="${cx-w/2}" y="${cy-h/2}" width="${w}" height="${h}" rx="${rx}" fill="#111816"/>
+        <text x="${cx}" y="${cy - (hasTwo ? 14 : 8)}" text-anchor="middle" style="${F};font-size:14px;font-weight:700;fill:#fff">${lines[0]}</text>
+        ${hasTwo ? `<text x="${cx}" y="${cy + 4}" text-anchor="middle" style="${F};font-size:14px;font-weight:700;fill:#fff">${lines[1]}</text>` : ''}
+        <text x="${cx}" y="${cy + (hasTwo ? 22 : 14)}" text-anchor="middle" style="${F};font-size:11px;fill:#9BA8A0">${sublabel}</text>`;
+    };
 
-    const nodeLabel = (cx, cy, name, sub) =>
-      `<text x="${cx}" y="${cy-5}" text-anchor="middle" style="${F};font-size:10.5px;font-weight:600;fill:#1A1E1C">${name}</text>
-       <text x="${cx}" y="${cy+8}" text-anchor="middle" style="${F};font-size:9px;fill:#6B7670">${sub}</text>`;
+    const nodeLabel = (cx, cy, name, sub) => {
+      const short = name.length > 16 ? name.slice(0,16)+'…' : name;
+      return `<text x="${cx}" y="${cy - 8}" text-anchor="middle" style="${F};font-size:15px;font-weight:700;fill:#1A1E1C">${short}</text>
+              <text x="${cx}" y="${cy + 12}" text-anchor="middle" style="${F};font-size:12px;fill:#6B7670">${sub}</text>`;
+    };
 
     const pctBadge = (cx, cy, label, pending = false) => {
-      const bg = pending ? '#FEF3D7' : '#E8F8EE';
+      const bg     = pending ? '#FEF3D7' : '#E8F8EE';
       const border = pending ? '#D0A85C' : '#2BB567';
-      const color = pending ? '#7A5200' : '#14632C';
-      const pw = label.length * 6 + 14;
-      return `<rect x="${cx-pw/2}" y="${cy-9}" width="${pw}" height="18" rx="9" fill="${bg}" stroke="${border}" stroke-width="1.2"/>
-              <text x="${cx}" y="${cy+4}" text-anchor="middle" style="${F};font-size:9.5px;font-weight:700;fill:${color}">${label}</text>`;
+      const color  = pending ? '#7A5200' : '#14632C';
+      const pw = label.length * 8 + 20;
+      return `<rect x="${cx-pw/2}" y="${cy-11}" width="${pw}" height="22" rx="11" fill="${bg}" stroke="${border}" stroke-width="1.5"/>
+              <text x="${cx}" y="${cy+5}" text-anchor="middle" style="${F};font-size:12px;font-weight:700;fill:${color}">${label}</text>`;
     };
 
     const connector = (x1, y1, x2, y2, pending = false) =>
       `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"
-        stroke="#2BB567" stroke-width="1.5" opacity="0.5"
-        ${pending ? 'stroke-dasharray="6 3"' : ''}/>`;
+        stroke="#2BB567" stroke-width="2" opacity="0.6"
+        ${pending ? 'stroke-dasharray="7 4"' : ''}/>`;
 
     let parts = [];
 
     // ── Entity node (bottom) ──
-    parts.push(darkPill(entityX, entityY, entityW, entityH, entityRx,
-      entityName.length > 22 ? entityName.slice(0,22)+'…' : entityName,
-      entityType + ' · Applicant Entity'));
+    parts.push(entityNode(entityX, entityY, entityW, entityH, entityRx,
+      entityName, entityType + ' · Applicant Entity'));
 
-    // ── GP node (complex only) ──
+    // ── GP node (complex structures) ──
     if (isComplex && gpY !== null) {
       const gpX = entityX;
       const ctrl = own.controllerCards?.[0];
-      const gpLabel = ctrl ? (ctrl.name.length > 20 ? ctrl.name.slice(0,20)+'…' : ctrl.name) : 'General Partner';
-      parts.push(oval(gpX, gpY, uboOvW + 20, uboOvH, '#D0A85C', '#FEF9ED', true));
+      const gpLabel = ctrl ? (ctrl.name.length > 16 ? ctrl.name.slice(0,16)+'…' : ctrl.name) : 'General Partner';
+      parts.push(pillNode(gpX, gpY, nodeW + 30, nodeH, nodeRx, '#D0A85C', '#FEF9ED', true));
       parts.push(nodeLabel(gpX, gpY, gpLabel, 'General Partner'));
-      parts.push(connector(gpX, gpY + uboOvH/2, entityX, entityY - entityH/2, true));
-      const gpMidY = gpY + uboOvH/2 + (entityY - entityH/2 - gpY - uboOvH/2) * 0.45;
+      parts.push(connector(gpX, gpY + nodeH/2, entityX, entityY - entityH/2, true));
+      const gpMidY = gpY + nodeH/2 + (entityY - entityH/2 - gpY - nodeH/2) * 0.45;
       parts.push(pctBadge(gpX, gpMidY, 'GP', true));
     }
 
@@ -2829,21 +4170,21 @@
       const ny = uboY;
       const pending = u.idVerif?.includes('Pending');
       const stroke = pending ? '#D0A85C' : '#2BB567';
-      const fill   = pending ? '#FEF9ED' : '#F0FBF4';
+      const fill   = pending ? '#FEF9ED' : '#ffffff';
 
-      parts.push(oval(nx, ny, uboOvW, uboOvH, stroke, fill, pending));
-      parts.push(nodeLabel(nx, ny, u.name.length > 18 ? u.name.slice(0,18)+'…' : u.name, 'Individual'));
+      parts.push(pillNode(nx, ny, nodeW, nodeH, nodeRx, stroke, fill, pending));
+      parts.push(nodeLabel(nx, ny, u.name, 'Individual'));
 
-      const targetY = isComplex ? (gpY - uboOvH/2) : entityY - entityH/2;
-      parts.push(connector(nx, ny + uboOvH/2, entityX, targetY, pending));
+      const targetY = isComplex ? (gpY - nodeH/2) : entityY - entityH/2;
+      parts.push(connector(nx, ny + nodeH/2, entityX, targetY, pending));
 
-      const midX = nx + (entityX - nx) * 0.45;
-      const midY = ny + uboOvH/2 + (targetY - ny - uboOvH/2) * 0.45;
+      const midX = nx + (entityX - nx) * 0.4;
+      const midY = ny + nodeH/2 + (targetY - ny - nodeH/2) * 0.4;
       parts.push(pctBadge(midX, midY, u.stake || '?', pending));
     });
 
     return `<svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 ${W} ${H}"
-      style="font-family:Inter,sans-serif;background:#F7F6F2;border-radius:10px">
+      style="font-family:Inter,sans-serif;background:#ffffff;border-radius:10px;border:1px solid #E8E4DC">
       ${parts.join('\n')}
     </svg>`;
   }
