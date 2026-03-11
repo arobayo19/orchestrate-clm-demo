@@ -2933,49 +2933,12 @@
     renderTable(filtered(e.target.value.toLowerCase()));
   });
 
-  /* ─── sidebar nav ─── */
-  document.querySelectorAll('.nav-item[data-view]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      const viewMap = {
-        dashboard: 'dashboard-view',
-        directory: 'client-directory-view',
-        intake: 'intake-view',
-        monitoring: 'monitoring-view',
-        triggers: 'triggers-view',
-        screening: 'screening-view',
-        workspace: 'workspace-view',
-        escalations: 'escalations-view',
-        agents: 'agents-view',
-        audit: 'audit-view',
-      };
-
-      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-      const target = viewMap[btn.dataset.view];
-      if (target) document.getElementById(target)?.classList.add('active');
-
-      const titles = {
-        dashboard: ['Overview', 'Dashboard'],
-        directory: ['Clients', 'Client Directory'],
-        intake: ['Intake Queue', 'Onboarding'],
-        monitoring: ['Intake Queue', 'Periodic Reviews'],
-        triggers: ['Intake Queue', 'Trigger Reviews'],
-        screening: ['Intake Queue', 'Screening'],
-        workspace: ['Case Management', 'Case Workspace'],
-        escalations: ['Case Management', 'Escalations'],
-        agents: ['AI Agents', 'Automation Activity'],
-        audit: ['System', 'Audit Trail'],
-      };
-      const [eyebrow, title] = titles[btn.dataset.view] || ['', ''];
-      document.getElementById('pageEyebrow').textContent = eyebrow;
-      document.getElementById('pageTitle').textContent = title;
-    });
-  });
-
   /* ─── init ─── */
   renderTable(CLIENTS);
+  // Re-render case workspace now that CLIENTS is available
+  if (typeof renderCase === 'function' && typeof currentCase !== 'undefined') {
+    renderCase(currentCase);
+  }
   </script>
 </body>
 </html>
