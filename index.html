@@ -524,6 +524,161 @@
       font-weight: 500;
       color: var(--text);
     }
+
+    /* ══ DASHBOARD STYLES ══════════════════════════════════ */
+
+    /* My Queue bar */
+    .db-my-queue-bar {
+      display: flex; align-items: center; gap: 14px;
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 12px; padding: 11px 16px;
+      margin-bottom: 16px; box-shadow: var(--shadow); flex-wrap: wrap;
+    }
+    .db-my-queue-label {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 12px; font-weight: 700; color: var(--text);
+      white-space: nowrap; padding-right: 14px; border-right: 1px solid var(--border);
+    }
+    .db-my-queue-items { display: flex; gap: 8px; flex: 1; flex-wrap: wrap; }
+    .db-my-queue-item {
+      background: var(--panel-2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 7px 11px; min-width: 170px;
+    }
+    .db-my-queue-item.db-mq-urgent { border-color: #F0AEAA; background: #FDECEB; }
+    .db-my-queue-item.db-mq-warn   { border-color: #F0D68A; background: #FEF3D7; }
+    .db-mq-name { font-size: 12.5px; font-weight: 700; color: var(--text); }
+    .db-mq-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .db-mq-sla { font-weight: 700; }
+    .db-mq-sla.red   { color: #8B2219; }
+    .db-mq-sla.gold  { color: #7A5200; }
+    .db-mq-sla.green { color: #14632C; }
+
+    /* KPI deltas */
+    .db-kpi-unit { font-size: 15px; font-weight: 600; margin-left: 2px; }
+    .db-kpi-delta { font-size: 11.5px; font-weight: 600; margin: 2px 0 6px; }
+    .db-delta-warn { color: #8B2219; }
+    .db-delta-good { color: #14632C; }
+
+    /* Two-column main layout */
+    .db-main-grid {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 16px;
+      align-items: start;
+    }
+    .db-col-left, .db-col-right { display: flex; flex-direction: column; }
+
+    /* Alert dots */
+    .db-alert-dot {
+      display: inline-block; width: 7px; height: 7px;
+      border-radius: 50%; margin-right: 5px; vertical-align: middle;
+    }
+    .db-alert-dot.red  { background: #C0392B; }
+    .db-alert-dot.gold { background: #B07B20; }
+
+    /* SLA breach list */
+    .db-sla-list { display: flex; flex-direction: column; gap: 8px; }
+    .db-sla-row {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; padding: 9px 11px; border-radius: 8px;
+      background: #FDECEB; border: 1px solid #F0AEAA;
+    }
+    .db-sla-name { font-size: 12.5px; font-weight: 700; color: var(--text); }
+    .db-sla-type { font-size: 11px; color: #8B2219; margin-top: 2px; }
+
+    /* Case aging */
+    .db-aging-chart { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+    .db-aging-bar-group { display: flex; align-items: center; gap: 10px; }
+    .db-aging-label { font-size: 11.5px; color: var(--muted); width: 46px; flex-shrink: 0; }
+    .db-aging-track { flex: 1; height: 14px; background: var(--bg-2); border-radius: 4px; overflow: hidden; }
+    .db-aging-fill  { height: 100%; border-radius: 4px; }
+    .db-aging-green  { background: #A3DDB9; }
+    .db-aging-gold   { background: #F0D68A; }
+    .db-aging-orange { background: #F5B77A; }
+    .db-aging-red    { background: #F0AEAA; }
+    .db-aging-count  { font-size: 12px; font-weight: 700; color: var(--text); width: 22px; text-align: right; flex-shrink: 0; }
+
+    /* Throughput strip */
+    .db-throughput-row {
+      display: grid; grid-template-columns: repeat(4,1fr);
+      gap: 8px; padding-top: 12px; border-top: 1px solid var(--border);
+    }
+    .db-tp-item { text-align: center; }
+    .db-tp-label { font-size: 10px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); font-weight: 700; margin-bottom: 3px; }
+    .db-tp-val   { font-size: 16px; font-weight: 800; color: var(--text); }
+
+    /* Risk tier rows */
+    .db-twin-panels { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .db-risk-rows { display: flex; flex-direction: column; gap: 12px; }
+    .db-risk-row { display: flex; align-items: center; gap: 8px; }
+    .db-risk-row-left { font-size: 12px; color: var(--text); display: flex; align-items: center; gap: 5px; width: 70px; flex-shrink: 0; }
+    .db-risk-dot { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
+    .db-risk-dot.red   { background: #F0AEAA; }
+    .db-risk-dot.gold  { background: #F0D68A; }
+    .db-risk-dot.green { background: #A3DDB9; }
+    .db-risk-track { flex: 1; height: 10px; background: var(--bg-2); border-radius: 3px; overflow: hidden; }
+    .db-risk-bar   { height: 100%; border-radius: 3px; }
+    .db-risk-num   { font-size: 12px; font-weight: 700; color: var(--text); width: 44px; text-align: right; flex-shrink: 0; }
+    .db-risk-pct   { font-weight: 400; color: var(--muted); }
+
+    /* EDD pipeline */
+    .db-edd-list   { display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px; }
+    .db-edd-item   { display: flex; flex-direction: column; gap: 5px; }
+    .db-edd-label  { font-size: 11.5px; color: var(--muted); }
+    .db-edd-right  { display: flex; align-items: center; gap: 8px; }
+    .db-edd-bar    { height: 8px; border-radius: 3px; background: #F0AEAA; flex: 1; max-width: var(--w, 50%); }
+    .db-edd-num    { font-size: 15px; font-weight: 800; color: var(--text); flex-shrink: 0; }
+    .db-edd-footer { font-size: 11.5px; color: var(--muted); border-top: 1px solid var(--border); padding-top: 10px; }
+    .db-edd-footer strong { color: var(--text); }
+
+    /* Upcoming reviews */
+    .db-review-list { display: flex; flex-direction: column; }
+    .db-review-row  {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 0; border-bottom: 1px solid var(--border);
+    }
+    .db-review-row:last-child { border-bottom: none; }
+    .db-review-dot  { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .db-review-dot.red   { background: #C0392B; }
+    .db-review-dot.gold  { background: #B07B20; }
+    .db-review-dot.green { background: var(--green); }
+    .db-review-body { flex: 1; min-width: 0; }
+    .db-review-name { font-size: 12.5px; font-weight: 700; color: var(--text); }
+    .db-review-meta { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+    /* Analyst workload */
+    .db-assignee-list { display: flex; flex-direction: column; gap: 10px; }
+    .db-assignee-row  { display: flex; align-items: center; gap: 9px; }
+    .db-assignee-avatar {
+      width: 28px; height: 28px; border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 800; flex-shrink: 0;
+    }
+    .db-assignee-info { flex: 1; min-width: 0; }
+    .db-assignee-name { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .db-assignee-bar-wrap { height: 5px; background: var(--bg-2); border-radius: 3px; overflow: hidden; }
+    .db-assignee-bar  { height: 100%; border-radius: 3px; }
+    .db-assignee-count { font-size: 12px; font-weight: 700; color: var(--text); flex-shrink: 0; text-align: right; min-width: 60px; }
+    .db-assignee-flag { display: block; font-size: 10px; font-weight: 600; margin-top: 1px; }
+    .db-assignee-flag.red  { color: #8B2219; }
+    .db-assignee-flag.gold { color: #7A5200; }
+
+    /* Priority list */
+    .db-priority-list { display: flex; flex-direction: column; }
+    .db-priority-row {
+      display: flex; align-items: center; gap: 9px;
+      padding: 9px 0; border-bottom: 1px solid var(--border);
+    }
+    .db-priority-row:last-child { border-bottom: none; }
+    .db-priority-row.db-priority-high { background: #FDECEB; margin: 0 -18px; padding: 9px 18px; border-color: #F0AEAA; }
+    .db-priority-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .db-priority-dot.red   { background: #C0392B; }
+    .db-priority-dot.gold  { background: #B07B20; }
+    .db-priority-dot.green { background: var(--green); }
+    .db-priority-body { flex: 1; min-width: 0; }
+    .db-priority-name { font-size: 12.5px; font-weight: 700; color: var(--text); }
+    .db-priority-meta { font-size: 11px; color: var(--muted); margin-top: 1px; }
+    .db-priority-id   { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--muted); flex-shrink: 0; }
   </style>
 </head>
 <body>
@@ -548,10 +703,10 @@
 
       <nav class="side-nav">
         <div class="nav-group-title">Overview</div>
-        <button class="nav-item" data-view="dashboard">Dashboard</button>
+        <button class="nav-item active" data-view="dashboard">Dashboard</button>
 
         <div class="nav-group-title">Clients</div>
-        <button class="nav-item active" data-view="directory">Client Directory</button>
+        <button class="nav-item" data-view="directory">Client Directory</button>
 
         <div class="nav-group-title">Intake Queue</div>
         <button class="nav-item" data-view="intake">Onboarding</button>
@@ -578,8 +733,8 @@
     <main class="main">
       <header class="topbar">
         <div>
-          <div class="eyebrow" id="pageEyebrow">Clients</div>
-          <h1 id="pageTitle">Client Directory</h1>
+          <div class="eyebrow" id="pageEyebrow">Overview</div>
+          <h1 id="pageTitle">Dashboard</h1>
         </div>
         <div class="topbar-actions">
           <button class="ghost-btn">Export</button>
@@ -590,66 +745,388 @@
       <!-- ═══════════════════════════════════════════════════
            DASHBOARD VIEW
       ═══════════════════════════════════════════════════ -->
-      <section class="view" id="dashboard-view">
-        <section class="metrics-grid" style="margin-bottom:20px;">
+      <section class="view active" id="dashboard-view">
+
+        <!-- My Queue strip -->
+        <div class="db-my-queue-bar">
+          <div class="db-my-queue-label">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            Ana M. — My Queue
+          </div>
+          <div class="db-my-queue-items">
+            <div class="db-my-queue-item db-mq-urgent">
+              <div class="db-mq-name">Apex Digital LLC</div>
+              <div class="db-mq-meta">Completeness Review · <span class="db-mq-sla red">SLA: 2d overdue</span></div>
+            </div>
+            <div class="db-my-queue-item db-mq-warn">
+              <div class="db-mq-name">Meridian Capital Partners</div>
+              <div class="db-mq-meta">Trigger Review · <span class="db-mq-sla gold">Due today</span></div>
+            </div>
+            <div class="db-my-queue-item">
+              <div class="db-mq-name">Global Freight Holdings</div>
+              <div class="db-mq-meta">Periodic Review · <span class="db-mq-sla green">3d remaining</span></div>
+            </div>
+          </div>
+          <button class="ghost-btn" style="font-size:12px;padding:7px 13px;white-space:nowrap;">View All (7)</button>
+        </div>
+
+        <!-- KPI row -->
+        <section class="metrics-grid" style="margin-bottom:16px;">
           <article class="metric-card">
             <div class="metric-label">Open Cases</div>
             <div class="metric-value">128</div>
-            <div class="metric-note">All active onboarding, review, and exception cases.</div>
+            <div class="db-kpi-delta db-delta-warn">↑ 6 vs last week</div>
+            <div class="metric-note">All active onboarding, review &amp; exception cases.</div>
           </article>
           <article class="metric-card">
             <div class="metric-label">New Applications</div>
             <div class="metric-value">32</div>
-            <div class="metric-note">Fresh submissions received from the onboarding portal.</div>
+            <div class="db-kpi-delta db-delta-warn">↑ 4 this week</div>
+            <div class="metric-note">Fresh submissions from the onboarding portal.</div>
           </article>
           <article class="metric-card">
-            <div class="metric-label">Periodic Reviews</div>
-            <div class="metric-value">14</div>
-            <div class="metric-note">Upcoming or in-progress scheduled refresh cycles.</div>
+            <div class="metric-label">Cases Closed (MTD)</div>
+            <div class="metric-value">41</div>
+            <div class="db-kpi-delta db-delta-good">On track</div>
+            <div class="metric-note">Approved, rejected, or withdrawn this month.</div>
           </article>
           <article class="metric-card">
-            <div class="metric-label">Trigger Reviews</div>
-            <div class="metric-value">3</div>
-            <div class="metric-note">Event-driven reviews opened from alerts or profile changes.</div>
+            <div class="metric-label">Avg. Cycle Time</div>
+            <div class="metric-value">8.4<span class="db-kpi-unit">d</span></div>
+            <div class="db-kpi-delta db-delta-good">↓ 1.2d vs target</div>
+            <div class="metric-note">Mean days from submission to decision.</div>
           </article>
         </section>
-        <div class="content-grid">
-          <div class="panel">
-            <div class="panel-head"><h2>Operational Snapshot</h2></div>
-            <div class="snapshot-grid">
-              <div class="snapshot-card">
-                <div class="snapshot-title">Pending Human Review</div>
-                <div class="snapshot-big">9</div>
-                <div class="snapshot-meta">4 over SLA target</div>
+
+        <!-- Main 2-col grid -->
+        <div class="db-main-grid">
+
+          <!-- LEFT COLUMN -->
+          <div class="db-col-left">
+
+            <!-- Operational Snapshot -->
+            <div class="panel" style="margin-bottom:16px;">
+              <div class="panel-head panel-head-spread">
+                <h2>Operational Snapshot</h2>
+                <span class="badge gray">Live</span>
               </div>
-              <div class="snapshot-card">
-                <div class="snapshot-title">EDD Cases</div>
-                <div class="snapshot-big">11</div>
-                <div class="snapshot-meta">3 awaiting senior approval</div>
-              </div>
-              <div class="snapshot-card">
-                <div class="snapshot-title">Overdue Reviews</div>
-                <div class="snapshot-big">6</div>
-                <div class="snapshot-meta">Periodic or trigger-driven</div>
-              </div>
-              <div class="snapshot-card">
-                <div class="snapshot-title">Screening Alerts</div>
-                <div class="snapshot-big">5</div>
-                <div class="snapshot-meta">2 likely true positives</div>
+              <div class="snapshot-grid">
+                <div class="snapshot-card">
+                  <div class="snapshot-title">Pending Human Review</div>
+                  <div class="snapshot-big">9</div>
+                  <div class="snapshot-meta"><span class="db-alert-dot red"></span>4 over SLA</div>
+                </div>
+                <div class="snapshot-card">
+                  <div class="snapshot-title">EDD Cases</div>
+                  <div class="snapshot-big">11</div>
+                  <div class="snapshot-meta"><span class="db-alert-dot gold"></span>3 awaiting senior sign-off</div>
+                </div>
+                <div class="snapshot-card">
+                  <div class="snapshot-title">Overdue Reviews</div>
+                  <div class="snapshot-big">6</div>
+                  <div class="snapshot-meta">Periodic or trigger-driven</div>
+                </div>
+                <div class="snapshot-card">
+                  <div class="snapshot-title">Screening Alerts</div>
+                  <div class="snapshot-big">5</div>
+                  <div class="snapshot-meta">2 likely true positives</div>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="panel">
-            <div class="panel-head"><h2>Top Priority Cases</h2></div>
-            <div class="simple-list" id="priorityList"></div>
-          </div>
-        </div>
+
+            <!-- Case Aging + Throughput (compact) -->
+            <div class="panel" style="margin-bottom:16px;">
+              <div class="panel-head panel-head-spread">
+                <h2>Case Aging</h2>
+                <span class="badge gray">128 open</span>
+              </div>
+              <div class="db-aging-chart">
+                <div class="db-aging-bar-group">
+                  <div class="db-aging-label">0–5 d</div>
+                  <div class="db-aging-track"><div class="db-aging-fill db-aging-green" style="width:42%"></div></div>
+                  <div class="db-aging-count">54</div>
+                </div>
+                <div class="db-aging-bar-group">
+                  <div class="db-aging-label">6–10 d</div>
+                  <div class="db-aging-track"><div class="db-aging-fill db-aging-gold" style="width:27%"></div></div>
+                  <div class="db-aging-count">34</div>
+                </div>
+                <div class="db-aging-bar-group">
+                  <div class="db-aging-label">11–15 d</div>
+                  <div class="db-aging-track"><div class="db-aging-fill db-aging-orange" style="width:18%"></div></div>
+                  <div class="db-aging-count">23</div>
+                </div>
+                <div class="db-aging-bar-group">
+                  <div class="db-aging-label">15+ d</div>
+                  <div class="db-aging-track"><div class="db-aging-fill db-aging-red" style="width:13%"></div></div>
+                  <div class="db-aging-count">17</div>
+                </div>
+              </div>
+              <div class="db-throughput-row">
+                <div class="db-tp-item"><div class="db-tp-label">Opened / wk</div><div class="db-tp-val db-delta-warn">+18</div></div>
+                <div class="db-tp-item"><div class="db-tp-label">Closed / wk</div><div class="db-tp-val db-delta-good">−12</div></div>
+                <div class="db-tp-item"><div class="db-tp-label">Net backlog</div><div class="db-tp-val db-delta-warn">+6</div></div>
+                <div class="db-tp-item"><div class="db-tp-label">On-time rate</div><div class="db-tp-val">74%</div></div>
+              </div>
+            </div>
+
+            <!-- Upcoming Reviews -->
+            <div class="panel">
+              <div class="panel-head panel-head-spread">
+                <h2>Upcoming Reviews</h2>
+                <div style="display:flex;gap:6px;">
+                  <span class="badge green">30d · 8</span>
+                  <span class="badge gold">60d · 14</span>
+                  <span class="badge gray">90d · 22</span>
+                </div>
+              </div>
+              <div class="db-review-list">
+                <div class="db-review-row">
+                  <div class="db-review-dot red"></div>
+                  <div class="db-review-body">
+                    <div class="db-review-name">Eastern Trading Co</div>
+                    <div class="db-review-meta">Periodic Review · High Risk · Cayman Islands</div>
+                  </div>
+                  <span class="sla-flag">Overdue</span>
+                </div>
+                <div class="db-review-row">
+                  <div class="db-review-dot gold"></div>
+                  <div class="db-review-body">
+                    <div class="db-review-name">Meridian Capital Partners</div>
+                    <div class="db-review-meta">Trigger Review · Moderate · Delaware, US</div>
+                  </div>
+                  <span class="badge gold">Today</span>
+                </div>
+                <div class="db-review-row">
+                  <div class="db-review-dot gold"></div>
+                  <div class="db-review-body">
+                    <div class="db-review-name">Global Freight Holdings</div>
+                    <div class="db-review-meta">Periodic Review · Moderate · Singapore</div>
+                  </div>
+                  <span class="badge gold">3d</span>
+                </div>
+                <div class="db-review-row">
+                  <div class="db-review-dot green"></div>
+                  <div class="db-review-body">
+                    <div class="db-review-name">Apex Digital LLC</div>
+                    <div class="db-review-meta">Periodic Review · Moderate · Delaware, US</div>
+                  </div>
+                  <span class="badge gray">Dec 11</span>
+                </div>
+                <div class="db-review-row">
+                  <div class="db-review-dot green"></div>
+                  <div class="db-review-body">
+                    <div class="db-review-name">Atlas Commodities Ltd</div>
+                    <div class="db-review-meta">Periodic Review · Low · Delaware, US</div>
+                  </div>
+                  <span class="badge gray">Dec 22</span>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /left -->
+
+          <!-- RIGHT COLUMN -->
+          <div class="db-col-right">
+
+            <!-- SLA Breaches -->
+            <div class="panel" style="margin-bottom:16px;">
+              <div class="panel-head panel-head-spread">
+                <h2>SLA Breaches</h2>
+                <span class="badge red">4 Overdue</span>
+              </div>
+              <div class="db-sla-list">
+                <div class="db-sla-row">
+                  <div><div class="db-sla-name">Apex Digital LLC</div><div class="db-sla-type">Completeness Review</div></div>
+                  <span class="sla-flag">+2d</span>
+                </div>
+                <div class="db-sla-row">
+                  <div><div class="db-sla-name">Solstice Exchange Ltd</div><div class="db-sla-type">EDD — Pending Senior Review</div></div>
+                  <span class="sla-flag">+5d</span>
+                </div>
+                <div class="db-sla-row">
+                  <div><div class="db-sla-name">Harlow Asset Mgmt</div><div class="db-sla-type">Periodic Review</div></div>
+                  <span class="sla-flag">+1d</span>
+                </div>
+                <div class="db-sla-row">
+                  <div><div class="db-sla-name">Eastern Trading Co</div><div class="db-sla-type">Screening Alert Review</div></div>
+                  <span class="sla-flag">+3d</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Risk Tier + EDD side-by-side -->
+            <div class="db-twin-panels" style="margin-bottom:16px;">
+
+              <!-- Risk Tier -->
+              <div class="panel">
+                <div class="panel-head panel-head-spread">
+                  <h2>Risk Tier</h2>
+                  <span class="badge gray">Open</span>
+                </div>
+                <div class="db-risk-rows">
+                  <div class="db-risk-row">
+                    <div class="db-risk-row-left">
+                      <span class="db-risk-dot red"></span>High
+                    </div>
+                    <div class="db-risk-track"><div class="db-risk-bar" style="width:22%;background:#F0AEAA"></div></div>
+                    <div class="db-risk-num">28 <span class="db-risk-pct">22%</span></div>
+                  </div>
+                  <div class="db-risk-row">
+                    <div class="db-risk-row-left">
+                      <span class="db-risk-dot gold"></span>Moderate
+                    </div>
+                    <div class="db-risk-track"><div class="db-risk-bar" style="width:57%;background:#F0D68A"></div></div>
+                    <div class="db-risk-num">73 <span class="db-risk-pct">57%</span></div>
+                  </div>
+                  <div class="db-risk-row">
+                    <div class="db-risk-row-left">
+                      <span class="db-risk-dot green"></span>Low
+                    </div>
+                    <div class="db-risk-track"><div class="db-risk-bar" style="width:21%;background:#A3DDB9"></div></div>
+                    <div class="db-risk-num">27 <span class="db-risk-pct">21%</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- EDD Pipeline -->
+              <div class="panel">
+                <div class="panel-head panel-head-spread">
+                  <h2>EDD Pipeline</h2>
+                  <span class="badge red">11</span>
+                </div>
+                <div class="db-edd-list">
+                  <div class="db-edd-item">
+                    <div class="db-edd-label">Awaiting Assignment</div>
+                    <div class="db-edd-right"><div class="db-edd-bar" style="width:55%"></div><span class="db-edd-num">5</span></div>
+                  </div>
+                  <div class="db-edd-item">
+                    <div class="db-edd-label">In EDD Review</div>
+                    <div class="db-edd-right"><div class="db-edd-bar" style="width:33%"></div><span class="db-edd-num">3</span></div>
+                  </div>
+                  <div class="db-edd-item">
+                    <div class="db-edd-label">Pending Senior Approval</div>
+                    <div class="db-edd-right"><div class="db-edd-bar" style="width:33%"></div><span class="db-edd-num">3</span></div>
+                  </div>
+                </div>
+                <div class="db-edd-footer">Avg. cycle time: <strong>14.2 days</strong></div>
+              </div>
+
+            </div>
+
+            <!-- Analyst Workload -->
+            <div class="panel" style="margin-bottom:16px;">
+              <div class="panel-head panel-head-spread">
+                <h2>Analyst Workload</h2>
+                <span class="badge gray">Active Queue</span>
+              </div>
+              <div class="db-assignee-list">
+                <div class="db-assignee-row">
+                  <div class="db-assignee-avatar" style="background:#E8F8EE;color:#14632C">AM</div>
+                  <div class="db-assignee-info">
+                    <div class="db-assignee-name">Ana M.</div>
+                    <div class="db-assignee-bar-wrap"><div class="db-assignee-bar" style="width:70%;background:var(--green)"></div></div>
+                  </div>
+                  <div class="db-assignee-count">7 <span class="db-assignee-flag red">2 overdue</span></div>
+                </div>
+                <div class="db-assignee-row">
+                  <div class="db-assignee-avatar" style="background:#EBF3FD;color:#1A5FA8">TK</div>
+                  <div class="db-assignee-info">
+                    <div class="db-assignee-name">Tom K.</div>
+                    <div class="db-assignee-bar-wrap"><div class="db-assignee-bar" style="width:50%;background:#4F9DFF"></div></div>
+                  </div>
+                  <div class="db-assignee-count">5</div>
+                </div>
+                <div class="db-assignee-row">
+                  <div class="db-assignee-avatar" style="background:#FEF3D7;color:#7A5200">RJ</div>
+                  <div class="db-assignee-info">
+                    <div class="db-assignee-name">Riya J.</div>
+                    <div class="db-assignee-bar-wrap"><div class="db-assignee-bar" style="width:90%;background:#D0A85C"></div></div>
+                  </div>
+                  <div class="db-assignee-count">9 <span class="db-assignee-flag gold">Near cap</span></div>
+                </div>
+                <div class="db-assignee-row">
+                  <div class="db-assignee-avatar" style="background:#F0EFEB;color:#4A5550">DL</div>
+                  <div class="db-assignee-info">
+                    <div class="db-assignee-name">Derek L.</div>
+                    <div class="db-assignee-bar-wrap"><div class="db-assignee-bar" style="width:30%;background:#B0B8B3"></div></div>
+                  </div>
+                  <div class="db-assignee-count">3</div>
+                </div>
+                <div class="db-assignee-row">
+                  <div class="db-assignee-avatar" style="background:#FDECEB;color:#8B2219">OQ</div>
+                  <div class="db-assignee-info">
+                    <div class="db-assignee-name">Ops Queue (Unassigned)</div>
+                    <div class="db-assignee-bar-wrap"><div class="db-assignee-bar" style="width:100%;background:#F0AEAA"></div></div>
+                  </div>
+                  <div class="db-assignee-count">12 <span class="db-assignee-flag red">Needs triage</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Top Priority Cases -->
+            <div class="panel">
+              <div class="panel-head"><h2>Top Priority Cases</h2></div>
+              <div class="db-priority-list">
+                <div class="db-priority-row db-priority-high">
+                  <div class="db-priority-dot red"></div>
+                  <div class="db-priority-body">
+                    <div class="db-priority-name">Solstice Exchange Ltd</div>
+                    <div class="db-priority-meta">EDD · Pending Senior Review · +5d SLA</div>
+                  </div>
+                  <div class="db-priority-id">-00126</div>
+                </div>
+                <div class="db-priority-row db-priority-high">
+                  <div class="db-priority-dot red"></div>
+                  <div class="db-priority-body">
+                    <div class="db-priority-name">Apex Digital LLC</div>
+                    <div class="db-priority-meta">Completeness Review · +2d SLA</div>
+                  </div>
+                  <div class="db-priority-id">-00128</div>
+                </div>
+                <div class="db-priority-row">
+                  <div class="db-priority-dot gold"></div>
+                  <div class="db-priority-body">
+                    <div class="db-priority-name">North Harbor Ventures LP</div>
+                    <div class="db-priority-meta">Pending Client Response · Standard CDD</div>
+                  </div>
+                  <div class="db-priority-id">-00127</div>
+                </div>
+                <div class="db-priority-row">
+                  <div class="db-priority-dot gold"></div>
+                  <div class="db-priority-body">
+                    <div class="db-priority-name">Meridian Capital Partners</div>
+                    <div class="db-priority-meta">Trigger Review · Due today</div>
+                  </div>
+                  <div class="db-priority-id">-00125</div>
+                </div>
+                <div class="db-priority-row">
+                  <div class="db-priority-dot green"></div>
+                  <div class="db-priority-body">
+                    <div class="db-priority-name">Global Freight Holdings</div>
+                    <div class="db-priority-meta">Periodic Review Due · Periodic Refresh</div>
+                  </div>
+                  <div class="db-priority-id">-00129</div>
+                </div>
+                <div class="db-priority-row">
+                  <div class="db-priority-dot green"></div>
+                  <div class="db-priority-body">
+                    <div class="db-priority-name">Nova Biotech Ltd</div>
+                    <div class="db-priority-meta">Trigger Event · Trigger Review</div>
+                  </div>
+                  <div class="db-priority-id">-00131</div>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /right -->
+        </div><!-- /db-main-grid -->
       </section>
 
       <!-- ═══════════════════════════════════════════════════
            CLIENT DIRECTORY VIEW  (no metrics, click-to-profile)
       ═══════════════════════════════════════════════════ -->
-      <section class="view active" id="client-directory-view">
+      <section class="view" id="client-directory-view">
         <div class="directory-shell">
 
           <!-- Search row -->
