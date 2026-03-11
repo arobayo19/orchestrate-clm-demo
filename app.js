@@ -841,6 +841,10 @@ function renderCase(caseObj) {
 
   if (get("ownershipEntity")) get("ownershipEntity").textContent = caseObj.client;
   if (get("ownershipNotes")) get("ownershipNotes").textContent = caseObj.ownershipNotes;
+  // render workspace org chart (calls into inline-script helper if available)
+  if (typeof renderWorkspaceOwnershipChart === 'function') {
+    renderWorkspaceOwnershipChart(caseObj);
+  }
   if (get("screenSanctions")) get("screenSanctions").textContent = caseObj.sanctions;
   if (get("screenPep")) get("screenPep").textContent = caseObj.pep;
   if (get("screenMedia")) get("screenMedia").textContent = caseObj.media;
