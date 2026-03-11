@@ -410,6 +410,120 @@
       margin-bottom: 6px;
       opacity: .6;
     }
+
+    /* ── Account detail cards ── */
+    .acc-summary-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .acc-strip-item {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+
+    .acc-strip-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .10em;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+
+    .acc-strip-val {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      color: var(--text);
+    }
+
+    .acc-strip-flag { color: #8A5F0E; }
+
+    .acc-detail-card {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    .acc-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 18px;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .acc-card-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .acc-card-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    .acc-card-header-right {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .acc-card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+    }
+
+    .acc-card-section {
+      padding: 16px 18px;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .acc-card-section:nth-child(3n) { border-right: none; }
+    .acc-card-full { grid-column: 1 / -1; border-right: none; }
+    .acc-card-full:last-child { border-bottom: none; }
+
+    .acc-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .10em;
+      color: var(--green);
+      margin-bottom: 12px;
+    }
+
+    .acc-signatories {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .acc-signatories li {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+    }
   </style>
 </head>
 <body>
@@ -727,24 +841,13 @@
 
               <!-- ACCOUNTS TAB -->
               <div class="profile-tab-content" id="ptab-accounts">
-                <div class="profile-card">
-                  <div class="profile-card-head">
-                    <span class="profile-card-title">Accounts</span>
-                    <span class="badge blue">Client Level</span>
-                  </div>
-                  <table class="mini-table" id="paccTable">
-                    <thead>
-                      <tr>
-                        <th>Account Name</th>
-                        <th>Account Type</th>
-                        <th>Status</th>
-                        <th>Purpose</th>
-                        <th>Opened Date</th>
-                      </tr>
-                    </thead>
-                    <tbody id="paccBody"></tbody>
-                  </table>
-                </div>
+
+                <!-- Summary strip -->
+                <div class="acc-summary-strip" id="paccSummaryStrip"></div>
+
+                <!-- Per-account detail cards -->
+                <div id="paccCards"></div>
+
               </div>
 
               <!-- CASES TAB -->
@@ -903,8 +1006,48 @@
         media: 'No material adverse media identified. One minor industry article referencing crypto regulatory environment — not entity-specific.',
       },
       accounts: [
-        { name: 'Operating Account', type: 'Checking', status: 'Active', purpose: 'Day-to-day operations', opened: '2021-03-01' },
-        { name: 'Settlement Account', type: 'Custody', status: 'Active', purpose: 'Institutional settlement', opened: '2022-08-15' },
+        {
+          name: 'Operating Account',
+          number: 'ACC-001-4821',
+          type: 'Business Checking',
+          level: 'Entity',
+          status: 'Active',
+          purpose: 'Day-to-day operations and vendor payments',
+          currency: 'USD',
+          opened: '2021-03-01',
+          relationshipManager: 'James Thornton',
+          accountOfficer: 'Lisa Park',
+          kycStatus: 'Current',
+          kycLastReviewed: '2025-12-11',
+          lastTransaction: '2026-03-07',
+          activityFlag: 'Normal',
+          expectedMonthlyVolume: '$50,000 – $100,000',
+          expectedTxCount: '51 – 100 / month',
+          signatories: ['Sarah Kim (Primary)', 'Marcus Lee (Secondary)'],
+          docsStatus: 'Complete',
+          notes: 'Primary operating account used for payroll, vendor disbursements, and fee collections. Activity consistent with expected profile.',
+        },
+        {
+          name: 'Settlement Account',
+          number: 'ACC-001-9034',
+          type: 'Custody / Settlement',
+          level: 'Entity',
+          status: 'Active',
+          purpose: 'Institutional crypto asset settlement',
+          currency: 'USD / Multi-asset',
+          opened: '2022-08-15',
+          relationshipManager: 'James Thornton',
+          accountOfficer: 'Derek Nolan',
+          kycStatus: 'Current',
+          kycLastReviewed: '2025-12-11',
+          lastTransaction: '2026-03-08',
+          activityFlag: 'Elevated — within approved range',
+          expectedMonthlyVolume: 'Over $100,000',
+          expectedTxCount: '100+ / month',
+          signatories: ['Sarah Kim (Primary)'],
+          docsStatus: 'Complete',
+          notes: 'Used exclusively for institutional settlement flows. Transaction volumes elevated but within the approved EAP range. Monitoring ongoing.',
+        },
       ],
       cases: [
         { id: 'CASE-2026-00128', type: 'Onboarding Application', status: 'Completeness Review', opened: '2026-01-11', outcome: 'Open' },
@@ -950,7 +1093,27 @@
         media: 'No adverse media identified at the entity level. GP director has one historical press reference relating to a prior fund wind-down — not material.',
       },
       accounts: [
-        { name: 'Investment Account', type: 'Custody', status: 'Pending', purpose: 'Fund investment activity', opened: 'TBD' },
+        {
+          name: 'Investment Account',
+          number: 'ACC-002-1177',
+          type: 'Custody',
+          level: 'Entity',
+          status: 'Pending',
+          purpose: 'Fund investment activity and capital deployment',
+          currency: 'USD',
+          opened: 'TBD — pending onboarding completion',
+          relationshipManager: 'Unassigned',
+          accountOfficer: 'Unassigned',
+          kycStatus: 'Pending — EDD in progress',
+          kycLastReviewed: '—',
+          lastTransaction: '—',
+          activityFlag: 'Not yet active',
+          expectedMonthlyVolume: 'Over $1,000,000',
+          expectedTxCount: '10 – 50 / month',
+          signatories: ['Pending — awaiting GP authorisation'],
+          docsStatus: 'Incomplete — 2 documents outstanding',
+          notes: 'Account provisioned but not yet activated. Activation is gated on completion of EDD review and receipt of all outstanding onboarding documents including GP board resolution and UBO identification.',
+        },
       ],
       cases: [
         { id: 'CASE-2026-00131', type: 'Onboarding Application', status: 'In EDD Review', opened: '2026-01-18', outcome: 'Open' },
@@ -995,8 +1158,48 @@
         media: 'No adverse media. One industry article mentioning the firm in a positive context re: fund performance.',
       },
       accounts: [
-        { name: 'Advisory Operating Account', type: 'Checking', status: 'Active', purpose: 'Advisory fee collections', opened: '2016-02-14' },
-        { name: 'Client Omnibus Account', type: 'Custody', status: 'Active', purpose: 'Client asset custody', opened: '2018-06-30' },
+        {
+          name: 'Advisory Operating Account',
+          number: 'ACC-003-3302',
+          type: 'Business Checking',
+          level: 'Entity',
+          status: 'Active',
+          purpose: 'Advisory fee collections and operating expenses',
+          currency: 'USD',
+          opened: '2016-02-14',
+          relationshipManager: 'Carol Hennessy',
+          accountOfficer: 'Tom Briggs',
+          kycStatus: 'Current',
+          kycLastReviewed: '2026-01-08',
+          lastTransaction: '2026-03-05',
+          activityFlag: 'Normal',
+          expectedMonthlyVolume: '$10,000 – $50,000',
+          expectedTxCount: '10 – 50 / month',
+          signatories: ['David Osei (Primary)', 'Elena Varga (Secondary)'],
+          docsStatus: 'Complete',
+          notes: 'Long-standing operating account open since client inception. Consistent activity pattern. No anomalies noted at last review.',
+        },
+        {
+          name: 'Client Omnibus Account',
+          number: 'ACC-003-7759',
+          type: 'Custody / Omnibus',
+          level: 'Entity',
+          status: 'Active',
+          purpose: 'Pooled custody of client investment assets',
+          currency: 'USD / Multi-currency',
+          opened: '2018-06-30',
+          relationshipManager: 'Carol Hennessy',
+          accountOfficer: 'Derek Nolan',
+          kycStatus: 'Review Pending',
+          kycLastReviewed: '2026-01-08',
+          lastTransaction: '2026-03-09',
+          activityFlag: 'Under Review — ownership trigger',
+          expectedMonthlyVolume: 'Over $1,000,000',
+          expectedTxCount: '100+ / month',
+          signatories: ['David Osei (Primary)'],
+          docsStatus: 'Pending — trigger review in progress',
+          notes: 'Omnibus account holding pooled client assets. Trigger review opened following client-reported ownership change. Account remains active; enhanced monitoring applied pending review outcome.',
+        },
       ],
       cases: [
         { id: 'CASE-2026-00142', type: 'Trigger Review', status: 'Pending Human Review', opened: '2026-02-03', outcome: 'Open' },
@@ -1142,17 +1345,108 @@
     document.getElementById('pscPep').textContent = c.screening.pep;
     document.getElementById('pscMedia').textContent = c.screening.media;
 
-    // accounts
+    // accounts — rich card layout
     const accArr = Array.isArray(c.accounts) ? c.accounts : [];
-    document.getElementById('paccBody').innerHTML = accArr.map(a => `
-      <tr>
-        <td>${a.name}</td>
-        <td>${a.type}</td>
-        <td>${badgePill(a.status, a.status === 'Active' ? 'green' : 'gold')}</td>
-        <td>${a.purpose}</td>
-        <td>${a.opened}</td>
-      </tr>
-    `).join('') || '<tr><td colspan="5" style="color:var(--muted);text-align:center;padding:16px">No accounts on file.</td></tr>';
+
+    // summary strip
+    const totalAcc = accArr.length;
+    const activeAcc = accArr.filter(a => a.status === 'Active').length;
+    const flaggedAcc = accArr.filter(a => a.activityFlag && a.activityFlag !== 'Normal' && a.activityFlag !== 'Not yet active').length;
+    document.getElementById('paccSummaryStrip').innerHTML = `
+      <div class="acc-strip-item">
+        <div class="acc-strip-label">Total Accounts</div>
+        <div class="acc-strip-val">${totalAcc}</div>
+      </div>
+      <div class="acc-strip-item">
+        <div class="acc-strip-label">Active</div>
+        <div class="acc-strip-val">${activeAcc}</div>
+      </div>
+      <div class="acc-strip-item">
+        <div class="acc-strip-label">Pending / Inactive</div>
+        <div class="acc-strip-val">${totalAcc - activeAcc}</div>
+      </div>
+      <div class="acc-strip-item">
+        <div class="acc-strip-label">Activity Flags</div>
+        <div class="acc-strip-val ${flaggedAcc > 0 ? 'acc-strip-flag' : ''}">${flaggedAcc}</div>
+      </div>
+    `;
+
+    // per-account cards
+    document.getElementById('paccCards').innerHTML = accArr.length ? accArr.map(a => {
+      const statusCls = a.status === 'Active' ? 'green' : a.status === 'Pending' ? 'gold' : 'gray';
+      const kycCls = a.kycStatus === 'Current' ? 'green' : a.kycStatus.includes('Pending') ? 'gold' : 'blue';
+      const flagCls = a.activityFlag === 'Normal' ? 'green' : a.activityFlag === 'Not yet active' ? 'gray' : 'gold';
+      const docsCls = a.docsStatus === 'Complete' ? 'green' : 'gold';
+      const sigList = (a.signatories || []).map(s => `<li>${s}</li>`).join('');
+      return `
+        <div class="acc-detail-card">
+          <!-- Card header -->
+          <div class="acc-card-header">
+            <div class="acc-card-header-left">
+              <div class="acc-card-name">${a.name}</div>
+              <div class="acc-card-number">${a.number}</div>
+            </div>
+            <div class="acc-card-header-right">
+              ${badgePill(a.status, statusCls)}
+              ${badgePill(a.type, 'gray')}
+              ${badgePill(a.level + ' Level', 'blue')}
+            </div>
+          </div>
+
+          <!-- Card body grid -->
+          <div class="acc-card-grid">
+
+            <!-- Col 1: Account Details -->
+            <div class="acc-card-section">
+              <div class="acc-section-title">Account Details</div>
+              <dl class="kv">
+                <div><dt>Account Number</dt><dd style="font-family:'JetBrains Mono',monospace">${a.number}</dd></div>
+                <div><dt>Account Type</dt><dd>${a.type}</dd></div>
+                <div><dt>Account Level</dt><dd>${a.level}</dd></div>
+                <div><dt>Currency</dt><dd>${a.currency}</dd></div>
+                <div><dt>Purpose</dt><dd>${a.purpose}</dd></div>
+                <div><dt>Date Opened</dt><dd>${a.opened}</dd></div>
+              </dl>
+            </div>
+
+            <!-- Col 2: Relationship & Officers -->
+            <div class="acc-card-section">
+              <div class="acc-section-title">Relationship &amp; Officers</div>
+              <dl class="kv">
+                <div><dt>Relationship Manager</dt><dd>${a.relationshipManager}</dd></div>
+                <div><dt>Account Officer</dt><dd>${a.accountOfficer}</dd></div>
+                <div><dt>KYC Status</dt><dd>${badgePill(a.kycStatus, kycCls)}</dd></div>
+                <div><dt>KYC Last Reviewed</dt><dd>${a.kycLastReviewed}</dd></div>
+              </dl>
+            </div>
+
+            <!-- Col 3: Activity & Expected Profile -->
+            <div class="acc-card-section">
+              <div class="acc-section-title">Activity &amp; Expected Profile</div>
+              <dl class="kv">
+                <div><dt>Last Transaction</dt><dd>${a.lastTransaction}</dd></div>
+                <div><dt>Activity Flag</dt><dd>${badgePill(a.activityFlag, flagCls)}</dd></div>
+                <div><dt>Expected Monthly Volume</dt><dd>${a.expectedMonthlyVolume}</dd></div>
+                <div><dt>Expected Tx Count</dt><dd>${a.expectedTxCount}</dd></div>
+                <div><dt>Opening Documents</dt><dd>${badgePill(a.docsStatus, docsCls)}</dd></div>
+              </dl>
+            </div>
+
+            <!-- Full width: Signatories + Notes -->
+            <div class="acc-card-section acc-card-full">
+              <div class="acc-section-title">Authorised Signatories</div>
+              <ul class="acc-signatories">${sigList}</ul>
+            </div>
+
+            <div class="acc-card-section acc-card-full">
+              <div class="acc-section-title">Account Notes</div>
+              <p class="body-copy">${a.notes}</p>
+            </div>
+
+          </div>
+        </div>
+      `;
+    }).join('') : `<div class="dir-empty">No accounts on file for this client.</div>`;
 
     // cases
     const casesArr = Array.isArray(c.cases) ? c.cases : [];
