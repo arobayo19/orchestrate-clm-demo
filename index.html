@@ -525,6 +525,118 @@
       color: var(--text);
     }
 
+    /* ══ BUSINESS DETAILS TAB ══════════════════════════════ */
+    .biz-two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+    .biz-right-col { display: flex; flex-direction: column; }
+
+    /* Document checklist */
+    .doc-checklist {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .doc-item {
+      display: flex; align-items: center; gap: 9px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+    }
+    .doc-item.doc-ok     { background: #F0FBF4; border-color: #A3DDB9; }
+    .doc-item.doc-miss   { background: #FDECEB; border-color: #F0AEAA; }
+    .doc-item.doc-expiry { background: #FEF3D7; border-color: #F0D68A; }
+    .doc-icon {
+      width: 22px; height: 22px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; flex-shrink: 0;
+    }
+    .doc-ok   .doc-icon { background: #A3DDB9; color: #14632C; }
+    .doc-miss .doc-icon { background: #F0AEAA; color: #8B2219; }
+    .doc-expiry .doc-icon { background: #F0D68A; color: #7A5200; }
+    .doc-name { font-size: 12px; font-weight: 600; color: var(--text); }
+    .doc-meta { font-size: 10.5px; color: var(--muted); margin-top: 1px; }
+
+    /* ══ OWNERSHIP TAB ══════════════════════════════════════ */
+
+    /* Summary bar */
+    .own-summary-bar {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 18px;
+      overflow: hidden;
+    }
+    .own-sum-item {
+      padding: 14px 16px;
+      border-right: 1px solid var(--border);
+    }
+    .own-sum-item:last-child { border-right: none; }
+    .own-sum-label { font-size: 10.5px; text-transform: uppercase; letter-spacing: .08em; font-weight: 700; color: var(--muted); margin-bottom: 5px; }
+    .own-sum-val   { font-size: 13px; font-weight: 700; color: var(--text); }
+
+    /* Section labels */
+    .own-section-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .10em; color: var(--green); margin-bottom: 10px;
+    }
+
+    /* UBO / controller cards grid */
+    .ubo-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 14px; }
+    .ubo-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .ubo-card-head {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--panel-2);
+    }
+    .ubo-avatar {
+      width: 36px; height: 36px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800; flex-shrink: 0;
+    }
+    .ubo-name-block { flex: 1; }
+    .ubo-name  { font-size: 13.5px; font-weight: 700; color: var(--text); }
+    .ubo-role  { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+    .ubo-stake {
+      font-size: 20px; font-weight: 800; color: var(--green);
+      flex-shrink: 0;
+    }
+    .ubo-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 0; }
+    .ubo-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 7px 0; border-bottom: 1px solid var(--border);
+      font-size: 12.5px;
+    }
+    .ubo-row:last-child { border-bottom: none; }
+    .ubo-row-label { color: var(--muted); font-weight: 500; }
+    .ubo-row-val   { font-weight: 600; color: var(--text); text-align: right; }
+    .ubo-doc-strip {
+      display: flex; gap: 6px; flex-wrap: wrap;
+      padding: 10px 16px; border-top: 1px solid var(--border);
+      background: var(--panel-2);
+    }
+    .ubo-doc-pill {
+      font-size: 11px; font-weight: 600;
+      padding: 4px 9px; border-radius: 20px;
+      border: 1px solid transparent;
+    }
+    .ubo-doc-pill.ok     { background: #E8F8EE; color: #14632C; border-color: #A3DDB9; }
+    .ubo-doc-pill.pend   { background: #FEF3D7; color: #7A5200; border-color: #F0D68A; }
+    .ubo-doc-pill.miss   { background: #FDECEB; color: #8B2219; border-color: #F0AEAA; }
+
     /* ══ DASHBOARD STYLES ══════════════════════════════════ */
 
     /* My Queue bar */
@@ -1258,35 +1370,97 @@
 
               <!-- BUSINESS DETAILS TAB -->
               <div class="profile-tab-content" id="ptab-business">
-                <div class="profile-grid">
-                  <div class="profile-card full">
+
+                <!-- Top 2-col grid -->
+                <div class="biz-two-col">
+
+                  <!-- LEFT: Registration -->
+                  <div class="profile-card">
                     <div class="profile-card-head">
-                      <span class="profile-card-title">Business Details</span>
+                      <span class="profile-card-title">Registration &amp; Identity</span>
                       <span class="badge green">Verified</span>
                     </div>
                     <dl class="kv" id="pbizKV"></dl>
                   </div>
+
+                  <!-- RIGHT: top stack -->
+                  <div class="biz-right-col">
+
+                    <!-- Regulatory & Licences -->
+                    <div class="profile-card" style="margin-bottom:14px;">
+                      <div class="profile-card-head">
+                        <span class="profile-card-title">Regulatory &amp; Licences</span>
+                        <span class="badge green" id="pbizLicBadge">Active</span>
+                      </div>
+                      <dl class="kv" id="pbizLicKV"></dl>
+                    </div>
+
+                    <!-- Contact & Web -->
+                    <div class="profile-card">
+                      <div class="profile-card-head">
+                        <span class="profile-card-title">Contact &amp; Web Presence</span>
+                      </div>
+                      <dl class="kv" id="pbizContactKV"></dl>
+                    </div>
+
+                  </div>
                 </div>
+
+                <!-- Bottom: Document Checklist -->
+                <div class="profile-card" style="margin-top:14px;">
+                  <div class="profile-card-head">
+                    <span class="profile-card-title">Corporate Document Checklist</span>
+                    <span class="badge gray" id="pbizDocBadge">5 of 6 on file</span>
+                  </div>
+                  <div class="doc-checklist" id="pbizDocChecklist"></div>
+                </div>
+
               </div>
 
               <!-- OWNERSHIP TAB -->
               <div class="profile-tab-content" id="ptab-ownership">
-                <div class="profile-grid">
-                  <div class="profile-card">
-                    <div class="profile-card-head">
-                      <span class="profile-card-title">Ownership Summary</span>
-                      <span class="badge gold">Review Complete</span>
-                    </div>
-                    <dl class="kv" id="pownKV"></dl>
+
+                <!-- Summary bar -->
+                <div class="own-summary-bar" id="pownSummaryBar">
+                  <div class="own-sum-item">
+                    <div class="own-sum-label">Structure</div>
+                    <div class="own-sum-val" id="pownStructure">—</div>
                   </div>
-                  <div class="profile-card full">
-                    <div class="profile-card-head">
-                      <span class="profile-card-title">Ownership Notes</span>
-                      <span class="badge gray">On File</span>
-                    </div>
-                    <p class="body-copy" id="pownNotes">—</p>
+                  <div class="own-sum-item">
+                    <div class="own-sum-label">Complexity</div>
+                    <div class="own-sum-val" id="pownComplexity">—</div>
+                  </div>
+                  <div class="own-sum-item">
+                    <div class="own-sum-label">UBOs Identified</div>
+                    <div class="own-sum-val" id="pownUboCount">—</div>
+                  </div>
+                  <div class="own-sum-item">
+                    <div class="own-sum-label">Review Status</div>
+                    <div class="own-sum-val" id="pownReviewStatus">—</div>
+                  </div>
+                  <div class="own-sum-item">
+                    <div class="own-sum-label">Last Reviewed</div>
+                    <div class="own-sum-val" id="pownLastReviewed">—</div>
                   </div>
                 </div>
+
+                <!-- UBO cards -->
+                <div class="own-section-label">Beneficial Owners (25%+ Threshold)</div>
+                <div class="ubo-cards" id="pownUboCards"></div>
+
+                <!-- Controller card -->
+                <div class="own-section-label" style="margin-top:18px;">Controllers &amp; Authorised Signatories</div>
+                <div class="ubo-cards" id="pownControllerCards"></div>
+
+                <!-- Notes -->
+                <div class="profile-card" style="margin-top:14px;">
+                  <div class="profile-card-head">
+                    <span class="profile-card-title">Ownership Notes</span>
+                    <span class="badge gray">On File</span>
+                  </div>
+                  <p class="body-copy" id="pownNotes">—</p>
+                </div>
+
               </div>
 
               <!-- SCREENING TAB -->
@@ -1469,12 +1643,80 @@
         reg: 'REG-2020-88421',
         address: '244 Harbor Avenue, Boston, MA, United States',
         industry: 'Crypto Services',
+        natureBusiness: 'Digital asset exchange and institutional crypto settlement services',
+        parent: 'None identified',
+        regulator: 'FinCEN (MSB Registration)',
+        licenceNum: 'MSB-31000192447560',
+        licenceStatus: 'Active',
+        licenceExpiry: '2027-07-14',
+        secondaryLicences: 'Massachusetts MTL pending renewal',
+        amlProgramme: 'In-house AML Officer — Marcus Lee',
+        website: 'apexdigital.io',
+        email: 'compliance@apexdigital.io',
+        phone: '+1 617 400 8821',
+        registeredAgent: 'CT Corporation, Wilmington, DE',
+        docs: [
+          { name: 'Certificate of Formation', meta: 'Filed 2020-07-14', status: 'ok' },
+          { name: 'Operating Agreement', meta: 'Version 3 — 2023-11-01', status: 'ok' },
+          { name: 'EIN / Tax ID', meta: 'Confirmed on file', status: 'ok' },
+          { name: 'Good Standing Certificate', meta: 'Issued 2025-10-01', status: 'ok' },
+          { name: 'FinCEN MSB Registration', meta: 'Valid until 2027-07-14', status: 'ok' },
+          { name: 'MA Money Transmitter Licence', meta: 'Renewal pending — expires 2026-06-01', status: 'expiry' },
+        ],
       },
       ownership: {
-        ubos: 'Sarah Kim (45%), James Park (30%)',
-        controllers: 'Sarah Kim — CEO / Authorized Signatory',
         structure: 'Direct ownership, no layered entities',
         complexity: 'None',
+        reviewStatus: 'Review Complete',
+        lastReviewed: '2025-12-11',
+        uboCards: [
+          {
+            name: 'Sarah Kim', initials: 'SK', role: 'Founder & CEO', stake: '45%',
+            avatarBg: '#E8F8EE', avatarColor: '#14632C',
+            nationality: 'US Citizen', dob: '1984-03-22',
+            idVerif: 'Passport — Verified', addressVerif: 'Utility Bill — Verified',
+            screening: 'Clear — screened 2025-12-11',
+            docs: [
+              { label: 'Passport', cls: 'ok' }, { label: 'Address Proof', cls: 'ok' },
+              { label: 'Source of Wealth', cls: 'ok' }, { label: 'W-9', cls: 'ok' },
+            ],
+          },
+          {
+            name: 'James Park', initials: 'JP', role: 'Co-Founder & CTO', stake: '30%',
+            avatarBg: '#EBF3FD', avatarColor: '#1A5FA8',
+            nationality: 'US Citizen', dob: '1986-11-07',
+            idVerif: 'Passport — Verified', addressVerif: 'Bank Statement — Verified',
+            screening: 'Clear — screened 2025-12-11',
+            docs: [
+              { label: 'Passport', cls: 'ok' }, { label: 'Address Proof', cls: 'ok' },
+              { label: 'Source of Wealth', cls: 'ok' }, { label: 'W-9', cls: 'ok' },
+            ],
+          },
+        ],
+        controllerCards: [
+          {
+            name: 'Sarah Kim', initials: 'SK', role: 'Controller & Auth. Signatory',
+            avatarBg: '#E8F8EE', avatarColor: '#14632C',
+            title: 'CEO / Authorized Signatory',
+            signingAuth: 'Full — all accounts',
+            idVerif: 'Passport — Verified',
+            screening: 'Clear',
+            docs: [
+              { label: 'Board Resolution', cls: 'ok' }, { label: 'Specimen Signature', cls: 'ok' },
+            ],
+          },
+          {
+            name: 'Marcus Lee', initials: 'ML', role: 'Secondary Signatory',
+            avatarBg: '#F0EFEB', avatarColor: '#4A5550',
+            title: 'CFO',
+            signingAuth: 'Operating Account only',
+            idVerif: 'Drivers Licence — Verified',
+            screening: 'Clear',
+            docs: [
+              { label: 'Board Resolution', cls: 'ok' }, { label: 'Specimen Signature', cls: 'ok' },
+            ],
+          },
+        ],
         notes: 'Two beneficial owners identified above the 25% threshold. Ownership verified against operating agreement. No complex or layered holding structure detected. Controller role confirmed for Sarah Kim.',
       },
       screening: {
@@ -1556,12 +1798,58 @@
         reg: 'CI-2018-LP-04421',
         address: 'c/o Harbour Trust Co., George Town, Grand Cayman',
         industry: 'Private Equity / Investment Fund',
+        natureBusiness: 'Private equity fund investing in emerging market fintech',
+        parent: 'North Harbor GP Ltd (General Partner)',
+        regulator: 'CIMA (Cayman Islands Monetary Authority)',
+        licenceNum: 'MF-002847',
+        licenceStatus: 'Under Review',
+        licenceExpiry: 'Pending renewal',
+        secondaryLicences: '—',
+        amlProgramme: 'MLCO: Harbour Trust Co.',
+        website: 'northharborventures.ky',
+        email: 'kyc@northharborventures.ky',
+        phone: '+1 345 814 5500',
+        registeredAgent: 'Harbour Trust Co., George Town',
+        docs: [
+          { name: 'LP Agreement', meta: 'Version 2 — 2021-06-01', status: 'ok' },
+          { name: 'GP Certificate of Inc.', meta: 'CI-2018-CO-09321', status: 'ok' },
+          { name: 'CIMA Registration', meta: 'MF-002847 — under review', status: 'expiry' },
+          { name: 'UBO Declaration', meta: 'Pending — not yet received', status: 'miss' },
+          { name: 'Good Standing Certificate', meta: 'Not yet received', status: 'miss' },
+          { name: 'Board Resolution (GP)', meta: 'Pending receipt', status: 'miss' },
+        ],
       },
       ownership: {
-        ubos: 'Pending — GP entity verification in progress',
-        controllers: 'North Harbor GP Ltd (General Partner)',
-        structure: 'LP with corporate GP; UBO analysis in progress',
+        structure: 'LP with corporate GP — multi-layer',
         complexity: 'High — multi-layer fund structure',
+        reviewStatus: 'In Progress',
+        lastReviewed: '—',
+        uboCards: [
+          {
+            name: 'TBC — GP Look-Through', initials: '?', role: 'Beneficial Owner',
+            avatarBg: '#FDECEB', avatarColor: '#8B2219',
+            nationality: 'Pending verification', dob: '—',
+            idVerif: 'Pending — docs not received', addressVerif: 'Pending',
+            screening: 'Partial — near-match under review',
+            docs: [
+              { label: 'Passport', cls: 'miss' }, { label: 'Address Proof', cls: 'miss' },
+              { label: 'Source of Wealth', cls: 'miss' },
+            ],
+          },
+        ],
+        controllerCards: [
+          {
+            name: 'North Harbor GP Ltd', initials: 'GP', role: 'General Partner / Controller',
+            avatarBg: '#FEF3D7', avatarColor: '#7A5200',
+            title: 'General Partner',
+            signingAuth: 'All fund decisions — full authority',
+            idVerif: 'Certificate on file',
+            screening: 'Entity screening complete — individuals pending',
+            docs: [
+              { label: 'GP Certificate', cls: 'ok' }, { label: 'Board Resolution', cls: 'miss' },
+            ],
+          },
+        ],
         notes: 'General partner is a Cayman-incorporated company. UBO look-through analysis underway. Two potential beneficial owners identified but documentation not yet received.',
       },
       screening: {
@@ -1621,13 +1909,81 @@
         reg: 'REG-2015-44109',
         address: '580 Park Avenue, New York, NY, United States',
         industry: 'Investment Advisory',
+        natureBusiness: 'SEC-registered investment adviser managing discretionary equity portfolios',
+        parent: 'None identified',
+        regulator: 'SEC (RIA)',
+        licenceNum: 'IA-801-82419',
+        licenceStatus: 'Active',
+        licenceExpiry: 'Annual ADV filing — next due 2026-04-01',
+        secondaryLicences: 'NY DFS — registered',
+        amlProgramme: 'Third-party MLCO — AML Partners LLC',
+        website: 'meridiancapitalpartners.com',
+        email: 'compliance@meridiancapital.com',
+        phone: '+1 212 640 9900',
+        registeredAgent: 'National Registered Agents Inc., Dover DE',
+        docs: [
+          { name: 'Articles of Organisation', meta: 'Filed 2015-11-03', status: 'ok' },
+          { name: 'Operating Agreement', meta: 'Version 5 — 2024-01-15', status: 'ok' },
+          { name: 'EIN / Tax ID', meta: 'Confirmed on file', status: 'ok' },
+          { name: 'Good Standing Certificate', meta: 'Issued 2025-09-15', status: 'ok' },
+          { name: 'SEC Form ADV', meta: 'Filed 2025-04-01 — renewal due Apr 2026', status: 'expiry' },
+          { name: 'Updated UBO Declaration', meta: 'Pending — ownership change trigger', status: 'miss' },
+        ],
       },
       ownership: {
-        ubos: 'David Osei (51%), Elena Varga (28%)',
-        controllers: 'David Osei — Managing Partner',
         structure: 'Direct ownership',
         complexity: 'Low',
-        notes: 'Two UBOs identified above the 25% threshold. Ownership verified at last periodic review. Client self-reported a partial ownership transfer; trigger review opened to re-verify structure.',
+        reviewStatus: 'Review Complete',
+        lastReviewed: '2026-01-08',
+        uboCards: [
+          {
+            name: 'David Osei', initials: 'DO', role: 'Managing Partner & Primary UBO', stake: '51%',
+            avatarBg: '#E8F8EE', avatarColor: '#14632C',
+            nationality: 'US / UK Dual Citizen', dob: '1979-06-14',
+            idVerif: 'Passport — Verified', addressVerif: 'Bank Statement — Verified',
+            screening: 'Clear — screened 2026-01-08',
+            docs: [
+              { label: 'Passport', cls: 'ok' }, { label: 'Address Proof', cls: 'ok' },
+              { label: 'Source of Wealth', cls: 'ok' }, { label: 'Updated Declaration', cls: 'pend' },
+            ],
+          },
+          {
+            name: 'Elena Varga', initials: 'EV', role: 'Partner & Secondary UBO', stake: '28%',
+            avatarBg: '#F3EBF8', avatarColor: '#6B21A8',
+            nationality: 'Hungarian Citizen', dob: '1983-02-28',
+            idVerif: 'Passport — Verified', addressVerif: 'Utility Bill — Verified',
+            screening: 'Clear — screened 2026-01-08',
+            docs: [
+              { label: 'Passport', cls: 'ok' }, { label: 'Address Proof', cls: 'ok' },
+              { label: 'Source of Wealth', cls: 'ok' }, { label: 'Updated Declaration', cls: 'pend' },
+            ],
+          },
+        ],
+        controllerCards: [
+          {
+            name: 'David Osei', initials: 'DO', role: 'Controller & Auth. Signatory',
+            avatarBg: '#E8F8EE', avatarColor: '#14632C',
+            title: 'Managing Partner',
+            signingAuth: 'Full — all accounts',
+            idVerif: 'Passport — Verified',
+            screening: 'Clear',
+            docs: [
+              { label: 'Board Resolution', cls: 'ok' }, { label: 'Specimen Signature', cls: 'ok' },
+            ],
+          },
+          {
+            name: 'Elena Varga', initials: 'EV', role: 'Secondary Signatory',
+            avatarBg: '#F3EBF8', avatarColor: '#6B21A8',
+            title: 'Partner',
+            signingAuth: 'Advisory Operating Account only',
+            idVerif: 'Passport — Verified',
+            screening: 'Clear',
+            docs: [
+              { label: 'Board Resolution', cls: 'ok' }, { label: 'Specimen Signature', cls: 'ok' },
+            ],
+          },
+        ],
+        notes: 'Two UBOs identified above the 25% threshold. Ownership verified at last periodic review. Client self-reported a partial ownership transfer; trigger review opened to re-verify structure. Updated UBO declarations requested and pending receipt.',
       },
       screening: {
         sanctions: 'No sanctions matches for entity or UBOs. Last screened 2026-01-08.',
@@ -1793,7 +2149,7 @@
 
     document.getElementById('pSummary').textContent = c.summary;
 
-    // business
+    // business — 2-col enriched layout
     const biz = c.business;
     document.getElementById('pbizKV').innerHTML = kvRows([
       ['Legal Entity Name', biz.legalName],
@@ -1805,16 +2161,95 @@
       ['Registration Number', biz.reg],
       ['Operating Address', biz.address],
       ['Industry / Sector', biz.industry],
+      ['Nature of Business', biz.natureBusiness || '—'],
+      ['Parent / Group Entity', biz.parent || 'None identified'],
     ]);
+    document.getElementById('pbizLicKV').innerHTML = kvRows([
+      ['Primary Regulator', biz.regulator || '—'],
+      ['Licence Number', biz.licenceNum || '—'],
+      ['Licence Status', biz.licenceStatus || '—'],
+      ['Licence Expiry', biz.licenceExpiry || '—'],
+      ['Secondary Licences', biz.secondaryLicences || '—'],
+      ['AML Programme', biz.amlProgramme || '—'],
+    ]);
+    if (biz.licenceStatus === 'Active') {
+      document.getElementById('pbizLicBadge').textContent = 'Active'; document.getElementById('pbizLicBadge').className = 'badge green';
+    } else if (!biz.licenceStatus || biz.licenceStatus === '—' || biz.licenceStatus === 'N/A') {
+      document.getElementById('pbizLicBadge').textContent = 'N/A'; document.getElementById('pbizLicBadge').className = 'badge gray';
+    } else {
+      document.getElementById('pbizLicBadge').textContent = biz.licenceStatus; document.getElementById('pbizLicBadge').className = 'badge gold';
+    }
+    document.getElementById('pbizContactKV').innerHTML = kvRows([
+      ['Website', biz.website || '—'],
+      ['Primary Email', biz.email || '—'],
+      ['Primary Phone', biz.phone || '—'],
+      ['Registered Agent', biz.registeredAgent || '—'],
+    ]);
+    // doc checklist
+    const docs = biz.docs || [];
+    const onFile = docs.filter(d => d.status === 'ok').length;
+    document.getElementById('pbizDocBadge').textContent = `${onFile} of ${docs.length} on file`;
+    document.getElementById('pbizDocChecklist').innerHTML = docs.map(d => `
+      <div class="doc-item doc-${d.status}">
+        <div class="doc-icon">${d.status === 'ok' ? '✓' : d.status === 'miss' ? '✗' : '!'}</div>
+        <div>
+          <div class="doc-name">${d.name}</div>
+          <div class="doc-meta">${d.meta}</div>
+        </div>
+      </div>
+    `).join('');
 
-    // ownership
+    // ownership — enriched
     const own = c.ownership;
-    document.getElementById('pownKV').innerHTML = kvRows([
-      ['25%+ Beneficial Owners', own.ubos],
-      ['Controllers', own.controllers],
-      ['Ownership Structure', own.structure],
-      ['Complexity', own.complexity],
-    ]);
+    // summary bar
+    document.getElementById('pownStructure').textContent = own.structure || '—';
+    document.getElementById('pownComplexity').textContent = own.complexity || '—';
+    document.getElementById('pownUboCount').textContent = (own.uboCards || []).length + ' identified';
+    document.getElementById('pownReviewStatus').innerHTML = badgePill(own.reviewStatus || 'Pending', own.reviewStatus === 'Review Complete' ? 'green' : 'gold');
+    document.getElementById('pownLastReviewed').textContent = own.lastReviewed || '—';
+
+    // UBO cards
+    document.getElementById('pownUboCards').innerHTML = (own.uboCards || []).map(u => `
+      <div class="ubo-card">
+        <div class="ubo-card-head">
+          <div class="ubo-avatar" style="background:${u.avatarBg};color:${u.avatarColor}">${u.initials}</div>
+          <div class="ubo-name-block">
+            <div class="ubo-name">${u.name}</div>
+            <div class="ubo-role">${u.role}</div>
+          </div>
+          <div class="ubo-stake">${u.stake}</div>
+        </div>
+        <div class="ubo-body">
+          <div class="ubo-row"><span class="ubo-row-label">Nationality</span><span class="ubo-row-val">${u.nationality}</span></div>
+          <div class="ubo-row"><span class="ubo-row-label">Date of Birth</span><span class="ubo-row-val">${u.dob}</span></div>
+          <div class="ubo-row"><span class="ubo-row-label">ID Verification</span><span class="ubo-row-val">${u.idVerif}</span></div>
+          <div class="ubo-row"><span class="ubo-row-label">Address Verified</span><span class="ubo-row-val">${u.addressVerif}</span></div>
+          <div class="ubo-row"><span class="ubo-row-label">Screening Status</span><span class="ubo-row-val">${u.screening}</span></div>
+        </div>
+        <div class="ubo-doc-strip">${(u.docs || []).map(d => `<span class="ubo-doc-pill ${d.cls}">${d.label}</span>`).join('')}</div>
+      </div>
+    `).join('') || '<p class="body-copy">No UBO records found.</p>';
+
+    // Controller cards
+    document.getElementById('pownControllerCards').innerHTML = (own.controllerCards || []).map(u => `
+      <div class="ubo-card">
+        <div class="ubo-card-head">
+          <div class="ubo-avatar" style="background:${u.avatarBg};color:${u.avatarColor}">${u.initials}</div>
+          <div class="ubo-name-block">
+            <div class="ubo-name">${u.name}</div>
+            <div class="ubo-role">${u.role}</div>
+          </div>
+        </div>
+        <div class="ubo-body">
+          <div class="ubo-row"><span class="ubo-row-label">Title</span><span class="ubo-row-val">${u.title}</span></div>
+          <div class="ubo-row"><span class="ubo-row-label">Signing Authority</span><span class="ubo-row-val">${u.signingAuth}</span></div>
+          <div class="ubo-row"><span class="ubo-row-label">ID Verification</span><span class="ubo-row-val">${u.idVerif}</span></div>
+          <div class="ubo-row"><span class="ubo-row-label">Screening Status</span><span class="ubo-row-val">${u.screening}</span></div>
+        </div>
+        <div class="ubo-doc-strip">${(u.docs || []).map(d => `<span class="ubo-doc-pill ${d.cls}">${d.label}</span>`).join('')}</div>
+      </div>
+    `).join('') || '<p class="body-copy">No controller records found.</p>';
+
     document.getElementById('pownNotes').textContent = own.notes;
 
     // screening
