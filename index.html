@@ -525,6 +525,121 @@
       color: var(--text);
     }
 
+    /* ══ CASE WORKSPACE ════════════════════════════════════ */
+
+    /* Case header bar */
+    .ws-case-header {
+      display: flex; align-items: center; justify-content: space-between;
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px 20px;
+      margin-bottom: 14px; gap: 16px; flex-wrap: wrap;
+    }
+    .ws-case-header-left { display: flex; flex-direction: column; gap: 5px; }
+    .ws-case-header-right { display: flex; gap: 8px; flex-shrink: 0; }
+    .ws-case-id-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .ws-case-id {
+      font-family: 'JetBrains Mono', monospace; font-size: 13px;
+      font-weight: 700; color: var(--text); letter-spacing: .03em;
+    }
+    .ws-case-client { font-size: 18px; font-weight: 800; color: var(--text); }
+
+    /* Tabs */
+    .ws-tabs {
+      display: flex; gap: 0; border-bottom: 2px solid var(--border);
+      margin-bottom: 18px; overflow-x: auto;
+    }
+    .ws-tabs .tab {
+      padding: 9px 16px; font-size: 13px; font-weight: 600;
+      color: var(--muted); background: none; border: none;
+      border-bottom: 2px solid transparent; margin-bottom: -2px;
+      cursor: pointer; white-space: nowrap;
+    }
+    .ws-tabs .tab.active { color: var(--green); border-bottom-color: var(--green); }
+    .ws-tabs .tab:hover:not(.active) { color: var(--text); }
+
+    /* Two / three col layouts */
+    .ws-two-col   { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: start; }
+    .ws-three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; align-items: start; }
+    .ws-col { display: flex; flex-direction: column; }
+
+    /* Check list */
+    .check-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0; }
+    .check-list li {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 0; border-bottom: 1px solid var(--border);
+      font-size: 13px; color: var(--text);
+    }
+    .check-list li:last-child { border-bottom: none; }
+
+    /* Doc list */
+    .doc-list { display: flex; flex-direction: column; gap: 10px; }
+    .doc-item {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 12px 14px; border-radius: 8px;
+      background: var(--panel-2); border: 1px solid var(--border);
+    }
+    .doc-meta { display: flex; flex-direction: column; gap: 3px; flex: 1; }
+    .doc-meta strong { font-size: 13px; font-weight: 700; color: var(--text); }
+    .doc-meta span   { font-size: 12px; color: var(--muted); }
+
+    /* Chip group */
+    .chip-group { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 4px; }
+    .chip {
+      background: var(--green-soft); color: var(--green);
+      border: 1px solid var(--green); border-radius: 20px;
+      padding: 5px 12px; font-size: 12px; font-weight: 600;
+    }
+
+    /* Timeline */
+    .timeline { display: flex; flex-direction: column; gap: 0; }
+    .timeline-item {
+      display: flex; gap: 14px;
+      padding: 12px 0; border-bottom: 1px solid var(--border);
+    }
+    .timeline-item:last-child { border-bottom: none; }
+    .timeline-time {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px;
+      color: var(--muted); width: 80px; flex-shrink: 0; padding-top: 2px;
+    }
+    .timeline-body { display: flex; flex-direction: column; gap: 3px; }
+    .timeline-body strong { font-size: 13px; font-weight: 700; color: var(--text); }
+    .timeline-body span   { font-size: 12.5px; color: var(--muted); }
+
+    /* Agent feed */
+    .agent-feed { display: flex; flex-direction: column; gap: 10px; }
+    .agent-card {
+      display: flex; flex-direction: column; gap: 5px;
+      background: var(--panel-2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 12px 14px;
+    }
+    .agent-card strong { font-size: 13px; font-weight: 700; color: var(--text); }
+    .agent-card span   { font-size: 12.5px; color: var(--muted); }
+
+    /* ══ OWNERSHIP CHART ═══════════════════════════════════ */
+    .own-chart-wrap {
+      padding: 24px 16px 16px;
+      overflow-x: auto;
+      min-height: 180px;
+      display: flex;
+      justify-content: center;
+    }
+    .own-chart-wrap svg { overflow: visible; }
+
+    /* Chart node styles */
+    .oc-entity-rect   { fill: #fff; stroke: var(--green); stroke-width: 1.5; rx: 8; }
+    .oc-entity-rect.pending { stroke: #D0A85C; }
+    .oc-entity-rect.highlight { fill: #F0FBF4; }
+    .oc-ubo-rect      { fill: #fff; stroke: var(--border); stroke-width: 1.5; }
+    .oc-ubo-rect.unverified { stroke: #F0AEAA; fill: #FDECEB; }
+    .oc-connector     { stroke: #C8D5CE; stroke-width: 1.5; fill: none; }
+    .oc-connector.dashed { stroke-dasharray: 5 3; stroke: #D0A85C; }
+    .oc-pct-label     { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; fill: var(--green); }
+    .oc-pct-label.pending { fill: #B07B20; }
+    .oc-name-label    { font-family: Inter, sans-serif; font-size: 12px; font-weight: 700; fill: #1A1E1C; }
+    .oc-sub-label     { font-family: Inter, sans-serif; font-size: 10px; fill: #6B7670; }
+    .oc-avatar-circle { }
+    .oc-badge-pill    { rx: 10; }
+
     /* ══ BUSINESS DETAILS TAB ══════════════════════════════ */
     .biz-two-col {
       display: grid;
@@ -1444,6 +1559,15 @@
                   </div>
                 </div>
 
+                <!-- Ownership Structure Diagram -->
+                <div class="profile-card" style="margin-bottom:14px;">
+                  <div class="profile-card-head panel-head-spread">
+                    <span class="profile-card-title">Ownership Structure Diagram</span>
+                    <span class="badge gray" id="pownChartBadge">Visual</span>
+                  </div>
+                  <div class="own-chart-wrap" id="pownChartWrap"></div>
+                </div>
+
                 <!-- UBO cards -->
                 <div class="own-section-label">Beneficial Owners (25%+ Threshold)</div>
                 <div class="ubo-cards" id="pownUboCards"></div>
@@ -1555,7 +1679,204 @@
       </section>
 
       <section class="view" id="workspace-view">
-        <div class="panel"><div class="panel-head"><h2>Case Workspace</h2></div><p class="body-copy">Select a case from a queue to open it here.</p></div>
+
+        <!-- Case header bar -->
+        <div class="ws-case-header">
+          <div class="ws-case-header-left">
+            <div class="ws-case-id-row">
+              <span class="ws-case-id" id="caseId">—</span>
+              <span class="badge blue" id="caseStatus">—</span>
+              <span class="badge gray" id="casePipeline">—</span>
+              <span class="badge gray" id="casePriority">—</span>
+            </div>
+            <div class="ws-case-client" id="caseClientName">Select a case to begin</div>
+          </div>
+          <div class="ws-case-header-right">
+            <button class="ghost-btn">Download Report</button>
+            <button class="primary-btn">Submit Decision</button>
+          </div>
+        </div>
+
+        <!-- Case tabs -->
+        <div class="ws-tabs">
+          <button class="tab active" data-tab="overview">Overview</button>
+          <button class="tab" data-tab="documents">Documents</button>
+          <button class="tab" data-tab="ownership">Ownership</button>
+          <button class="tab" data-tab="screening">Screening</button>
+          <button class="tab" data-tab="risk">Risk Assessment</button>
+          <button class="tab" data-tab="activity">Activity Log</button>
+          <button class="tab" data-tab="audit">Audit Trail</button>
+          <button class="tab" data-tab="agents">AI Agents</button>
+        </div>
+
+        <!-- ── OVERVIEW TAB ── -->
+        <div class="tab-content active" id="tab-overview">
+          <div class="ws-two-col">
+
+            <!-- LEFT -->
+            <div class="ws-col">
+
+              <!-- Entity Details -->
+              <div class="panel" style="margin-bottom:14px;">
+                <div class="panel-head panel-head-spread">
+                  <h2>Entity Details</h2>
+                  <span class="badge gray">CDD Record</span>
+                </div>
+                <dl class="kv">
+                  <div><dt>Legal Name</dt><dd id="ovLegalName">—</dd></div>
+                  <div><dt>Entity Type</dt><dd id="ovEntityType">—</dd></div>
+                  <div><dt>Jurisdiction</dt><dd id="ovJurisdiction">—</dd></div>
+                  <div><dt>Formation Date</dt><dd id="ovFormationDate">—</dd></div>
+                  <div><dt>Registration No.</dt><dd id="ovRegistrationNumber">—</dd></div>
+                  <div><dt>Tax ID</dt><dd id="ovTaxId">—</dd></div>
+                  <div><dt>Registered Address</dt><dd id="ovRegisteredAddress">—</dd></div>
+                  <div><dt>Business Description</dt><dd id="ovBusinessDescription">—</dd></div>
+                  <div><dt>Industry / Sector</dt><dd id="ovIndustry">—</dd></div>
+                  <div><dt>Purpose of Account</dt><dd id="ovPurpose">—</dd></div>
+                  <div><dt>Expected Activity</dt><dd id="ovExpected">—</dd></div>
+                  <div><dt>Source of Funds</dt><dd id="ovSourceOfFunds">—</dd></div>
+                </dl>
+              </div>
+
+              <!-- Ownership Summary -->
+              <div class="panel" style="margin-bottom:14px;">
+                <div class="panel-head panel-head-spread">
+                  <h2>Ownership Summary</h2>
+                </div>
+                <dl class="kv">
+                  <div><dt>Beneficial Owners</dt><dd id="ovBeneficialOwners">—</dd></div>
+                  <div><dt>Control Person(s)</dt><dd id="ovControlPerson">—</dd></div>
+                  <div><dt>Authorised Users</dt><dd id="ovAuthorizedUsers">—</dd></div>
+                  <div><dt>Structure</dt><dd id="ovOwnershipStructure">—</dd></div>
+                  <div><dt>Complexity Flag</dt><dd id="ovComplexityFlag">—</dd></div>
+                </dl>
+              </div>
+
+            </div><!-- /left -->
+
+            <!-- RIGHT -->
+            <div class="ws-col">
+
+              <!-- Intake Checks -->
+              <div class="panel" style="margin-bottom:14px;">
+                <div class="panel-head panel-head-spread">
+                  <h2>Intake Checks</h2>
+                </div>
+                <ul class="check-list" id="overviewChecks"></ul>
+              </div>
+
+              <!-- Risk snapshot -->
+              <div class="panel" style="margin-bottom:14px;">
+                <div class="panel-head panel-head-spread">
+                  <h2>Risk Snapshot</h2>
+                </div>
+                <dl class="kv">
+                  <div><dt>Risk Score</dt><dd id="ovRiskScoreSummary">—</dd></div>
+                  <div><dt>Risk Tier</dt><dd id="ovRiskTier">—</dd></div>
+                  <div><dt>EDD Triggered</dt><dd id="ovEddTriggered">—</dd></div>
+                  <div><dt>Key Risk Factors</dt><dd id="ovMainRiskFactors">—</dd></div>
+                </dl>
+              </div>
+
+              <!-- AI Summary -->
+              <div class="panel">
+                <div class="panel-head panel-head-spread">
+                  <h2>AI Case Summary</h2>
+                  <span class="badge green">Generated</span>
+                </div>
+                <p class="body-copy" id="overviewSummary">—</p>
+              </div>
+
+            </div><!-- /right -->
+          </div>
+        </div>
+
+        <!-- ── DOCUMENTS TAB ── -->
+        <div class="tab-content" id="tab-documents">
+          <div class="panel">
+            <div class="panel-head panel-head-spread">
+              <h2>Documents</h2>
+              <span class="badge gray">Intake Package</span>
+            </div>
+            <div class="doc-list" id="documentsList"></div>
+          </div>
+        </div>
+
+        <!-- ── OWNERSHIP TAB ── -->
+        <div class="tab-content" id="tab-ownership">
+          <div class="panel">
+            <div class="panel-head panel-head-spread">
+              <h2>Ownership &amp; Control</h2>
+              <span class="badge gray" id="ownershipEntity">—</span>
+            </div>
+            <p class="body-copy" id="ownershipNotes">—</p>
+          </div>
+        </div>
+
+        <!-- ── SCREENING TAB ── -->
+        <div class="tab-content" id="tab-screening">
+          <div class="ws-three-col">
+            <div class="panel">
+              <div class="panel-head panel-head-spread"><h2>Sanctions</h2></div>
+              <p class="body-copy" id="screenSanctions">—</p>
+            </div>
+            <div class="panel">
+              <div class="panel-head panel-head-spread"><h2>PEP</h2></div>
+              <p class="body-copy" id="screenPep">—</p>
+            </div>
+            <div class="panel">
+              <div class="panel-head panel-head-spread"><h2>Adverse Media</h2></div>
+              <p class="body-copy" id="screenMedia">—</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── RISK ASSESSMENT TAB ── -->
+        <div class="tab-content" id="tab-risk">
+          <div class="ws-two-col">
+            <div class="panel">
+              <div class="panel-head panel-head-spread">
+                <h2>Risk Assessment</h2>
+              </div>
+              <dl class="kv" style="margin-bottom:16px;">
+                <div><dt>Risk Score</dt><dd id="riskScore">—</dd></div>
+              </dl>
+              <p class="body-copy" id="riskNarrative">—</p>
+            </div>
+            <div class="panel">
+              <div class="panel-head"><h2>Risk Factors</h2></div>
+              <div class="chip-group" id="riskFactors"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── ACTIVITY LOG TAB ── -->
+        <div class="tab-content" id="tab-activity">
+          <div class="panel">
+            <div class="panel-head"><h2>Activity Log</h2></div>
+            <div class="timeline" id="activityTimeline"></div>
+          </div>
+        </div>
+
+        <!-- ── AUDIT TRAIL TAB ── -->
+        <div class="tab-content" id="tab-audit">
+          <div class="panel">
+            <div class="panel-head"><h2>Audit Trail</h2></div>
+            <div class="timeline" id="auditTimeline"></div>
+          </div>
+        </div>
+
+        <!-- ── AI AGENTS TAB ── -->
+        <div class="tab-content" id="tab-agents">
+          <div class="panel">
+            <div class="panel-head panel-head-spread">
+              <h2>AI Agent Activity</h2>
+              <span class="badge green">Live</span>
+            </div>
+            <div class="agent-feed" id="agentFeed"></div>
+          </div>
+        </div>
+
       </section>
 
       <section class="view" id="escalations-view">
@@ -2208,6 +2529,9 @@
     document.getElementById('pownReviewStatus').innerHTML = badgePill(own.reviewStatus || 'Pending', own.reviewStatus === 'Review Complete' ? 'green' : 'gold');
     document.getElementById('pownLastReviewed').textContent = own.lastReviewed || '—';
 
+    // ── Ownership structure diagram ──
+    renderOwnershipChart(own, c.name, c.type);
+
     // UBO cards
     document.getElementById('pownUboCards').innerHTML = (own.uboCards || []).map(u => `
       <div class="ubo-card">
@@ -2377,6 +2701,118 @@
 
     // reset tabs to overview
     activateProfileTab('overview');
+  }
+
+  /* ─── ownership chart ─── */
+  function renderOwnershipChart(own, entityName, entityType) {
+    const wrap = document.getElementById('pownChartWrap');
+    const W = 860, H = own.complexity && own.complexity.toLowerCase().includes('high') ? 320 : 240;
+    const ubos = own.uboCards || [];
+    const controllers = own.controllerCards || [];
+    const isPending = own.reviewStatus !== 'Review Complete';
+
+    // Layout constants
+    const entityX = W / 2, entityY = 110;
+    const entityW = 200, entityH = 56;
+    const nodeW = 148, nodeH = 76;
+    const uboY = isPending && own.complexity?.includes('High') ? 230 : 200;
+
+    // Calculate positions for UBO nodes
+    const totalNodes = ubos.length;
+    const spacing = Math.max(nodeW + 24, (W - 80) / Math.max(totalNodes, 1));
+    const startX = W / 2 - ((totalNodes - 1) * spacing) / 2;
+
+    // SVG helpers
+    const rect = (x, y, w, h, cls, rx = 10) =>
+      `<rect x="${x - w/2}" y="${y - h/2}" width="${w}" height="${h}" rx="${rx}" class="${cls}"/>`;
+    const text = (x, y, txt, cls, anchor = 'middle') =>
+      `<text x="${x}" y="${y}" text-anchor="${anchor}" class="${cls}">${txt}</text>`;
+    const line = (x1, y1, x2, y2, cls = 'oc-connector') =>
+      `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" class="${cls}"/>`;
+    const avatarCircle = (cx, cy, r, bg, color, initials) =>
+      `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${bg}" stroke="${color}" stroke-width="1"/>
+       <text x="${cx}" y="${cy + 4}" text-anchor="middle" style="font-size:11px;font-weight:800;fill:${color};font-family:Inter,sans-serif">${initials}</text>`;
+    const pill = (x, y, label, bg, textColor, borderColor) => {
+      const pw = label.length * 6.5 + 16, ph = 18;
+      return `<rect x="${x - pw/2}" y="${y - ph/2}" width="${pw}" height="${ph}" rx="9" fill="${bg}" stroke="${borderColor}" stroke-width="1"/>
+              <text x="${x}" y="${y + 4}" text-anchor="middle" style="font-size:10px;font-weight:700;fill:${textColor};font-family:Inter,sans-serif">${label}</text>`;
+    };
+
+    let parts = [];
+
+    // ── Entity node (centre) ──
+    const eCls = isPending ? 'oc-entity-rect pending' : 'oc-entity-rect highlight';
+    parts.push(rect(entityX, entityY, entityW, entityH, eCls));
+    parts.push(text(entityX, entityY - 8, entityName.length > 22 ? entityName.slice(0, 22) + '…' : entityName, 'oc-name-label'));
+    parts.push(text(entityX, entityY + 10, entityType, 'oc-sub-label'));
+    // Entity badge
+    const entBadgeLabel = isPending ? 'Onboarding' : 'Active Customer';
+    const entBadgeBg = isPending ? '#FEF3D7' : '#E8F8EE';
+    const entBadgeColor = isPending ? '#7A5200' : '#14632C';
+    const entBadgeBorder = isPending ? '#F0D68A' : '#A3DDB9';
+    parts.push(pill(entityX, entityY + 26, entBadgeLabel, entBadgeBg, entBadgeColor, entBadgeBorder));
+
+    // ── UBO nodes ──
+    ubos.forEach((u, i) => {
+      const nx = startX + i * spacing;
+      const ny = uboY;
+      const unverified = u.idVerif?.includes('Pending');
+      const nodeCls = unverified ? 'oc-ubo-rect unverified' : 'oc-ubo-rect';
+
+      // connector line with stake label
+      const midY = (entityY + entityH/2 + ny - nodeH/2) / 2;
+      parts.push(line(entityX, entityY + entityH/2, nx, ny - nodeH/2, unverified ? 'oc-connector dashed' : 'oc-connector'));
+      // stake % badge on line
+      const pctLabel = u.stake || '?';
+      const pctCls = unverified ? 'pending' : '';
+      parts.push(`<rect x="${(entityX+nx)/2 - 18}" y="${midY - 10}" width="36" height="18" rx="9" fill="${unverified ? '#FEF3D7' : '#E8F8EE'}" stroke="${unverified ? '#F0D68A' : '#A3DDB9'}" stroke-width="1"/>`);
+      parts.push(`<text x="${(entityX+nx)/2}" y="${midY + 4}" text-anchor="middle" class="oc-pct-label ${pctCls}">${pctLabel}</text>`);
+
+      // node box
+      parts.push(rect(nx, ny, nodeW, nodeH, nodeCls));
+      // avatar
+      parts.push(avatarCircle(nx - nodeW/2 + 22, ny - 12, 14, u.avatarBg, u.avatarColor, u.initials));
+      // name + role
+      const shortName = u.name.length > 16 ? u.name.slice(0,16) + '…' : u.name;
+      parts.push(text(nx - nodeW/2 + 44, ny - 17, shortName, 'oc-name-label', 'start'));
+      parts.push(text(nx - nodeW/2 + 44, ny - 4, u.role.length > 20 ? u.role.slice(0,20)+'…' : u.role, 'oc-sub-label', 'start'));
+      // ID verif status pill
+      const verifLabel = unverified ? 'Pending' : 'ID Verified';
+      const vBg = unverified ? '#FDECEB' : '#E8F8EE';
+      const vColor = unverified ? '#8B2219' : '#14632C';
+      const vBorder = unverified ? '#F0AEAA' : '#A3DDB9';
+      parts.push(pill(nx, ny + 22, verifLabel, vBg, vColor, vBorder));
+      // screening
+      const scrLabel = u.screening?.startsWith('Clear') ? 'Screened ✓' : 'Screening ⚠';
+      const sBg = u.screening?.startsWith('Clear') ? '#E8F8EE' : '#FEF3D7';
+      const sColor = u.screening?.startsWith('Clear') ? '#14632C' : '#7A5200';
+      const sBorder = u.screening?.startsWith('Clear') ? '#A3DDB9' : '#F0D68A';
+      parts.push(pill(nx, ny + 38, scrLabel, sBg, sColor, sBorder));
+    });
+
+    // ── GP / intermediate node for complex structures ──
+    if (own.complexity?.includes('High') && controllers.length) {
+      const gpX = entityX, gpY = entityY - 100;
+      parts.push(rect(gpX, gpY, 180, 50, 'oc-ubo-rect'));
+      parts.push(line(gpX, gpY + 25, entityX, entityY - entityH/2, 'oc-connector dashed'));
+      const ctrl = controllers[0];
+      parts.push(text(gpX, gpY - 6, ctrl.name.length > 22 ? ctrl.name.slice(0,22)+'…' : ctrl.name, 'oc-name-label'));
+      parts.push(text(gpX, gpY + 10, ctrl.role.length > 24 ? ctrl.role.slice(0,24)+'…' : ctrl.role, 'oc-sub-label'));
+      parts.push(pill(gpX, gpY + 22, 'General Partner', '#FEF3D7', '#7A5200', '#F0D68A'));
+    }
+
+    // Legend
+    const legY = H - 10;
+    parts.push(`<circle cx="20" cy="${legY - 6}" r="5" fill="#A3DDB9" stroke="#1E8A52" stroke-width="1"/>`);
+    parts.push(`<text x="30" y="${legY - 2}" class="oc-sub-label" text-anchor="start">Verified</text>`);
+    parts.push(`<circle cx="90" cy="${legY - 6}" r="5" fill="#FEF3D7" stroke="#D0A85C" stroke-width="1"/>`);
+    parts.push(`<text x="100" y="${legY - 2}" class="oc-sub-label" text-anchor="start">Pending / Incomplete</text>`);
+    parts.push(`<line x1="220" y1="${legY - 6}" x2="240" y2="${legY - 6}" class="oc-connector"/>`);
+    parts.push(`<text x="246" y="${legY - 2}" class="oc-sub-label" text-anchor="start">Direct ownership</text>`);
+    parts.push(`<line x1="360" y1="${legY - 6}" x2="380" y2="${legY - 6}" class="oc-connector dashed"/>`);
+    parts.push(`<text x="386" y="${legY - 2}" class="oc-sub-label" text-anchor="start">Indirect / Pending</text>`);
+
+    wrap.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${parts.join('')}</svg>`;
   }
 
   /* ─── profile tab switching ─── */
