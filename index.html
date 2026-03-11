@@ -2759,26 +2759,6 @@
     const isComplex = own.complexity?.toLowerCase().includes('high');
     const isPending = own.reviewStatus !== 'Review Complete';
 
-    // ── Layout ──
-    // UBO oval nodes at top, entity dark pill at bottom centre
-    // Lines converge from UBO bottom-centre to entity top-centre
-    // % pill sits at midpoint of each line
-    const W = 700;
-    const uboOvW = 140, uboOvH = 64;   // oval rx/ry
-    const entityW = 190, entityH = 58;
-    const entityRx = 14;
-    const entityX = W / 2;
-
-    // For complex (LP): add GP node above entity
-    const entityY = isComplex ? 310 : 260;
-    const gpY = isComplex ? 180 : null;
-    const uboY = isComplex ? 60 : 60;
-    const H = entityY + entityH / 2 + 30;
-
-    const n = Math.max(ubos.length, 1);
-    const gapX = Math.max(uboOvW + 40, (W - 80) / n);
-    const startX = W / 2 - ((n - 1) * gapX) / 2;
-
     // ── Layout — wide viewBox so rendered text is proportionally small ──
     const W = 1100;
     const uboOvW = 160, uboOvH = 58;
