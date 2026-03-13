@@ -1812,9 +1812,26 @@ h3{
           <div class="eyebrow" id="pageEyebrow">Overview</div>
           <h1 id="pageTitle">Dashboard</h1>
         </div>
-        <div class="topbar-actions">
-          <button class="ghost-btn">Export</button>
-          <button class="primary-btn">New Review</button>
+        <div class="topbar-actions" style="display:flex;align-items:center;gap:10px;">
+          <div style="position:relative;">
+            <input id="globalSearchInput" placeholder="⌘K  Search cases…" style="width:200px;padding:7px 12px;font-size:12px;background:var(--panel-2);border:1px solid var(--border);border-radius:8px;color:var(--text);outline:none;" onfocus="this.style.borderColor='var(--green)'" onblur="this.style.borderColor='var(--border)'" oninput="handleGlobalSearch(this.value)"/>
+            <div id="globalSearchResults" style="display:none;position:absolute;top:36px;left:0;width:320px;background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.12);z-index:2000;max-height:320px;overflow-y:auto;"></div>
+          </div>
+          <div style="position:relative;">
+            <button id="notifBtn" onclick="toggleNotifications()" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:16px;position:relative;">
+              🔔<span style="position:absolute;top:4px;right:4px;width:8px;height:8px;background:#C0392B;border-radius:50%;border:2px solid #fff;display:block;"></span>
+            </button>
+            <div id="notifPanel" style="display:none;position:absolute;top:42px;right:0;width:340px;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.14);z-index:2000;overflow:hidden;">
+              <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;"><strong style="font-size:13px;">Notifications</strong><span class="badge red" style="font-size:10px;">5 new</span></div>
+              <div class="notif-item" onclick="openCase('CASE-2026-00128');setActiveView('workspace');toggleNotifications()"><div class="notif-icon" style="background:#E8F8EE;">📬</div><div class="notif-body"><div class="notif-title">Client responded — Apex Digital LLC</div><div class="notif-sub">AI extracted 4 fields · Mar 11 14:33</div></div></div>
+              <div class="notif-item" onclick="openCase('CASE-2026-00126');setActiveView('workspace');toggleNotifications()"><div class="notif-icon" style="background:#FEE8E8;">⚠</div><div class="notif-body"><div class="notif-title">SLA breached — Solstice Exchange Ltd</div><div class="notif-sub">EDD case overdue by 5 days</div></div></div>
+              <div class="notif-item" onclick="openCase('CASE-2026-00127');setActiveView('workspace');toggleNotifications()"><div class="notif-icon" style="background:#FFF8E8;">🤖</div><div class="notif-body"><div class="notif-title">Reminder sent — North Harbor Ventures LP</div><div class="notif-sub">Day-3 client reminder · no response yet</div></div></div>
+              <div class="notif-item" onclick="openCase('CASE-2026-00131');setActiveView('workspace');toggleNotifications()"><div class="notif-icon" style="background:#FEE8E8;">⚡</div><div class="notif-body"><div class="notif-title">Trigger — Nova Biotech Ltd</div><div class="notif-sub">Ownership change · re-CDD required</div></div></div>
+              <div class="notif-item" onclick="setActiveView('agents');toggleNotifications()"><div class="notif-icon" style="background:#F0F4FF;">🤖</div><div class="notif-body"><div class="notif-title">Auto-assignment completed</div><div class="notif-sub">3 cases assigned · Mar 12 10:14</div></div></div>
+            </div>
+          </div>
+          <button class="ghost-btn" onclick="window.print()">Export</button>
+          <button class="primary-btn" onclick="openNewReviewModal()">+ New Review</button>
         </div>
       </header>
 
@@ -5712,97 +5729,201 @@ function openNewReviewModal() {
   modal.id = 'newReviewModal';
   modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:3000;display:flex;align-items:center;justify-content:center;';
   modal.innerHTML = `
-    <div style="background:#fff;border-radius:16px;width:560px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,0.2);overflow:hidden;">
-      <div style="padding:20px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+    <div style="background:#fff;border-radius:16px;width:600px;max-width:96vw;box-shadow:0 20px 60px rgba(0,0,0,0.22);overflow:hidden;max-height:92vh;display:flex;flex-direction:column;">
+      <!-- Header -->
+      <div style="padding:20px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
         <div>
-          <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;">New Case</div>
-          <div style="font-size:17px;font-weight:700;color:var(--text);">Open Review</div>
+          <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px;">Case Management</div>
+          <div style="font-size:18px;font-weight:800;color:var(--text);">Open New Review</div>
         </div>
-        <button onclick="document.getElementById('newReviewModal').remove()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);">✕</button>
+        <button onclick="document.getElementById('newReviewModal').remove()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);line-height:1;">✕</button>
       </div>
-      <div style="padding:20px 24px;display:flex;flex-direction:column;gap:14px;">
+
+      <div style="padding:20px 24px;overflow-y:auto;display:flex;flex-direction:column;gap:18px;">
+
+        <!-- Case type selector — card grid -->
         <div>
-          <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;">Entity Name</div>
-          <input id="nrEntityName" style="width:100%;box-sizing:border-box;padding:9px 12px;font-size:13px;border:1px solid var(--border);border-radius:8px;color:var(--text);background:var(--panel-2);outline:none;" placeholder="Legal entity name…"/>
+          <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;">Case Type <span style="color:#C0392B;">*</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;" id="nrTypeCards">
+            <div class="nr-type-card" data-type="onboarding" data-label="Standard CDD" onclick="selectNrType(this)" style="border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;transition:border-color .15s;">
+              <div style="font-size:18px;margin-bottom:6px;">🆕</div>
+              <div style="font-size:13px;font-weight:700;color:var(--text);">New Onboarding</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:3px;">Standard CDD for a new client relationship</div>
+            </div>
+            <div class="nr-type-card" data-type="onboarding-edd" data-label="EDD Review" onclick="selectNrType(this)" style="border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;transition:border-color .15s;">
+              <div style="font-size:18px;margin-bottom:6px;">🔍</div>
+              <div style="font-size:13px;font-weight:700;color:var(--text);">New Onboarding — EDD</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:3px;">Enhanced due diligence for high-risk onboarding</div>
+            </div>
+            <div class="nr-type-card" data-type="periodic" data-label="Periodic Refresh" onclick="selectNrType(this)" style="border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;transition:border-color .15s;">
+              <div style="font-size:18px;margin-bottom:6px;">🔄</div>
+              <div style="font-size:13px;font-weight:700;color:var(--text);">Periodic Review</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:3px;">Scheduled CDD refresh for an existing client</div>
+            </div>
+            <div class="nr-type-card" data-type="trigger" data-label="Trigger Review" onclick="selectNrType(this)" style="border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;transition:border-color .15s;">
+              <div style="font-size:18px;margin-bottom:6px;">⚡</div>
+              <div style="font-size:13px;font-weight:700;color:var(--text);">Trigger Review</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:3px;">Event-driven re-CDD (ownership change, adverse media)</div>
+            </div>
+            <div class="nr-type-card" data-type="screening" data-label="Alert Review" onclick="selectNrType(this)" style="border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;transition:border-color .15s;">
+              <div style="font-size:18px;margin-bottom:6px;">🚨</div>
+              <div style="font-size:13px;font-weight:700;color:var(--text);">Screening Alert</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:3px;">Sanctions, PEP, or adverse media hit requiring disposition</div>
+            </div>
+            <div class="nr-type-card" data-type="periodic-edd" data-label="EDD Refresh" onclick="selectNrType(this)" style="border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;transition:border-color .15s;">
+              <div style="font-size:18px;margin-bottom:6px;">📋</div>
+              <div style="font-size:13px;font-weight:700;color:var(--text);">Periodic Review — EDD</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:3px;">Enhanced periodic refresh for high-risk or EDD-designated clients</div>
+            </div>
+          </div>
+          <input type="hidden" id="nrType" value=""/>
         </div>
+
+        <!-- Entity name -->
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;">Entity Name <span style="color:#C0392B;">*</span></div>
+          <input id="nrEntityName" style="width:100%;box-sizing:border-box;padding:10px 13px;font-size:13px;border:1px solid var(--border);border-radius:8px;color:var(--text);background:var(--panel-2);outline:none;" placeholder="Legal entity name…" onfocus="this.style.borderColor='var(--green)'" onblur="this.style.borderColor='var(--border)'"/>
+        </div>
+
+        <!-- Row: entity type + jurisdiction -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
           <div>
-            <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;">Review Type</div>
-            <select id="nrType" style="width:100%;padding:9px 12px;font-size:13px;border:1px solid var(--border);border-radius:8px;color:var(--text);background:var(--panel-2);">
-              <option value="onboarding">Onboarding — New Client</option>
-              <option value="periodic">Periodic Review</option>
-              <option value="trigger">Trigger Review</option>
-              <option value="screening">Screening Review</option>
+            <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;">Entity Type</div>
+            <select id="nrEntityType" style="width:100%;padding:10px 13px;font-size:13px;border:1px solid var(--border);border-radius:8px;color:var(--text);background:var(--panel-2);">
+              <option>LLC</option><option>Corporation</option><option>Limited Partnership</option><option>Trust</option><option>Foundation</option><option>Individual / Sole Trader</option>
             </select>
           </div>
           <div>
-            <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;">Jurisdiction</div>
-            <select id="nrJurisdiction" style="width:100%;padding:9px 12px;font-size:13px;border:1px solid var(--border);border-radius:8px;color:var(--text);background:var(--panel-2);">
-              <option>United States</option><option>United Kingdom</option><option>Cayman Islands</option><option>Germany</option><option>UAE</option><option>Canada</option><option>Singapore</option><option>Other</option>
+            <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;">Jurisdiction</div>
+            <select id="nrJurisdiction" style="width:100%;padding:10px 13px;font-size:13px;border:1px solid var(--border);border-radius:8px;color:var(--text);background:var(--panel-2);">
+              <option>United States</option><option>United Kingdom</option><option>Cayman Islands</option><option>British Virgin Islands</option><option>Germany</option><option>UAE</option><option>Canada</option><option>Singapore</option><option>Hong Kong</option><option>Other</option>
             </select>
           </div>
         </div>
+
+        <!-- Row: risk pre-screen + assignee -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
           <div>
-            <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;">Entity Type</div>
-            <select id="nrEntityType" style="width:100%;padding:9px 12px;font-size:13px;border:1px solid var(--border);border-radius:8px;color:var(--text);background:var(--panel-2);">
-              <option>LLC</option><option>Corporation</option><option>Limited Partnership</option><option>Trust</option><option>Foundation</option><option>Individual</option>
+            <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;">Initial Risk Tier</div>
+            <select id="nrRisk" style="width:100%;padding:10px 13px;font-size:13px;border:1px solid var(--border);border-radius:8px;color:var(--text);background:var(--panel-2);">
+              <option value="Low">Low</option>
+              <option value="Moderate" selected>Moderate</option>
+              <option value="High">High</option>
             </select>
           </div>
           <div>
-            <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;">Assign To</div>
-            <select id="nrAssignee" style="width:100%;padding:9px 12px;font-size:13px;border:1px solid var(--border);border-radius:8px;color:var(--text);background:var(--panel-2);">
+            <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;">Assign To</div>
+            <select id="nrAssignee" style="width:100%;padding:10px 13px;font-size:13px;border:1px solid var(--border);border-radius:8px;color:var(--text);background:var(--panel-2);">
               <option>Auto-assign</option><option>Ana M.</option><option>Tom K.</option><option>Riya J.</option><option>Derek L.</option>
             </select>
           </div>
         </div>
+
+        <!-- Notes -->
         <div>
-          <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;">Notes (optional)</div>
-          <textarea id="nrNotes" style="width:100%;box-sizing:border-box;min-height:70px;padding:9px 12px;font-size:13px;font-family:'Inter',sans-serif;border:1px solid var(--border);border-radius:8px;color:var(--text);background:var(--panel-2);resize:vertical;outline:none;" placeholder="Reason for opening this review…"></textarea>
+          <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;">Notes / Reason for Opening <span style="color:#aaa;font-weight:400;text-transform:none;">(optional)</span></div>
+          <textarea id="nrNotes" style="width:100%;box-sizing:border-box;min-height:64px;padding:10px 13px;font-size:13px;font-family:'Inter',sans-serif;border:1px solid var(--border);border-radius:8px;color:var(--text);background:var(--panel-2);resize:vertical;outline:none;" placeholder="e.g. Referral from relationship manager · Trigger event: ownership change notification received…" onfocus="this.style.borderColor='var(--green)'" onblur="this.style.borderColor='var(--border)'"></textarea>
         </div>
-        <div style="background:#F0FBF4;border-radius:8px;padding:10px 14px;font-size:12px;color:var(--green);">
-          🤖 AI agents will automatically run completeness checks, risk pre-screening, and assignment on submission.
+
+        <!-- AI note -->
+        <div style="background:#F0FBF4;border-radius:8px;padding:11px 14px;font-size:12px;color:#1E8A52;display:flex;align-items:flex-start;gap:8px;">
+          <span style="flex-shrink:0;font-size:15px;">🤖</span>
+          <span>On submission, AI agents will automatically run a completeness check, risk pre-screening, and auto-assignment. All actions will be logged to the case audit trail.</span>
         </div>
       </div>
-      <div style="padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;">
+
+      <!-- Footer -->
+      <div style="padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;flex-shrink:0;background:#fff;">
         <button onclick="document.getElementById('newReviewModal').remove()" class="ghost-btn">Cancel</button>
-        <button onclick="submitNewReview()" class="primary-btn">Open Case →</button>
+        <button onclick="submitNewReview()" class="primary-btn" style="padding:9px 22px;">Open Case →</button>
       </div>
     </div>`;
   document.body.appendChild(modal);
 }
+
+function selectNrType(card) {
+  document.querySelectorAll('.nr-type-card').forEach(c => {
+    c.style.borderColor = 'var(--border)';
+    c.style.background = '';
+  });
+  card.style.borderColor = 'var(--green)';
+  card.style.background = '#F0FBF4';
+  document.getElementById('nrType').value = card.dataset.type;
+}
 function submitNewReview() {
   const name = document.getElementById('nrEntityName')?.value?.trim();
+  const rawType = document.getElementById('nrType')?.value || '';
+  if (!rawType) { alert('Please select a case type.'); return; }
   if (!name) { alert('Please enter an entity name.'); return; }
-  const type = document.getElementById('nrType')?.value || 'onboarding';
+
   const jur = document.getElementById('nrJurisdiction')?.value || 'United States';
   const eType = document.getElementById('nrEntityType')?.value || 'LLC';
   const assignee = document.getElementById('nrAssignee')?.value || 'Auto-assign';
   const notes = document.getElementById('nrNotes')?.value || '';
+  const riskTier = document.getElementById('nrRisk')?.value || 'Moderate';
+
+  // Normalise type to queue bucket
+  const isEdd = rawType.includes('edd');
+  const queueType = rawType.replace('-edd','');
+  const pipelineLabel = isEdd ? 'EDD Review' : queueType === 'onboarding' ? 'Standard CDD' : queueType === 'periodic' ? 'Periodic Refresh' : queueType === 'trigger' ? 'Trigger Review' : 'Alert Review';
+  const typeLabel = rawType === 'onboarding' ? 'New Onboarding — Standard CDD' : rawType === 'onboarding-edd' ? 'New Onboarding — EDD' : rawType === 'periodic' ? 'Periodic Review' : rawType === 'periodic-edd' ? 'Periodic Review — EDD' : rawType === 'trigger' ? 'Trigger Review' : 'Screening Alert';
+
+  const ts = new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})+' UTC';
   const newId = `CASE-2026-00${133 + cases.length}`;
-  const assignedTo = assignee === 'Auto-assign' ? autoAssignCase({queueType:type,riskTier:'Moderate'}).name : assignee;
+  const assignedTo = assignee === 'Auto-assign' ? autoAssignCase({queueType, riskTier}).name : assignee;
+
+  const eddChecklist = isEdd ? [
+    ['Source of Wealth','Document the origin of the client's wealth (business income, inheritance, investments)','Not started','gray'],
+    ['Source of Funds','Verify origin of funds used in this relationship','Not started','gray'],
+    ['Enhanced Ownership Review','Full UBO chain verification to ultimate natural person','Not started','gray'],
+    ['Adverse Media — EDD','Comprehensive media review including non-English sources','Not started','gray'],
+    ['Senior Management Approval','EDD cases require sign-off from MLCO or BSA Officer before close','Not started','gray'],
+  ] : [];
+
   const newCase = {
-    id: newId, client: name, queueType: type, status: 'New', statusClass: 'blue',
-    pipeline: 'Intake', pipelineClass: 'gray', sla: '10d remaining',
-    nextAction: 'Initial completeness review pending', aging: 'Just now',
-    priority: 'FIFO', priorityClass: 'gray', assignee: assignedTo,
-    entityType: eType, jurisdiction: jur, activity: '—', expected: '—',
-    summary: notes || `New ${type} case opened for ${name}.`,
-    riskScore: 50, riskTier: 'Moderate', riskNarrative: 'Initial risk assessment pending.',
-    riskFactors: ['Pending assessment'], riskMitigants: ['New case — under review'],
+    id: newId, client: name, queueType, riskTier,
+    status: 'New', statusClass: 'blue',
+    pipeline: pipelineLabel, pipelineClass: isEdd ? 'red' : 'gray',
+    sla: riskTier === 'High' ? '7d remaining' : '10d remaining',
+    nextAction: 'Initial completeness review pending · AI agent pre-screen queued',
+    aging: 'Just now', priority: riskTier === 'High' ? 'High Risk' : 'FIFO',
+    priorityClass: riskTier === 'High' ? 'red' : 'gray',
+    assignee: assignedTo, entityType: eType, jurisdiction: jur,
+    activity: '—', expected: '—',
+    summary: notes || `${typeLabel} case opened for ${name}.`,
+    riskScore: riskTier === 'High' ? 72 : riskTier === 'Low' ? 28 : 50,
+    riskNarrative: 'Initial risk assessment pending. AI pre-screen will run on submission.',
+    riskFactors: ['Pending initial assessment'], riskMitigants: ['New case — under review'],
+    riskAiSummary: `${name} — ${typeLabel}. Case opened ${ts}. Initial risk tier set to ${riskTier} by opening analyst. AI completeness review and risk pre-screen are queued. ${notes ? 'Opening note: ' + notes : ''}`,
     riskAnalyst: assignedTo, workflowStage: 'new',
-    checks: [['Completeness Review', 'Pending AI agent scan', 'gray']],
+    checks: [['Completeness Review','Pending AI agent scan','gray']],
     documents: [], ownershipNotes: 'Pending.',
-    riskCddChecklist: [['Entity Identification','Confirm legal name and registration','Not started','gray'],['Beneficial Ownership','Identify all UBOs ≥25%','Not started','gray'],['Source of Funds','Document origin of funds','Not started','gray'],['Screening','Screen entity and principals','Not started','gray'],['Document Completeness','Full document package received','Not started','gray']],
-    screeningDetail: { sanctions:{status:'Pending',summary:'Screening queued.',findings:[],mitigants:[]}, pep:{status:'Pending',summary:'Pending.',findings:[],mitigants:[]}, media:{status:'Pending',summary:'Pending.',findings:[],mitigants:[]}, negativeNews:'Screening not yet initiated.', disposition:'Pending screening.' },
-    activityLog: [[new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})+' UTC', 'Case Created', `New ${type} review opened by Ana M. ${notes?'Notes: '+notes:''}`]],
-    audit: [[new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})+' UTC', 'Ana M. (User Action)', `Case created. Assigned to ${assignedTo}.`]],
-    agents: [['Completeness Review Agent','Initial document check queued.'],['Auto-Assignment Agent',`Case assigned to ${assignedTo}.`]]
+    riskCddChecklist: [
+      ['Entity Identification','Confirm legal name, registration number, and jurisdiction','Not started','gray'],
+      ['Beneficial Ownership','Identify all beneficial owners ≥25% stake','Not started','gray'],
+      ['Control Persons','Confirm directors and authorised signatories','Not started','gray'],
+      ['Source of Funds','Document origin of funds used in this relationship','Not started','gray'],
+      ['Screening','Screen entity and all principals against sanctions, PEP, and adverse media databases','Not started','gray'],
+      ['Document Completeness','Full document package received and verified','Not started','gray'],
+      ...eddChecklist
+    ],
+    screeningDetail: { sanctions:{status:'Pending',summary:'Screening queued — will run on AI pre-screen.',findings:[],mitigants:[]}, pep:{status:'Pending',summary:'Pending.',findings:[],mitigants:[]}, media:{status:'Pending',summary:'Pending.',findings:[],mitigants:[]}, negativeNews:'Screening not yet initiated.', disposition:'Pending initial screening.' },
+    activityLog: [[ts,'Case Created',`${typeLabel} opened by Ana M.${notes?' Notes: '+notes:''}`],[ts,'Completeness Review Agent','Initial document check queued.'],[ts,'Auto-Assignment Agent',`Case assigned to ${assignedTo}.`]],
+    audit: [[ts,'Ana M. (User Action)',`Case created — ${typeLabel}. Risk tier: ${riskTier}. Assigned to ${assignedTo}.`]],
+    agents: [['Completeness Review Agent','Initial document check queued.'],['Screening Agent','Pre-screen queued — will run on case open.'],['Auto-Assignment Agent',`Assigned to ${assignedTo}.`]]
   };
+
   cases.unshift(newCase);
   document.getElementById('newReviewModal').remove();
+  setActiveView('workspace');
   openCase(newId);
-  alert(`✓ Case ${newId} opened for ${name}.\nAssigned to: ${assignedTo}\n\nAI agents are running initial checks.`);
+  setTimeout(() => {
+    const banner = document.createElement('div');
+    banner.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#132B1E;color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.3);display:flex;align-items:center;gap:10px;';
+    banner.innerHTML = `<span style="font-size:16px;">✓</span> Case ${newId} opened · Assigned to ${assignedTo} · AI agents running`;
+    document.body.appendChild(banner);
+    setTimeout(() => banner.remove(), 4000);
+  }, 300);
 }
 
 // ══════════════════════════════════════════════════════
