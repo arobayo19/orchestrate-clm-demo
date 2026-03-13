@@ -59,9 +59,6 @@ button,input,select{font:inherit}
   display:grid;
   grid-template-columns:220px 1fr;
   min-height:100vh;
-  transform:scale(.88);
-  transform-origin:top left;
-  width:114%;
 }
 
 /* ── Sidebar ─────────────────────────────────────────────── */
@@ -2509,16 +2506,16 @@ h3{
           </div>
         </div>
         <div class="ws-tabs">
-          <button class="tab active" data-tab="overview">Overview</button>
-          <button class="tab" data-tab="documents">Documents</button>
-          <button class="tab" data-tab="ownership">Ownership</button>
-          <button class="tab" data-tab="screening">Screening</button>
-          <button class="tab" data-tab="risk">Risk Assessment</button>
-          <button class="tab" data-tab="checklist">CDD Checklist</button>
-          <button class="tab" data-tab="outreach">Client Outreach</button>
-          <button class="tab" data-tab="activity">Activity Log</button>
-          <button class="tab" data-tab="audit">Audit Trail</button>
-          <button class="tab" data-tab="agents">AI Agents</button>
+          <button class="tab active" data-tab="overview" onclick="switchTab('overview')">Overview</button>
+          <button class="tab" data-tab="documents" onclick="switchTab('documents')">Documents</button>
+          <button class="tab" data-tab="ownership" onclick="switchTab('ownership')">Ownership</button>
+          <button class="tab" data-tab="screening" onclick="switchTab('screening')">Screening</button>
+          <button class="tab" data-tab="risk" onclick="switchTab('risk')">Risk Assessment</button>
+          <button class="tab" data-tab="checklist" onclick="switchTab('checklist')">CDD Checklist</button>
+          <button class="tab" data-tab="outreach" onclick="switchTab('outreach')">Client Outreach</button>
+          <button class="tab" data-tab="activity" onclick="switchTab('activity')">Activity Log</button>
+          <button class="tab" data-tab="audit" onclick="switchTab('audit')">Audit Trail</button>
+          <button class="tab" data-tab="agents" onclick="switchTab('agents')">AI Agents</button>
         </div>
 
         <!-- ── OVERVIEW TAB ── -->
@@ -4917,10 +4914,7 @@ function renderCase(caseObj) {
   setTimeout(() => { if (typeof initEditPanels === 'function') initEditPanels(); }, 50);
 
   // Reset workspace tabs to overview
-  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-  document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
-  document.querySelector(".tab[data-tab='overview']")?.classList.add("active");
-  document.getElementById("tab-overview")?.classList.add("active");
+  switchTab('overview');
 }
 
 // ══════════════════════════════════════════════════════
@@ -5198,6 +5192,16 @@ function openCase(caseIdValue) {
 document.querySelectorAll(".nav-item").forEach((btn) => {
   btn.addEventListener("click", () => setActiveView(btn.dataset.view));
 });
+
+// Workspace tab switch — called directly from onclick
+function switchTab(tabKey) {
+  document.querySelectorAll(".ws-tabs .tab").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+  const btn = document.querySelector(`.ws-tabs .tab[data-tab="${tabKey}"]`);
+  if (btn) btn.classList.add("active");
+  const content = document.getElementById(`tab-${tabKey}`);
+  if (content) content.classList.add("active");
+}
 
 // Workspace tabs — event delegation so it survives DOM mutations
 document.addEventListener("click", (e) => {
