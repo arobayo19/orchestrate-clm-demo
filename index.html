@@ -652,6 +652,15 @@ h3{
   border:1px solid #A3DDB9;background:#E8F8EE;color:#14632C;
 }
 
+/* ── Notification items ─────────────────────────────────── */
+.notif-item{display:flex;align-items:flex-start;gap:10px;padding:10px 16px;cursor:pointer;border-bottom:1px solid var(--border);}
+.notif-item:hover{background:var(--panel-2);}
+.notif-item:last-child{border-bottom:none;}
+.notif-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.notif-body{flex:1;}
+.notif-title{font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.notif-sub{font-size:11px;color:var(--muted);}
+
 /* ── Section Head ────────────────────────────────────────── */
 .section-head{
   display:flex;align-items:center;justify-content:space-between;
@@ -2488,8 +2497,8 @@ h3{
             </div>
           </div>
           <div class="ws-case-header-right">
-            <button class="ghost-btn">Download Report</button>
-            <button class="primary-btn">Submit Decision</button>
+            <button class="ghost-btn" onclick="downloadCaseReport()">Download Report</button>
+            <button class="primary-btn" onclick="openDecisionModal()">Submit Decision</button>
           </div>
         </div>
 
@@ -2804,8 +2813,8 @@ h3{
               resize:vertical; outline:none;
             " placeholder="AI summary will appear here…"></textarea>
             <div style="margin-top:10px;display:flex;gap:8px;justify-content:flex-end;">
-              <button class="open-link" id="riskSummaryEditBtn" style="background:none;border:1px solid var(--border);color:var(--text);">Edit Draft</button>
-              <button class="open-link" id="riskSummaryConfirmBtn">Confirm &amp; Attach to Case</button>
+              <button class="open-link" id="riskSummaryEditBtn" onclick="editRiskSummary()" style="background:none;border:1px solid var(--border);color:var(--text);">Edit Draft</button>
+              <button class="open-link" id="riskSummaryConfirmBtn" onclick="confirmRiskSummary()">Confirm &amp; Attach to Case</button>
             </div>
           </div>
 
@@ -3054,6 +3063,9 @@ h3{
           <button class="escal-tab" data-escal="compliance" style="padding:9px 18px;font-size:13px;font-weight:600;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;cursor:pointer;white-space:nowrap;">
             🔍 Compliance Review
           </button>
+          <button class="escal-tab" data-escal="edd-signoff" style="padding:9px 18px;font-size:13px;font-weight:600;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;cursor:pointer;white-space:nowrap;">
+            ✍ EDD Senior Sign-off
+          </button>
         </div>
 
         <!-- Human Action Required pane -->
@@ -3093,6 +3105,61 @@ h3{
                   <tr><th>Case</th><th>Client</th><th>Review Reason</th><th>Risk</th><th>Pipeline</th><th>Reviewer</th><th>Status</th><th></th></tr>
                 </thead>
                 <tbody id="escalComplianceBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- EDD Senior Sign-off pane -->
+        <div id="escal-edd-signoff" style="display:none;">
+          <div class="panel" style="margin-bottom:14px;">
+            <div class="panel-head panel-head-spread">
+              <div>
+                <h2>EDD Senior Sign-off Queue</h2>
+                <p class="panel-subtext" style="margin:4px 0 0">EDD cases where analyst review is complete and MLCO or BSA Officer sign-off is required before case can be closed.</p>
+              </div>
+              <span class="badge red">3 pending</span>
+            </div>
+            <div class="table-wrap">
+              <table class="queue-table enterprise">
+                <thead>
+                  <tr><th>Case</th><th>Client</th><th>Risk Tier</th><th>EDD Stage</th><th>Analyst</th><th>Submitted</th><th>Awaiting</th><th>Aging</th><th></th></tr>
+                </thead>
+                <tbody>
+                  <tr class="queue-row" onclick="openCase('CASE-2026-00126');setActiveView('workspace')">
+                    <td><span style="font-family:monospace;font-size:12px;font-weight:700;">00126</span></td>
+                    <td><strong>Solstice Exchange Ltd</strong></td>
+                    <td><span class="badge red">High</span></td>
+                    <td><span class="badge gold">Pending BSA Sign-off</span></td>
+                    <td>Ana M.</td>
+                    <td>Mar 07, 2026</td>
+                    <td>BSA Officer</td>
+                    <td><span class="sla-flag">+5d overdue</span></td>
+                    <td><button class="open-link" onclick="event.stopPropagation();openCase('CASE-2026-00126');setActiveView('workspace')">Review →</button></td>
+                  </tr>
+                  <tr class="queue-row" onclick="openCase('CASE-2026-00127');setActiveView('workspace')">
+                    <td><span style="font-family:monospace;font-size:12px;font-weight:700;">00127</span></td>
+                    <td><strong>North Harbor Ventures LP</strong></td>
+                    <td><span class="badge red">High</span></td>
+                    <td><span class="badge gold">Awaiting Documents</span></td>
+                    <td>Tom K.</td>
+                    <td>Mar 10, 2026</td>
+                    <td>MLCO</td>
+                    <td>6d remaining</td>
+                    <td><button class="open-link" onclick="event.stopPropagation();openCase('CASE-2026-00127');setActiveView('workspace')">Review →</button></td>
+                  </tr>
+                  <tr class="queue-row" onclick="openCase('CASE-2026-00132');setActiveView('workspace')">
+                    <td><span style="font-family:monospace;font-size:12px;font-weight:700;">00132</span></td>
+                    <td><strong>Eastern Trading Co</strong></td>
+                    <td><span class="badge red">High</span></td>
+                    <td><span class="badge red">SDN Match — Pending Disposition</span></td>
+                    <td>Screening Queue</td>
+                    <td>Mar 09, 2026</td>
+                    <td>BSA Officer</td>
+                    <td><span class="sla-flag">+3d overdue</span></td>
+                    <td><button class="open-link" onclick="event.stopPropagation();openCase('CASE-2026-00132');setActiveView('workspace')">Review →</button></td>
+                  </tr>
+                </tbody>
               </table>
             </div>
           </div>
@@ -3318,7 +3385,52 @@ h3{
       </section>
 
       <section class="view" id="audit-view">
-        <div class="panel"><div class="panel-head"><h2>Audit Trail</h2></div><p class="body-copy">Full system audit log.</p></div>
+        <div class="panel" style="margin-bottom:14px;">
+          <div class="panel-head panel-head-spread">
+            <div>
+              <h2>System Audit Trail</h2>
+              <p class="panel-subtext">Immutable log of all case actions, agent decisions, user changes, and system events across the platform.</p>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span class="badge green" style="display:flex;align-items:center;gap:4px;"><span style="width:6px;height:6px;border-radius:50%;background:#fff;display:inline-block;"></span>Live</span>
+              <button class="ghost-btn" style="font-size:12px;" onclick="window.print()">Export Log</button>
+            </div>
+          </div>
+          <!-- Filters -->
+          <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+            <select id="auditTypeFilter" onchange="renderAuditTrail()" style="padding:6px 10px;font-size:12px;border:1px solid var(--border);border-radius:7px;background:var(--panel-2);color:var(--text);">
+              <option value="">All event types</option>
+              <option value="User Action">User Actions</option>
+              <option value="Agent">Agent Activity</option>
+              <option value="System">System Events</option>
+              <option value="Outreach">Client Outreach</option>
+              <option value="Decision">Decisions</option>
+            </select>
+            <select id="auditCaseFilter" onchange="renderAuditTrail()" style="padding:6px 10px;font-size:12px;border:1px solid var(--border);border-radius:7px;background:var(--panel-2);color:var(--text);">
+              <option value="">All cases</option>
+              <option value="CASE-2026-00128">Apex Digital LLC</option>
+              <option value="CASE-2026-00127">North Harbor Ventures LP</option>
+              <option value="CASE-2026-00126">Solstice Exchange Ltd</option>
+              <option value="CASE-2026-00125">Meridian Capital Partners</option>
+              <option value="CASE-2026-00132">Eastern Trading Co</option>
+              <option value="CASE-2026-00131">Nova Biotech Ltd</option>
+            </select>
+            <select id="auditActorFilter" onchange="renderAuditTrail()" style="padding:6px 10px;font-size:12px;border:1px solid var(--border);border-radius:7px;background:var(--panel-2);color:var(--text);">
+              <option value="">All actors</option>
+              <option value="Ana M.">Ana M.</option>
+              <option value="Tom K.">Tom K.</option>
+              <option value="AI Agent">AI Agents</option>
+              <option value="System">System</option>
+            </select>
+            <input id="auditSearch" oninput="renderAuditTrail()" placeholder="Search audit log…" style="padding:6px 10px;font-size:12px;border:1px solid var(--border);border-radius:7px;background:var(--panel-2);color:var(--text);width:200px;outline:none;"/>
+          </div>
+          <div class="table-wrap">
+            <table class="queue-table enterprise" id="auditTable">
+              <thead><tr><th>Timestamp</th><th>Case</th><th>Actor</th><th>Event Type</th><th>Action</th><th>Detail</th></tr></thead>
+              <tbody id="auditTrailBody"></tbody>
+            </table>
+          </div>
+        </div>
       </section>
 
     </main>
@@ -3865,13 +3977,37 @@ const cases = [
     ],
     riskAiSummary: "Global Freight Holdings is due for its annual periodic CDD review. The entity is a long-standing active customer with a consistent freight settlement activity profile. Transaction volumes and counterparty relationships appear stable based on account activity. Ownership confirmation and updated screening have been queued as part of the periodic refresh workflow. No material concerns are anticipated based on prior review history, but review must not be closed until ownership attestation is received and screening results are confirmed clean.",
     checks: [["Periodic review", "Scheduled", "gold"]],
-    documents: [],
-    ownershipNotes: "Pending periodic review.",
-    sanctions: "No active alerts.", pep: "No matches.", media: "No adverse media.",
-    screeningDetail: { sanctions: { status: "Clear", summary: "No active sanctions alerts.", findings: [], mitigants: ["Domestic entity", "No cross-border exposure"] }, pep: { status: "Clear", summary: "No PEP matches identified.", findings: [], mitigants: [] }, media: { status: "Clear", summary: "No adverse media identified.", findings: [], mitigants: [] }, negativeNews: "No negative news findings. All screening categories are clear.", disposition: "Clear — no action required." },
-    activityLog: [["09:00 UTC", "Periodic Review Agent", "Scheduled lifecycle review initiated"]],
-    audit: [["09:00 UTC", "System", "Opened periodic review case"]],
-    agents: [["Periodic Review Agent", "Customer risk review initiated"]]
+    riskCddChecklist: [
+      ["Entity Identification","Confirm legal name, registration number and registered address at Companies House","Complete","green"],
+      ["Beneficial Ownership","Re-confirm UBO structure — group-level ownership attestation required at each periodic review","Pending","gold"],
+      ["Control Persons","Re-confirm directors and authorised signatories — 3 directors on file, confirmation letter outstanding","Pending","gold"],
+      ["Source of Funds","Freight settlement and treasury activity — consistent with account profile, no re-verification triggered","Complete","green"],
+      ["Transaction Profile Review","Annual expected activity comparison — transaction volumes and counterparties reviewed against prior period","Complete","green"],
+      ["Screening Re-run","Entity and principals re-screened against OFAC, EU, UN lists and PEP databases — results pending","Pending","gold"],
+      ["Adverse Media Scan","Annual media scan queued — results pending","Pending","gold"],
+      ["Ownership Attestation","Updated group ownership attestation letter required from legal representative","Not started","red"],
+    ],
+    documents: [
+      ["GFH_Companies_House_Registration.pdf","Companies House Registration Extract","Received","green","Mar 2026"],
+      ["GFH_Prior_Periodic_Review_2025.pdf","2025 Annual Periodic Review — Signed","Received","green","Mar 2025"],
+      ["GFH_Sanctions_Clear_2025.pdf","2025 Sanctions Screening Report","Received","green","Mar 2025"],
+      ["GFH_Ownership_Attestation_REQUEST.pdf","Ownership Attestation — Requested","Outstanding","red","Requested Mar 10"],
+    ],
+    ownershipNotes: "Group-level UK corporate ownership. Parent entity: Global Freight Group PLC (LSE listed). Pending updated ownership attestation confirming no change to UBO structure since last periodic review.",
+    ubos: [{ name:"Global Freight Group PLC", stake:"100%", nationality:"United Kingdom", idVerified:"Listed Entity", screening:"Clear" }],
+    controllers: [{ name:"Sarah Whitmore", title:"CEO", nationality:"British", idVerified:"Verified (2024)", screening:"Clear" },{ name:"Daniel Reeves", title:"CFO", nationality:"British", idVerified:"Verified (2024)", screening:"Clear" }],
+    sanctions: "Clear.", pep: "No matches.", media: "No adverse media.",
+    activityLog: [
+      ["09:00 UTC · Mar 12","Periodic Review Agent","Scheduled annual lifecycle review initiated. 8-item CDD checklist generated."],
+      ["09:01 UTC · Mar 12","Auto-Assignment Agent","Case assigned to Ana M. — periodic review specialist, 70% capacity."],
+      ["10:14 UTC · Mar 12","System","Ownership attestation request letter sent to GFH legal team."],
+    ],
+    audit: [
+      ["09:00 UTC · Mar 12","System","Periodic review case opened — annual review cycle."],
+      ["09:01 UTC · Mar 12","Auto-Assignment Agent","Assigned to Ana M."],
+      ["10:14 UTC · Mar 12","Ana M. (User Action)","Ownership attestation request sent."],
+    ],
+    agents: [["Periodic Review Agent","Annual review initiated — 8 checklist items generated"],["Auto-Assignment Agent","Assigned to Ana M. (periodic specialist)"]]
   },
   {
     id: "CASE-2026-00130",
@@ -3908,13 +4044,38 @@ const cases = [
     ],
     riskAiSummary: "Atlas Commodities Ltd is undergoing its scheduled periodic CDD refresh. Transaction activity is broadly consistent with the approved expected activity profile. One new counterparty in the UAE was identified in account activity last quarter — this should be assessed against the firm's country risk policy before the review is closed. Screening is in progress. No material adverse findings are anticipated given the entity's clean prior review history, but the UAE counterparty item and ownership re-confirmation should be resolved before the periodic review is signed off.",
     checks: [["Periodic review", "In progress", "blue"]],
-    documents: [],
-    ownershipNotes: "Pending refresh.",
-    sanctions: "No active alerts.", pep: "No matches.", media: "No adverse media.",
-    screeningDetail: { sanctions: { status: "Clear", summary: "No active sanctions alerts.", findings: [], mitigants: ["Domestic entity", "No cross-border exposure"] }, pep: { status: "Clear", summary: "No PEP matches identified.", findings: [], mitigants: [] }, media: { status: "Clear", summary: "No adverse media identified.", findings: [], mitigants: [] }, negativeNews: "No negative news findings. All screening categories are clear.", disposition: "Clear — no action required." },
-    activityLog: [["11:02 UTC", "Periodic Review Agent", "Refresh review workflow started"]],
-    audit: [["11:02 UTC", "System", "Periodic refresh review initiated"]],
-    agents: [["Periodic Review Agent", "Scheduled lifecycle refresh review running"]]
+    riskCddChecklist: [
+      ["Entity Identification","Legal name, corporation number, and registered address confirmed via SEDAR filing","Complete","green"],
+      ["Beneficial Ownership","Corporate ownership re-confirmed — Atlas Commodities Holdings Inc. (parent, 100%)","Complete","green"],
+      ["Control Persons","CEO and CFO re-confirmed. Board membership unchanged since last review.","Complete","green"],
+      ["Source of Funds","Energy settlement — consistent with approved activity profile. No re-verification required.","Complete","green"],
+      ["Transaction Profile Review","CAD $2.3M avg monthly — within approved range. UAE counterparty requires policy review.","Needs Review","gold"],
+      ["UAE Counterparty Assessment","New UAE-based counterparty (Dubai Energy LLC) identified — assess against country risk policy before closing","Not started","red"],
+      ["Screening Re-run","Entity and directors screened — clear. Re-screening in progress for UAE counterparty.","Pending","gold"],
+      ["Ownership Attestation","Updated attestation received from Atlas Commodities Holdings confirming no UBO change.","Complete","green"],
+    ],
+    documents: [
+      ["ACL_SEDAR_Filing_2025.pdf","SEDAR Corporate Filing Extract — 2025","Received","green","Jan 2026"],
+      ["ACL_Ownership_Attestation_2026.pdf","Ownership Attestation Letter — 2026","Received","green","Mar 08, 2026"],
+      ["ACL_Prior_Review_2025.pdf","2025 Periodic Review Sign-off","Received","green","Mar 2025"],
+      ["ACL_UAE_Counterparty_Risk.pdf","UAE Counterparty Policy Assessment — Pending","Outstanding","gold","In progress"],
+    ],
+    ownershipNotes: "100% owned by Atlas Commodities Holdings Inc. (Canada, federally incorporated). No UBO changes since last periodic review. UAE counterparty Dubai Energy LLC added to account — policy review in progress.",
+    ubos: [{ name:"Atlas Commodities Holdings Inc.", stake:"100%", nationality:"Canada", idVerified:"Corporate Entity", screening:"Clear" }],
+    controllers: [{ name:"Robert Hennessy", title:"CEO", nationality:"Canadian", idVerified:"Verified (2024)", screening:"Clear" },{ name:"Priya Sharma", title:"CFO", nationality:"Canadian", idVerified:"Verified (2024)", screening:"Clear" }],
+    sanctions: "Clear.", pep: "No matches.", media: "No adverse media.",
+    screeningDetail: { sanctions: { status: "Clear", summary: "No active sanctions alerts. UAE counterparty Dubai Energy LLC screening queued.", findings: [], mitigants: ["Canadian entity","SEDAR listed","Clean prior review"] }, pep: { status: "Clear", summary: "No PEP matches for directors or principals.", findings: [], mitigants: [] }, media: { status: "Clear", summary: "No adverse media. One commodity-sector press item not entity-specific.", findings: [], mitigants: [] }, negativeNews: "No entity-specific adverse media. Industry article on commodity price volatility — no direct reference to Atlas Commodities Ltd.", disposition: "Clear — UAE counterparty assessment outstanding before close." },
+    activityLog: [
+      ["11:02 UTC · Mar 12","Periodic Review Agent","Scheduled periodic refresh initiated. 8-item checklist generated."],
+      ["11:10 UTC · Mar 12","Jordan T.","UAE counterparty (Dubai Energy LLC) flagged for country risk policy assessment."],
+      ["11:45 UTC · Mar 12","Screening Agent","Entity and directors screened — all clear. UAE counterparty screening queued."],
+    ],
+    audit: [
+      ["11:02 UTC · Mar 12","System","Periodic refresh review opened."],
+      ["11:10 UTC · Mar 12","Jordan T. (User Action)","UAE counterparty flagged — policy review required before case close."],
+      ["11:45 UTC · Mar 12","Screening Agent","Screening completed — entity and directors clear."],
+    ],
+    agents: [["Periodic Review Agent","Refresh review running — 4/8 items complete"],["Screening Agent","Entity and directors screened clear"]]
   },
   {
     id: "CASE-2026-00131",
@@ -3952,13 +4113,46 @@ const cases = [
     ],
     riskAiSummary: "Nova Biotech Ltd has self-reported a beneficial ownership change involving the acquisition of a 30% stake by a new investor. This trigger event requires a focused re-CDD covering the new UBO — full identification, verification, source of wealth documentation, and screening are required before the case can be closed. Existing UBO stakes must also be reconciled. A board resolution and updated shareholder register have been requested from the client. No changes to the entity's core business activity or account usage profile have been observed. The case should not be closed until all new UBO verification is complete and screening is confirmed clear.",
     checks: [["Trigger event", "Ownership change detected", "red"]],
-    documents: [],
-    ownershipNotes: "Ownership update pending re-verification.",
-    sanctions: "No active alerts.", pep: "No matches.", media: "No adverse media.",
-    screeningDetail: { sanctions: { status: "Clear", summary: "No active sanctions alerts.", findings: [], mitigants: ["Domestic entity", "No cross-border exposure"] }, pep: { status: "Clear", summary: "No PEP matches identified.", findings: [], mitigants: [] }, media: { status: "Clear", summary: "No adverse media identified.", findings: [], mitigants: [] }, negativeNews: "No negative news findings. All screening categories are clear.", disposition: "Clear — no action required." },
-    activityLog: [["12:10 UTC", "Trigger Detection Agent", "Ownership update detected"]],
-    audit: [["12:10 UTC", "System", "Trigger review opened"]],
-    agents: [["Trigger Review Agent", "Ownership change workflow initiated"]]
+    riskCddChecklist: [
+      ["New UBO Identification","Identify and verify new 30% shareholder — legal name, DOB, nationality, address","Not started","red"],
+      ["New UBO Verification","Certified passport copy and proof of address for new beneficial owner","Not started","red"],
+      ["New UBO Source of Wealth","Document origin of funds used to acquire 30% stake — investment agreement required","Not started","red"],
+      ["New UBO Screening","Screen new beneficial owner against OFAC, EU, UN, PEP databases","In Progress","gold"],
+      ["Existing UBO Re-confirmation","Reconcile updated ownership percentages for all existing shareholders post-acquisition","Pending","gold"],
+      ["Shareholder Register Update","Updated cap table or shareholder register showing all UBOs post-transaction","Not started","red"],
+      ["Board Resolution","Board resolution confirming approval of new 30% investor","Not started","red"],
+      ["Account Activity Monitor","90-day enhanced monitoring of account activity following ownership change","Monitoring","blue"],
+    ],
+    documents: [
+      ["NBL_Prior_CDD_2025.pdf","2025 Onboarding CDD Package — Approved","Received","green","Feb 2025"],
+      ["NBL_Screening_Existing_UBOs_2026.pdf","Existing UBO Screening — 2026 Rerun","Received","green","Mar 11, 2026"],
+      ["NBL_Shareholder_Register_REQUEST.pdf","Updated Shareholder Register — Requested","Outstanding","red","Requested Mar 12"],
+      ["NBL_Board_Resolution_REQUEST.pdf","Board Resolution — Requested","Outstanding","red","Requested Mar 12"],
+      ["NBL_New_UBO_ID_REQUEST.pdf","New UBO ID Documentation — Requested","Outstanding","red","Requested Mar 12"],
+    ],
+    ownershipNotes: "Pre-trigger: Thomas Müller (40%), Dr. Helena Bauer (35%), Müller Family Trust (25%). Post-trigger: new investor acquiring 30% — existing stakes to be reconciled. Board resolution and updated shareholder register requested from company secretary.",
+    ubos: [
+      { name:"Thomas Müller", stake:"40% → TBC", nationality:"German", idVerified:"Verified (2025)", screening:"Clear" },
+      { name:"Dr. Helena Bauer", stake:"35% → TBC", nationality:"German", idVerified:"Verified (2025)", screening:"Clear" },
+      { name:"Müller Family Trust", stake:"25% → TBC", nationality:"Germany", idVerified:"Trust (2025)", screening:"Clear" },
+      { name:"New Investor (TBC)", stake:"30% — pending", nationality:"Unknown", idVerified:"⚠ Not yet verified", screening:"⚠ In progress" },
+    ],
+    controllers: [{ name:"Thomas Müller", title:"CEO & Founder", nationality:"German", idVerified:"Verified (2025)", screening:"Clear" },{ name:"Dr. Karin Wolf", title:"CFO", nationality:"German", idVerified:"Verified (2025)", screening:"Clear" }],
+    sanctions: "Clear (existing UBOs). New UBO screening in progress.", pep: "No matches (existing UBOs). New UBO TBC.", media: "No adverse media.",
+    screeningDetail: { sanctions: { status: "In Progress", summary: "Existing UBOs clear. New 30% shareholder screening in progress — identity not yet confirmed.", findings: ["New UBO identity not yet received — screening cannot be completed"], mitigants: ["Existing UBOs clear at 2025 review","German registered entity"] }, pep: { status: "Clear (existing)", summary: "No PEP matches for existing directors and shareholders.", findings: [], mitigants: [] }, media: { status: "Clear", summary: "No adverse media found for entity or existing principals.", findings: [], mitigants: [] }, negativeNews: "No adverse media. Standard biotech sector press coverage only.", disposition: "Partial — pending new UBO identity and screening completion." },
+    activityLog: [
+      ["12:10 UTC · Mar 12","Trigger Detection Agent","Beneficial ownership change self-reported. Trigger review opened."],
+      ["12:12 UTC · Mar 12","Auto-Assignment Agent","Assigned to Ana M. — EDD specialist."],
+      ["12:15 UTC · Mar 12","Screening Agent","Existing UBOs re-screened — all clear. New UBO screening queued pending ID documents."],
+      ["12:20 UTC · Mar 12","Ana M.","Document requests sent to Nova Biotech company secretary: shareholder register, board resolution, new UBO ID."],
+    ],
+    audit: [
+      ["12:10 UTC · Mar 12","System","Trigger review case opened — ownership change event."],
+      ["12:12 UTC · Mar 12","Auto-Assignment Agent","Assigned to Ana M."],
+      ["12:15 UTC · Mar 12","Screening Agent","Existing UBOs screened clear. New UBO pending."],
+      ["12:20 UTC · Mar 12","Ana M. (User Action)","Document requests issued to client. 3 outstanding items."],
+    ],
+    agents: [["Trigger Detection Agent","Ownership change detected — re-CDD workflow initiated"],["Screening Agent","Existing UBOs clear — new UBO screening pending ID"],["Auto-Assignment Agent","Assigned to Ana M. (EDD specialist)"]]
   },
   {
     id: "CASE-2026-00132",
@@ -4402,6 +4596,8 @@ function setActiveView(viewKey) {
   if (viewKey === "monitoring") renderQueueForTarget("monitoringQueueBody", "periodic");
   if (viewKey === "triggers") renderQueueForTarget("triggersQueueBody", "trigger");
   if (viewKey === "screening") renderQueueForTarget("screeningQueueBody", "screening");
+  if (viewKey === "audit") renderAuditTrail();
+  if (viewKey === "dashboard") setTimeout(initDashboardToggle, 0);
   if (viewKey === "directory") {
     // directory owned by inline script — call safely after it has initialised
     setTimeout(() => {
@@ -5214,6 +5410,434 @@ window.openCase = openCase;
 window.setActiveView = setActiveView;
 window.switchTab = switchTab;
 
+// ══════════════════════════════════════════════════════
+// NOTIFICATION PANEL
+// ══════════════════════════════════════════════════════
+function toggleNotifications() {
+  const panel = document.getElementById('notifPanel');
+  if (!panel) return;
+  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+}
+document.addEventListener('click', e => {
+  const panel = document.getElementById('notifPanel');
+  const btn = document.getElementById('notifBtn');
+  if (panel && !panel.contains(e.target) && btn && !btn.contains(e.target)) {
+    panel.style.display = 'none';
+  }
+});
+
+// ══════════════════════════════════════════════════════
+// GLOBAL SEARCH
+// ══════════════════════════════════════════════════════
+function handleGlobalSearch(q) {
+  const results = document.getElementById('globalSearchResults');
+  if (!results) return;
+  if (!q.trim()) { results.style.display = 'none'; return; }
+  const ql = q.toLowerCase();
+  const hits = cases.filter(c =>
+    c.client.toLowerCase().includes(ql) ||
+    c.id.toLowerCase().includes(ql) ||
+    (c.queueType||'').toLowerCase().includes(ql)
+  ).slice(0, 6);
+  if (!hits.length) { results.style.display = 'none'; return; }
+  results.innerHTML = hits.map(c => `
+    <div onclick="openCase('${c.id}');setActiveView('workspace');document.getElementById('globalSearchResults').style.display='none';document.getElementById('globalSearchInput').value='';"
+      style="padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;"
+      onmouseover="this.style.background='var(--panel-2)'" onmouseout="this.style.background=''">
+      <span style="font-family:monospace;font-size:11px;color:var(--muted);flex-shrink:0;">${c.id.replace('CASE-2026-','')}</span>
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:600;color:var(--text);">${c.client}</div>
+        <div style="font-size:11px;color:var(--muted);">${c.queueType} · ${c.status}</div>
+      </div>
+      <span class="badge ${c.statusClass||'gray'}" style="font-size:10px;">${c.riskTier||'Moderate'}</span>
+    </div>`).join('');
+  results.style.display = 'block';
+}
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    document.getElementById('globalSearchInput')?.focus();
+  }
+});
+document.addEventListener('click', e => {
+  const wrap = document.getElementById('globalSearchWrap');
+  const results = document.getElementById('globalSearchResults');
+  if (wrap && results && !wrap.contains(e.target)) results.style.display = 'none';
+});
+
+// ══════════════════════════════════════════════════════
+// SUBMIT DECISION MODAL
+// ══════════════════════════════════════════════════════
+function openDecisionModal() {
+  const c = window._currentCase;
+  if (!c) { alert('Please open a case first.'); return; }
+  const existing = document.getElementById('decisionModal');
+  if (existing) existing.remove();
+  const modal = document.createElement('div');
+  modal.id = 'decisionModal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:3000;display:flex;align-items:center;justify-content:center;';
+  modal.innerHTML = `
+    <div style="background:#fff;border-radius:16px;width:520px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,0.2);overflow:hidden;">
+      <div style="padding:20px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;">Submit Decision</div>
+          <div style="font-size:17px;font-weight:700;color:var(--text);">${c.client}</div>
+          <div style="font-size:12px;color:var(--muted);">${c.id} · ${c.riskTier||'Moderate'} Risk</div>
+        </div>
+        <button onclick="document.getElementById('decisionModal').remove()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);">✕</button>
+      </div>
+      <div style="padding:20px 24px;">
+        <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em;">Decision</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">
+          <label style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;" onclick="selectDecision(this,'approve')">
+            <input type="radio" name="decision" value="approve" style="accent-color:var(--green);"/> <span style="font-size:13px;font-weight:600;">✅ Approve / Clear</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;" onclick="selectDecision(this,'edd')">
+            <input type="radio" name="decision" value="edd"/> <span style="font-size:13px;font-weight:600;">📋 Refer to EDD</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;" onclick="selectDecision(this,'mlco')">
+            <input type="radio" name="decision" value="mlco"/> <span style="font-size:13px;font-weight:600;">🔍 Escalate to MLCO</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;" onclick="selectDecision(this,'reject')">
+            <input type="radio" name="decision" value="reject"/> <span style="font-size:13px;font-weight:600;">🚫 Reject / Exit</span>
+          </label>
+        </div>
+        <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">Analyst Notes <span style="color:#C0392B;">*required</span></div>
+        <textarea id="decisionNotes" style="width:100%;box-sizing:border-box;min-height:90px;padding:10px 12px;font-size:13px;font-family:'Inter',sans-serif;border:1px solid var(--border);border-radius:8px;color:var(--text);background:var(--panel-2);resize:vertical;outline:none;" placeholder="Document your rationale for this decision. This will be permanently recorded in the case audit trail."></textarea>
+        <div style="margin-top:12px;display:flex;align-items:center;gap:8px;">
+          <input type="checkbox" id="decisionConfirm" style="accent-color:var(--green);width:15px;height:15px;"/>
+          <label for="decisionConfirm" style="font-size:12px;color:var(--muted);cursor:pointer;">I confirm this decision is based on a complete review of all available case information.</label>
+        </div>
+      </div>
+      <div style="padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;">
+        <button onclick="document.getElementById('decisionModal').remove()" class="ghost-btn">Cancel</button>
+        <button onclick="submitDecision()" class="primary-btn" id="submitDecisionBtn">Submit Decision</button>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+}
+window._selectedDecision = '';
+function selectDecision(label, val) {
+  window._selectedDecision = val;
+  document.querySelectorAll('[onclick^="selectDecision"]').forEach(l => l.style.borderColor = 'var(--border)');
+  label.style.borderColor = 'var(--green)';
+}
+function submitDecision() {
+  const notes = document.getElementById('decisionNotes')?.value?.trim();
+  const confirmed = document.getElementById('decisionConfirm')?.checked;
+  if (!window._selectedDecision) { alert('Please select a decision type.'); return; }
+  if (!notes) { alert('Analyst notes are required before submitting a decision.'); return; }
+  if (!confirmed) { alert('Please confirm you have reviewed all case information.'); return; }
+  const c = window._currentCase;
+  const decisionLabels = { approve:'Approved / Cleared', edd:'Referred to EDD', mlco:'Escalated to MLCO', reject:'Rejected / Exit' };
+  const label = decisionLabels[window._selectedDecision] || window._selectedDecision;
+  const ts = new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) + ' UTC';
+  if (c.audit) c.audit.unshift([ts, 'Ana M. (User Action)', `Decision submitted: ${label}. Notes: ${notes}`]);
+  if (c.activityLog) c.activityLog.unshift([ts, 'Decision Submitted', `${label} — ${notes}`]);
+  c.status = label; c.statusClass = window._selectedDecision === 'approve' ? 'green' : window._selectedDecision === 'reject' ? 'red' : 'gold';
+  c.pipeline = label; c.workflowStage = window._selectedDecision === 'approve' ? 'completed' : c.workflowStage;
+  document.getElementById('decisionModal').remove();
+  renderCase(c);
+  alert(`✓ Decision recorded: ${label}\n\nThis has been logged to the case audit trail.`);
+}
+
+// ══════════════════════════════════════════════════════
+// RISK SUMMARY EDIT / CONFIRM
+// ══════════════════════════════════════════════════════
+function editRiskSummary() {
+  const ta = document.getElementById('riskAiSummary');
+  if (!ta) return;
+  ta.readOnly = false; ta.style.background = '#FFFBF0'; ta.style.borderColor = '#E8A838';
+  document.getElementById('riskSummaryEditBtn').textContent = '✓ Editing…';
+  ta.focus();
+}
+function confirmRiskSummary() {
+  const ta = document.getElementById('riskAiSummary');
+  const c = window._currentCase;
+  if (!ta || !c) return;
+  ta.readOnly = true; ta.style.background = '#F0FBF4'; ta.style.borderColor = '#2BB567';
+  c.riskAiSummary = ta.value;
+  const ts = new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) + ' UTC';
+  if (c.audit) c.audit.unshift([ts, 'Ana M. (User Action)', 'Risk assessment narrative confirmed and attached to case.']);
+  document.getElementById('riskSummaryEditBtn').textContent = 'Edit Draft';
+  document.getElementById('riskSummaryConfirmBtn').textContent = '✓ Confirmed';
+  document.getElementById('riskSummaryConfirmBtn').disabled = true;
+  setTimeout(() => {
+    if (document.getElementById('riskSummaryConfirmBtn')) {
+      document.getElementById('riskSummaryConfirmBtn').textContent = 'Confirm & Attach to Case';
+      document.getElementById('riskSummaryConfirmBtn').disabled = false;
+      ta.style.background = '';  ta.style.borderColor = '';
+    }
+  }, 3000);
+}
+
+// ══════════════════════════════════════════════════════
+// DOWNLOAD CASE REPORT
+// ══════════════════════════════════════════════════════
+function downloadCaseReport() {
+  const c = window._currentCase;
+  if (!c) { alert('Please open a case first.'); return; }
+  const w = window.open('', '_blank');
+  w.document.write(`<!DOCTYPE html><html><head><title>Case Report — ${c.id}</title>
+  <style>body{font-family:Inter,sans-serif;max-width:800px;margin:40px auto;color:#1A1E1C;}h1{font-size:22px;margin-bottom:4px;}h2{font-size:15px;margin:24px 0 8px;border-bottom:1px solid #eee;padding-bottom:6px;}.kv{display:grid;grid-template-columns:180px 1fr;gap:4px 12px;font-size:13px;}.label{color:#6B7670;}.val{color:#1A1E1C;font-weight:500;}.badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;}.red{background:#FFEDED;color:#C0392B;}.gold{background:#FFF8E0;color:#7A5200;}.green{background:#E8F8EE;color:#1E8A52;}.gray{background:#F2F1ED;color:#6B7670;}.watermark{color:#eee;font-size:11px;margin-top:40px;text-align:center;}</style></head><body>
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;">
+    <div><div style="font-size:11px;color:#6B7670;text-transform:uppercase;letter-spacing:.1em;">Orchestrate KYC — Confidential</div><h1>${c.client}</h1><div style="font-size:13px;color:#6B7670;">${c.id} · Generated ${new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</div></div>
+    <div style="text-align:right;"><span class="badge ${c.statusClass||'gray'}">${c.status}</span><br><span class="badge ${c.riskTier==='High'?'red':c.riskTier==='Low'?'green':'gold'}" style="margin-top:4px;">${c.riskTier||'Moderate'} Risk</span></div>
+  </div>
+  <h2>Entity Overview</h2>
+  <div class="kv"><span class="label">Entity Type</span><span class="val">${c.entityType||'—'}</span><span class="label">Jurisdiction</span><span class="val">${c.jurisdiction||'—'}</span><span class="label">Assigned Analyst</span><span class="val">${c.assignee||'—'}</span><span class="label">SLA Status</span><span class="val">${c.sla||'—'}</span><span class="label">Risk Score</span><span class="val">${c.riskScore||'—'}/100</span><span class="label">Case Type</span><span class="val">${c.queueType||'—'}</span></div>
+  <h2>AI Case Summary</h2><p style="font-size:13px;line-height:1.7;color:#3A3E3C;">${c.riskAiSummary||c.summary||'—'}</p>
+  <h2>Risk Factors</h2><p style="font-size:13px;">${(c.riskFactors||[]).join(' · ')||'None identified'}</p>
+  <h2>Mitigating Controls</h2><p style="font-size:13px;">${(c.riskMitigants||[]).join(' · ')||'None identified'}</p>
+  <h2>Next Action</h2><p style="font-size:13px;">${c.nextAction||'—'}</p>
+  <div class="watermark">Orchestrate KYC · Confidential · For compliance use only · ${new Date().toISOString()}</div>
+  </body></html>`);
+  w.document.close(); w.print();
+}
+
+// ══════════════════════════════════════════════════════
+// NEW REVIEW MODAL
+// ══════════════════════════════════════════════════════
+function openNewReviewModal() {
+  const existing = document.getElementById('newReviewModal');
+  if (existing) existing.remove();
+  const modal = document.createElement('div');
+  modal.id = 'newReviewModal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:3000;display:flex;align-items:center;justify-content:center;';
+  modal.innerHTML = `
+    <div style="background:#fff;border-radius:16px;width:560px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,0.2);overflow:hidden;">
+      <div style="padding:20px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;">New Case</div>
+          <div style="font-size:17px;font-weight:700;color:var(--text);">Open Review</div>
+        </div>
+        <button onclick="document.getElementById('newReviewModal').remove()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);">✕</button>
+      </div>
+      <div style="padding:20px 24px;display:flex;flex-direction:column;gap:14px;">
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;">Entity Name</div>
+          <input id="nrEntityName" style="width:100%;box-sizing:border-box;padding:9px 12px;font-size:13px;border:1px solid var(--border);border-radius:8px;color:var(--text);background:var(--panel-2);outline:none;" placeholder="Legal entity name…"/>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div>
+            <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;">Review Type</div>
+            <select id="nrType" style="width:100%;padding:9px 12px;font-size:13px;border:1px solid var(--border);border-radius:8px;color:var(--text);background:var(--panel-2);">
+              <option value="onboarding">Onboarding — New Client</option>
+              <option value="periodic">Periodic Review</option>
+              <option value="trigger">Trigger Review</option>
+              <option value="screening">Screening Review</option>
+            </select>
+          </div>
+          <div>
+            <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;">Jurisdiction</div>
+            <select id="nrJurisdiction" style="width:100%;padding:9px 12px;font-size:13px;border:1px solid var(--border);border-radius:8px;color:var(--text);background:var(--panel-2);">
+              <option>United States</option><option>United Kingdom</option><option>Cayman Islands</option><option>Germany</option><option>UAE</option><option>Canada</option><option>Singapore</option><option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div>
+            <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;">Entity Type</div>
+            <select id="nrEntityType" style="width:100%;padding:9px 12px;font-size:13px;border:1px solid var(--border);border-radius:8px;color:var(--text);background:var(--panel-2);">
+              <option>LLC</option><option>Corporation</option><option>Limited Partnership</option><option>Trust</option><option>Foundation</option><option>Individual</option>
+            </select>
+          </div>
+          <div>
+            <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;">Assign To</div>
+            <select id="nrAssignee" style="width:100%;padding:9px 12px;font-size:13px;border:1px solid var(--border);border-radius:8px;color:var(--text);background:var(--panel-2);">
+              <option>Auto-assign</option><option>Ana M.</option><option>Tom K.</option><option>Riya J.</option><option>Derek L.</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;">Notes (optional)</div>
+          <textarea id="nrNotes" style="width:100%;box-sizing:border-box;min-height:70px;padding:9px 12px;font-size:13px;font-family:'Inter',sans-serif;border:1px solid var(--border);border-radius:8px;color:var(--text);background:var(--panel-2);resize:vertical;outline:none;" placeholder="Reason for opening this review…"></textarea>
+        </div>
+        <div style="background:#F0FBF4;border-radius:8px;padding:10px 14px;font-size:12px;color:var(--green);">
+          🤖 AI agents will automatically run completeness checks, risk pre-screening, and assignment on submission.
+        </div>
+      </div>
+      <div style="padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;">
+        <button onclick="document.getElementById('newReviewModal').remove()" class="ghost-btn">Cancel</button>
+        <button onclick="submitNewReview()" class="primary-btn">Open Case →</button>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+}
+function submitNewReview() {
+  const name = document.getElementById('nrEntityName')?.value?.trim();
+  if (!name) { alert('Please enter an entity name.'); return; }
+  const type = document.getElementById('nrType')?.value || 'onboarding';
+  const jur = document.getElementById('nrJurisdiction')?.value || 'United States';
+  const eType = document.getElementById('nrEntityType')?.value || 'LLC';
+  const assignee = document.getElementById('nrAssignee')?.value || 'Auto-assign';
+  const notes = document.getElementById('nrNotes')?.value || '';
+  const newId = `CASE-2026-00${133 + cases.length}`;
+  const assignedTo = assignee === 'Auto-assign' ? autoAssignCase({queueType:type,riskTier:'Moderate'}).name : assignee;
+  const newCase = {
+    id: newId, client: name, queueType: type, status: 'New', statusClass: 'blue',
+    pipeline: 'Intake', pipelineClass: 'gray', sla: '10d remaining',
+    nextAction: 'Initial completeness review pending', aging: 'Just now',
+    priority: 'FIFO', priorityClass: 'gray', assignee: assignedTo,
+    entityType: eType, jurisdiction: jur, activity: '—', expected: '—',
+    summary: notes || `New ${type} case opened for ${name}.`,
+    riskScore: 50, riskTier: 'Moderate', riskNarrative: 'Initial risk assessment pending.',
+    riskFactors: ['Pending assessment'], riskMitigants: ['New case — under review'],
+    riskAnalyst: assignedTo, workflowStage: 'new',
+    checks: [['Completeness Review', 'Pending AI agent scan', 'gray']],
+    documents: [], ownershipNotes: 'Pending.',
+    riskCddChecklist: [['Entity Identification','Confirm legal name and registration','Not started','gray'],['Beneficial Ownership','Identify all UBOs ≥25%','Not started','gray'],['Source of Funds','Document origin of funds','Not started','gray'],['Screening','Screen entity and principals','Not started','gray'],['Document Completeness','Full document package received','Not started','gray']],
+    screeningDetail: { sanctions:{status:'Pending',summary:'Screening queued.',findings:[],mitigants:[]}, pep:{status:'Pending',summary:'Pending.',findings:[],mitigants:[]}, media:{status:'Pending',summary:'Pending.',findings:[],mitigants:[]}, negativeNews:'Screening not yet initiated.', disposition:'Pending screening.' },
+    activityLog: [[new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})+' UTC', 'Case Created', `New ${type} review opened by Ana M. ${notes?'Notes: '+notes:''}`]],
+    audit: [[new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})+' UTC', 'Ana M. (User Action)', `Case created. Assigned to ${assignedTo}.`]],
+    agents: [['Completeness Review Agent','Initial document check queued.'],['Auto-Assignment Agent',`Case assigned to ${assignedTo}.`]]
+  };
+  cases.unshift(newCase);
+  document.getElementById('newReviewModal').remove();
+  openCase(newId);
+  alert(`✓ Case ${newId} opened for ${name}.\nAssigned to: ${assignedTo}\n\nAI agents are running initial checks.`);
+}
+
+// ══════════════════════════════════════════════════════
+// GLOBAL AUDIT TRAIL
+// ══════════════════════════════════════════════════════
+const globalAuditLog = [
+  {ts:'14:33 UTC · Mar 11', caseId:'CASE-2026-00128', client:'Apex Digital LLC', actor:'AI Extraction Agent', type:'Agent', action:'Extracted 4 fields from client response', detail:'Beneficial ownership, source of funds, control persons, UBO declaration mapped to case fields.'},
+  {ts:'14:22 UTC · Mar 11', caseId:'CASE-2026-00128', client:'Apex Digital LLC', actor:'Mike Chen (Client)', type:'Outreach', action:'Client response received', detail:'Response to outreach email. Documents attached: Updated_UBO_Declaration.pdf, MSB_Registration_Confirmation.pdf'},
+  {ts:'12:10 UTC · Mar 11', caseId:'CASE-2026-00131', client:'Nova Biotech Ltd', actor:'Trigger Detection Agent', type:'Agent', action:'Ownership change trigger detected', detail:'Client self-reported 30% stake acquisition. Re-CDD workflow initiated.'},
+  {ts:'11:15 UTC · Mar 12', caseId:'CASE-2026-00127', client:'North Harbor Ventures LP', actor:'Ana M.', type:'User Action', action:'Follow-up email sent to client', detail:'EDD source of wealth requirement communicated. SLA extended to 19 Mar 2026.'},
+  {ts:'10:39 UTC · Mar 12', caseId:'CASE-2026-00127', client:'North Harbor Ventures LP', actor:'AI Extraction Agent', type:'Agent', action:'Client response processed', detail:'Fund admin confirmation, redacted LP schedule, FY2024 audited financials extracted.'},
+  {ts:'10:38 UTC · Mar 12', caseId:'CASE-2026-00127', client:'North Harbor Ventures LP', actor:'James Whitfield (Client)', type:'Outreach', action:'Second client response received', detail:'Fund administrator confirmation, redacted LP schedule, EY audited financials uploaded. Portal upload issue flagged.'},
+  {ts:'10:14 UTC · Mar 12', caseId:'CASE-2026-00129', client:'Global Freight Holdings', actor:'Auto-Assignment Agent', type:'Agent', action:'Case auto-assigned', detail:'Assigned to Ana M. Reason: periodic review specialist, 70% capacity.'},
+  {ts:'09:50 UTC · Mar 10', caseId:'CASE-2026-00127', client:'North Harbor Ventures LP', actor:'Ana M.', type:'Outreach', action:'Initial outreach email sent', detail:'5-item deficiency notice sent to legal@northharborventures.ky'},
+  {ts:'09:47 UTC · Mar 10', caseId:'CASE-2026-00127', client:'North Harbor Ventures LP', actor:'Completeness Review Agent', type:'Agent', action:'Completeness review completed', detail:'Missing: director ID, UBO declaration, LP schedule, Good Standing Cert, source of funds.'},
+  {ts:'09:44 UTC · Mar 10', caseId:'CASE-2026-00127', client:'North Harbor Ventures LP', actor:'System', type:'System', action:'Case created', detail:'Onboarding application received. Case CASE-2026-00127 opened.'},
+  {ts:'09:00 UTC · Mar 12', caseId:'CASE-2026-00127', client:'North Harbor Ventures LP', actor:'Reminder Agent', type:'Agent', action:'Automated reminder sent', detail:'Day-3 reminder sent — no client response after 3 business days.'},
+  {ts:'12:45 UTC · Mar 09', caseId:'CASE-2026-00132', client:'Eastern Trading Co', actor:'Screening Agent', type:'Agent', action:'Potential OFAC SDN match detected', detail:'Confidence 0.78 against OFAC SDN list. Case escalated for human disposition.'},
+  {ts:'16:05 UTC · Mar 11', caseId:'CASE-2026-00127', client:'North Harbor Ventures LP', actor:'Ana M.', type:'User Action', action:'LP disclosure requirements clarified', detail:'Phased approach agreed. Admin certification accepted pending full LP schedule.'},
+  {ts:'14:23 UTC · Mar 11', caseId:'CASE-2026-00127', client:'North Harbor Ventures LP', actor:'AI Extraction Agent', type:'Agent', action:'Client response processed', detail:'Director IDs (2) and Good Standing Certificate extracted. LP confidentiality query flagged.'},
+  {ts:'10:21 UTC · Mar 09', caseId:'CASE-2026-00128', client:'Apex Digital LLC', actor:'System', type:'System', action:'Case created', detail:'Onboarding application received from portal. Case CASE-2026-00128 opened.'},
+  {ts:'08:25 UTC · Mar 12', caseId:'CASE-2026-00126', client:'Solstice Exchange Ltd', actor:'Screening Agent', type:'Agent', action:'Unresolved sanctions match escalated', detail:'Confidence 0.61 — requires human disposition and BSA Officer review.'},
+];
+
+function renderAuditTrail() {
+  const body = document.getElementById('auditTrailBody');
+  if (!body) return;
+  const typeF = document.getElementById('auditTypeFilter')?.value || '';
+  const caseF = document.getElementById('auditCaseFilter')?.value || '';
+  const actorF = document.getElementById('auditActorFilter')?.value || '';
+  const searchF = (document.getElementById('auditSearch')?.value || '').toLowerCase();
+  let rows = globalAuditLog.filter(r => {
+    if (typeF && r.type !== typeF) return false;
+    if (caseF && r.caseId !== caseF) return false;
+    if (actorF && !r.actor.includes(actorF)) return false;
+    if (searchF && !r.action.toLowerCase().includes(searchF) && !r.detail.toLowerCase().includes(searchF) && !r.client.toLowerCase().includes(searchF)) return false;
+    return true;
+  });
+  body.innerHTML = rows.map(r => {
+    const typeColors = { 'User Action':'blue','Agent':'green','System':'gray','Outreach':'gold','Decision':'red' };
+    const cls = typeColors[r.type] || 'gray';
+    return `<tr class="queue-row" onclick="openCase('${r.caseId}');setActiveView('workspace')">
+      <td style="font-family:monospace;font-size:11px;white-space:nowrap;">${r.ts}</td>
+      <td><strong>${r.client}</strong><div style="font-size:11px;color:var(--muted);">${r.caseId}</div></td>
+      <td style="font-size:12px;">${r.actor}</td>
+      <td><span class="badge ${cls}" style="font-size:10px;">${r.type}</span></td>
+      <td style="font-size:12px;font-weight:600;">${r.action}</td>
+      <td style="font-size:11px;color:var(--muted);max-width:220px;">${r.detail}</td>
+    </tr>`;
+  }).join('') || `<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--muted);">No audit events match your filters.</td></tr>`;
+}
+
+// ══════════════════════════════════════════════════════
+// DASHBOARD MY VIEW / TEAM VIEW TOGGLE
+// ══════════════════════════════════════════════════════
+function initDashboardToggle() {
+  const topbar = document.getElementById('pageTitle');
+  if (!topbar || document.getElementById('dashViewToggle')) return;
+  const toggleWrap = document.createElement('div');
+  toggleWrap.id = 'dashViewToggle';
+  toggleWrap.style.cssText = 'display:flex;gap:0;background:var(--panel-2);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-top:8px;width:fit-content;';
+  toggleWrap.innerHTML = `
+    <button id="dashMyViewBtn" onclick="setDashView('my')" style="padding:6px 14px;font-size:12px;font-weight:600;background:var(--green);color:#fff;border:none;cursor:pointer;">My View</button>
+    <button id="dashTeamViewBtn" onclick="setDashView('team')" style="padding:6px 14px;font-size:12px;font-weight:600;background:none;color:var(--muted);border:none;cursor:pointer;">Team View</button>`;
+  topbar.parentNode.insertBefore(toggleWrap, topbar.nextSibling);
+
+  // Create team view metrics panel (initially hidden)
+  const dbView = document.getElementById('dashboard-view');
+  if (dbView && !document.getElementById('teamViewMetrics')) {
+    const teamPanel = document.createElement('div');
+    teamPanel.id = 'teamViewMetrics';
+    teamPanel.style.display = 'none';
+    teamPanel.innerHTML = `
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;">
+        <div style="background:#F0FBF4;border:1px solid #C8EDDA;border-radius:12px;padding:16px;">
+          <div style="font-size:11px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">AI Avg Handle Time</div>
+          <div style="font-size:28px;font-weight:800;color:var(--green);">4.2<span style="font-size:14px;">d</span></div>
+          <div style="font-size:11px;color:var(--green);margin-top:4px;">↓ 1.1d vs last month</div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;">
+          <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Human Avg Handle Time</div>
+          <div style="font-size:28px;font-weight:800;color:var(--text);">8.4<span style="font-size:14px;">d</span></div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px;">↑ 0.3d vs last month</div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;">
+          <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">AI Time Saved MTD</div>
+          <div style="font-size:28px;font-weight:800;color:var(--text);">197<span style="font-size:14px;">h</span></div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px;">Across 47 cases</div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;">
+          <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">SLA Compliance Rate</div>
+          <div style="font-size:28px;font-weight:800;color:var(--text);">87<span style="font-size:14px;">%</span></div>
+          <div style="font-size:11px;color:#C0392B;margin-top:4px;">↓ 4pts · 4 active breaches</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
+        <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;">
+          <div style="font-size:13px;font-weight:700;margin-bottom:12px;">AI vs Human Handle Time (days)</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;"><span>Onboarding</span><span style="color:var(--green);">AI 3.8d vs Human 9.2d</span></div><div style="height:8px;background:#eee;border-radius:4px;overflow:hidden;"><div style="height:100%;width:41%;background:var(--green);border-radius:4px;"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;"><span>Periodic Review</span><span style="color:var(--green);">AI 2.1d vs Human 5.4d</span></div><div style="height:8px;background:#eee;border-radius:4px;overflow:hidden;"><div style="height:100%;width:39%;background:var(--green);border-radius:4px;"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;"><span>EDD</span><span style="color:#D0A85C;">AI 8.4d vs Human 14.2d</span></div><div style="height:8px;background:#eee;border-radius:4px;overflow:hidden;"><div style="height:100%;width:59%;background:#D0A85C;border-radius:4px;"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;"><span>Screening Alert</span><span style="color:var(--green);">AI 1.2d vs Human 3.8d</span></div><div style="height:8px;background:#eee;border-radius:4px;overflow:hidden;"><div style="height:100%;width:32%;background:var(--green);border-radius:4px;"></div></div></div>
+          </div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;">
+          <div style="font-size:13px;font-weight:700;margin-bottom:12px;">Agent Throughput MTD</div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);"><span style="font-size:12px;">Completeness Reviews</span><span style="font-size:13px;font-weight:700;color:var(--green);">128</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);"><span style="font-size:12px;">Client Outreach Sent</span><span style="font-size:13px;font-weight:700;color:var(--green);">41</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);"><span style="font-size:12px;">Auto-Assignments</span><span style="font-size:13px;font-weight:700;color:var(--green);">47</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);"><span style="font-size:12px;">Screening Runs</span><span style="font-size:13px;font-weight:700;color:var(--green);">312</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;"><span style="font-size:12px;">AI Extractions</span><span style="font-size:13px;font-weight:700;color:var(--green);">19</span></div>
+          </div>
+        </div>
+      </div>`;
+    dbView.insertBefore(teamPanel, dbView.firstChild);
+  }
+}
+
+function setDashView(view) {
+  const myBtn = document.getElementById('dashMyViewBtn');
+  const teamBtn = document.getElementById('dashTeamViewBtn');
+  const teamMetrics = document.getElementById('teamViewMetrics');
+  const myQueueBar = document.querySelector('.db-my-queue-bar');
+  if (view === 'team') {
+    if (myBtn) { myBtn.style.background = 'none'; myBtn.style.color = 'var(--muted)'; }
+    if (teamBtn) { teamBtn.style.background = 'var(--green)'; teamBtn.style.color = '#fff'; }
+    if (teamMetrics) teamMetrics.style.display = 'block';
+    if (myQueueBar) myQueueBar.style.display = 'none';
+  } else {
+    if (myBtn) { myBtn.style.background = 'var(--green)'; myBtn.style.color = '#fff'; }
+    if (teamBtn) { teamBtn.style.background = 'none'; teamBtn.style.color = 'var(--muted)'; }
+    if (teamMetrics) teamMetrics.style.display = 'none';
+    if (myQueueBar) myQueueBar.style.display = '';
+  }
+}
+window.setDashView = setDashView;
+window.openNewReviewModal = openNewReviewModal;
+window.openDecisionModal = openDecisionModal;
+window.toggleNotifications = toggleNotifications;
+
 // Nav
 document.querySelectorAll(".nav-item").forEach((btn) => {
   btn.addEventListener("click", () => setActiveView(btn.dataset.view));
@@ -5339,6 +5963,8 @@ document.querySelectorAll(".escal-tab").forEach(btn => {
     const target = btn.dataset.escal;
     document.getElementById("escal-human").style.display      = target === "human"      ? "" : "none";
     document.getElementById("escal-compliance").style.display = target === "compliance" ? "" : "none";
+    const eddPane = document.getElementById("escal-edd-signoff");
+    if (eddPane) eddPane.style.display = target === "edd-signoff" ? "" : "none";
   });
 });
 
@@ -6569,6 +7195,8 @@ renderQueue();
   if (typeof renderTable === 'function' && typeof CLIENTS !== 'undefined') {
     renderTable(CLIENTS);
   }
+  // Init dashboard toggle on load
+  setTimeout(initDashboardToggle, 100);
 
 </script>
 </body>
