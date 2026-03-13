@@ -2929,7 +2929,7 @@ h3{
                   <div style="display:flex;gap:8px;margin-bottom:8px;">
                     <div style="flex:1;">
                       <div style="font-size:11px;font-weight:600;color:var(--muted);margin-bottom:4px;">TO</div>
-                      <div style="font-size:13px;padding:8px 12px;background:var(--panel-2);border:1px solid var(--border);border-radius:7px;" id="outreachRecipient">compliance@client.com</div>
+                      <div style="font-size:13px;padding:8px 12px;background:var(--panel-2);border:1px solid var(--border);border-radius:7px;" id="outreachRecipient"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="086b676578646169666b6d486b64616d667c266b6765">[email&#160;protected]</a></div>
                     </div>
                     <div style="flex:0 0 140px;">
                       <div style="font-size:11px;font-weight:600;color:var(--muted);margin-bottom:4px;">CHANNEL</div>
@@ -3336,7 +3336,7 @@ h3{
   </div>
   <div id="checklistDrawerOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.18);z-index:999;" ></div>
 
-  <script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   /* ══ app.js inlined ══ */
 const views = {
   dashboard: { id: "dashboard-view", eyebrow: "Overview", title: "Dashboard" },
@@ -3516,21 +3516,21 @@ const cases = [
     riskNarrative: "Preliminary risk is higher due to offshore jurisdiction and fund structure complexity. Case may require EDD after missing materials are received.",
     riskFactors: ["Offshore entity", "Fund structure", "Layered ownership"],
     riskMitigants: ["CIMA registered fund", "Professional trustee as registered agent"],
-    riskAnalyst: "Client Pending",
+    riskAnalyst: "Ana M.",
     riskCddChecklist: [
-      ["Entity Identification", "Legal name, jurisdiction, reg. number confirmed", "LP formation certificate uploaded — pending extraction", "gold"],
+      ["Entity Identification", "Legal name, jurisdiction, reg. number confirmed", "LP formation certificate uploaded — AI extracted key fields. Good Standing Certificate (CIMA, Mar 2026) received and verified.", "green"],
       ["Business Activity Verification", "Fund purpose and investment mandate documented", "Investment mandate partially described in LP agreement — pending full extraction", "gold"],
-      ["Purpose of Account", "Account purpose documented and aligned to fund activity", "Custody only — consistent with fund mandate. To be re-confirmed on full review", "gold"],
-      ["Source of Funds", "Capital contributions — LPs and GP identified", "Pending — UBO and LP schedule not yet received", "red"],
-      ["Beneficial Ownership", "All UBOs ≥25% identified through GP look-through", "GP look-through analysis not yet possible — UBO declaration outstanding", "red"],
-      ["Control Persons", "GP directors and authorised signatories identified", "North Harbor GP Ltd identified as General Partner — director ID outstanding", "gold"],
-      ["Screening — Sanctions", "Entity and all named parties screened", "Screening not started — waiting for complete document package", "gray"],
-      ["Screening — PEP", "All UBOs and GP directors screened for PEP status", "Not started", "gray"],
-      ["Adverse Media", "Entity and principals reviewed for adverse media", "Not started", "gray"],
-      ["Document Completeness", "Full onboarding package received", "Director ID, UBO declaration, Good Standing Certificate — all outstanding", "red"],
-      ["EDD Trigger Assessment", "Determine EDD requirement", "EDD likely required — offshore jurisdiction, complex structure, pending PEP review", "red"],
+      ["Purpose of Account", "Account purpose documented and aligned to fund activity", "Custody only — consistent with fund mandate. Confirmed by fund administrator.", "green"],
+      ["Source of Funds", "Capital contributions — LPs and GP identified", "FY2024 audited financials (EY) received. Fund administrator confirms institutional LP base (pension funds, endowments, family offices). Note 7 reviewed. Full LP schedule pending consent.", "gold"],
+      ["Beneficial Ownership", "All UBOs ≥25% identified through GP look-through", "Fund administrator confirmed no single LP holds ≥25%. Redacted LP schedule received. Full unredacted schedule pending LP consent (expected 14 Mar 2026).", "gold"],
+      ["Control Persons", "GP directors and authorised signatories identified", "Marcus Albright and Sophie Chen — certified passport copies received and verified. Source of wealth outstanding (EDD requirement).", "gold"],
+      ["Screening — Sanctions", "Entity and all named parties screened", "Director IDs now received — screening initiated for Albright and Chen. Entity screening clear. LP screening pending full schedule.", "gold"],
+      ["Screening — PEP", "All UBOs and GP directors screened for PEP status", "Marcus Albright and Sophie Chen screened — no PEP match. LP screening pending unredacted schedule.", "gold"],
+      ["Adverse Media", "Entity and principals reviewed for adverse media", "No adverse media identified for entity or named directors. LP adverse media pending full schedule.", "gold"],
+      ["Document Completeness", "Full onboarding package received", "Received: Director IDs, Good Standing Cert, redacted LP schedule, admin confirmation, audited financials. Outstanding: Unredacted LP schedule, director source of wealth.", "gold"],
+      ["EDD Trigger Assessment", "Determine EDD requirement", "EDD confirmed — Cayman Islands jurisdiction, complex fund structure, offshore LP base. Director source of wealth required.", "red"],
     ],
-    riskAiSummary: "North Harbor Ventures LP is an offshore Cayman Islands limited partnership in early-stage onboarding. The entity presents a high CDD risk profile driven by its offshore jurisdiction, complex multi-layer fund structure, and incomplete documentation package. Beneficial ownership through the GP has not yet been established — UBO declarations and director identification remain outstanding. Screening has not commenced. EDD is likely to be required pending receipt of full documentation and completion of GP look-through analysis. The case is currently paused awaiting client response. No advancement should occur until the outstanding document set is received and reviewed.",
+    riskAiSummary: "North Harbor Ventures LP has made meaningful progress since initial outreach — director IDs, Good Standing Certificate, a redacted LP schedule, fund administrator confirmation, and FY2024 audited financials have all been received. The fund administrator has confirmed in writing that no single LP holds a 25% or greater economic interest, which partially satisfies the beneficial ownership requirement pending receipt of the full unredacted LP schedule. EDD has been formally triggered based on the Cayman Islands jurisdiction and fund structure complexity. Two items remain outstanding: (1) full unredacted LP schedule, expected by 14 March 2026 pending LP consents, and (2) source of wealth documentation for both GP directors (Marcus Albright and Sophie Chen). The case should not advance to final CDD review until both items are received.",
     eddChecklist: [
       ["Source of Wealth", "Document and verify the source of wealth of each UBO", "UBO declarations not yet received — source of wealth pending", "red"],
       ["Source of Funds — EDD", "Trace capital contributions to underlying source", "LP capital schedule outstanding — funds origin unverified", "red"],
@@ -3549,15 +3549,69 @@ const cases = [
       dueDate: "17 Mar 2026",
       remindersSent: 1,
       thread: [
-        { dir: "sent", from: "Ana M. (Compliance Team)", time: "09:50 UTC", body: "Dear North Harbor Ventures LP,\n\nThank you for your onboarding submission. As part of our KYC/AML review process, we require the following additional information:\n\n  • Beneficial Ownership: Outstanding — UBO declaration not yet received\n  • Control Persons: Director identification for North Harbor GP Ltd outstanding\n  • Source of Funds: Capital contribution schedule and LP schedule not received\n  • Document Completeness: Director ID, Good Standing Certificate — all outstanding\n\nPlease respond within 5 business days.\n\nKind regards,\nCompliance Team" },
-        { dir: "system", from: "Reminder Agent", time: "12:00 UTC · Mar 13", body: "Automated reminder sent to client — no response after 3 business days." }
+        {
+          dir: "sent",
+          from: "Ana M. (Compliance Team)",
+          time: "09:50 UTC · Mar 10",
+          body: "Dear North Harbor Ventures LP,\n\nThank you for submitting your onboarding application. We have completed an initial completeness review and require the following documentation before we can proceed with your KYC assessment:\n\n  1. Beneficial Ownership Declaration — identifying all UBOs holding ≥25% interest through the GP structure\n  2. Director Identification — certified copy of passport and proof of address for all directors of North Harbor GP Ltd\n  3. LP Capital Schedule — listing all limited partners and their respective commitment amounts\n  4. Good Standing Certificate — issued within the last 3 months by the Cayman Islands Monetary Authority (CIMA)\n  5. Source of Funds — documentation supporting the origin of capital contributions (e.g. audited financials, bank statements)\n\nPlease upload these documents to the secure client portal or respond directly to this email. Our SLA requires a response within 5 business days (by 17 March 2026).\n\nIf you have any questions about the requirements, please do not hesitate to contact us.\n\nKind regards,\nAna M.\nKYC Analyst — Compliance Team"
+        },
+        {
+          dir: "received",
+          from: "James Whitfield (Legal Counsel — North Harbor GP Ltd)",
+          time: "14:22 UTC · Mar 11",
+          body: "Dear Ana,\n\nThank you for your email. We are working on compiling the required documents.\n\nI can provide the following now:\n\n  • Director Identification: Attached are certified passport copies for both directors of North Harbor GP Ltd — Marcus Albright and Sophie Chen.\n  • Good Standing Certificate: Attached — issued 8 March 2026 by CIMA.\n\nRegarding the UBO Declaration and LP Capital Schedule — we have approximately 14 limited partners across two fund vintages. Our LP Agreement contains confidentiality provisions that restrict disclosure of individual LP identities without prior consent. We are reaching out to our LPs for consent and expect to have responses within 3–5 business days.\n\nCould you confirm whether a redacted schedule (showing commitment amounts without LP identities) would satisfy the initial requirement while we gather consents?\n\nBest regards,\nJames Whitfield\nLegal Counsel — North Harbor GP Ltd",
+          attachments: ["Albright_Marcus_Passport_Certified.pdf", "Chen_Sophie_Passport_Certified.pdf", "NHVLP_Good_Standing_CIMA_Mar2026.pdf"]
+        },
+        {
+          dir: "system",
+          from: "AI Extraction Agent",
+          time: "14:23 UTC · Mar 11",
+          body: "Client response processed. Extracted: Director ID (2 of 2 directors — Marcus Albright, Sophie Chen). Good Standing Certificate received and dated. Outstanding: UBO Declaration (LP consent pending), LP Capital Schedule (confidentiality issue raised — analyst review required), Source of Funds (not yet provided). Checklist items partially updated. Analyst action required on LP confidentiality query."
+        },
+        {
+          dir: "sent",
+          from: "Ana M. (Compliance Team)",
+          time: "16:05 UTC · Mar 11",
+          body: "Dear James,\n\nThank you for the prompt response and for uploading the director IDs and Good Standing Certificate — these have been received and verified.\n\nRegarding the LP Capital Schedule — I understand the confidentiality concern. However, under our AML/KYC obligations we are required to identify all beneficial owners holding a 25% or greater economic interest in the fund. A redacted schedule alone will not satisfy this requirement.\n\nWe can accommodate a phased approach as follows:\n\n  1. Please provide an unredacted LP schedule under a confidentiality agreement with our firm (we can provide a standard NDA if needed)\n  2. Alternatively, if no single LP holds ≥25%, please provide a written confirmation from the fund administrator or legal counsel to that effect, along with the redacted schedule\n\nFor Source of Funds — we require documentation showing the origin of the initial capital contributions. A letter from the fund administrator confirming the source and a reference to audited financials would typically suffice.\n\nWe will update the SLA deadline to 19 March 2026 to allow time for LP consent gathering. Please keep us updated on progress.\n\nKind regards,\nAna M.\nKYC Analyst — Compliance Team"
+        },
+        {
+          dir: "received",
+          from: "James Whitfield (Legal Counsel — North Harbor GP Ltd)",
+          time: "10:38 UTC · Mar 12",
+          body: "Dear Ana,\n\nThank you for the clarification — the phased approach is helpful.\n\nI can confirm that no single LP holds a 25% or greater economic interest in either fund vintage. I am attaching a written confirmation from our fund administrator (Cayman Fund Services Ltd) to this effect, along with a redacted LP schedule showing commitment tiers.\n\nWe are still awaiting LP consent for the full unredacted schedule — I expect to have responses from the majority of LPs by end of week.\n\nRegarding Source of Funds — I am attaching our most recent audited financial statements (FY2024) prepared by Ernst & Young. Capital contributions originated from institutional investors (pension funds, endowments, and family offices) — these are described in Note 7 of the financials.\n\nOne question: the portal is showing an error when I try to upload files larger than 25MB. The EY audit file is 38MB. Can you provide an alternative upload method?\n\nBest regards,\nJames",
+          attachments: ["NorthHarbor_AdminConfirmation_NoUBO25pct.pdf", "LP_Schedule_Redacted_Mar2026.pdf", "NorthHarbor_AuditedFinancials_FY2024_EY.pdf"]
+        },
+        {
+          dir: "system",
+          from: "AI Extraction Agent",
+          time: "10:39 UTC · Mar 12",
+          body: "Client response processed. New extractions: Fund administrator confirmation (no single LP ≥25%) — received. Redacted LP schedule — received. Audited financials FY2024 — received (EY). Source of Funds partially satisfied — Note 7 reference logged. Outstanding: Full unredacted LP schedule (LP consent still pending). Portal upload issue flagged — analyst action required. Checklist updated: Source of Funds → Partial, LP Capital Schedule → Partial."
+        },
+        {
+          dir: "sent",
+          from: "Ana M. (Compliance Team)",
+          time: "11:15 UTC · Mar 12",
+          body: "Dear James,\n\nThank you — the fund administrator confirmation, redacted LP schedule, and audited financials have all been received and logged to the case.\n\nRegarding the portal upload issue — I have flagged this to our IT team. In the meantime, please send large files directly to our secure document email: secure-docs@orchestrate-kyc.com (encrypted). Please reference the case number CASE-2026-00127 in the subject line.\n\nWe have reviewed the redacted LP schedule and fund administrator confirmation. Subject to receipt of the unredacted LP schedule (or sufficient LP consents), the Beneficial Ownership section of your assessment can be provisionally advanced.\n\nRemaining outstanding items:\n  1. Unredacted LP schedule or individual LP consent confirmations (expected end of week)\n  2. Director source of wealth statements for Marcus Albright and Sophie Chen (required for EDD given offshore fund structure)\n\nPlease note that item 2 is an EDD requirement triggered by the Cayman Islands jurisdiction and fund structure risk profile. We will need this before the case can be finalised.\n\nUpdated response deadline: 19 March 2026.\n\nKind regards,\nAna M."
+        },
+        {
+          dir: "system",
+          from: "Reminder Agent",
+          time: "09:00 UTC · Mar 13",
+          body: "Automated follow-up logged. Case CASE-2026-00127 has 2 outstanding items: (1) Unredacted LP schedule, (2) Director source of wealth statements. SLA deadline: 19 March 2026. No further client response received since Mar 12 11:15 UTC."
+        }
       ]
     },
     activityLog: [
-      ["09:44 UTC", "Application received", "Case created from client onboarding submission."],
-      ["09:47 UTC", "Completeness Review Agent", "Detected missing director ID and stale address evidence."],
-      ["09:50 UTC", "Deficiency Notice Agent", "Generated client request with missing items list."],
-      ["12:00 UTC", "Reminder Agent", "Automated reminder sent — no client response after 3 business days."]
+      ["09:44 UTC · Mar 10", "Application received", "Case created from client onboarding submission."],
+      ["09:47 UTC · Mar 10", "Completeness Review Agent", "Detected missing director ID, UBO declaration, and source of funds documentation."],
+      ["09:50 UTC · Mar 10", "Client Outreach Sent", "Initial deficiency notice sent to legal@northharborventures.ky — 5 items outstanding."],
+      ["14:22 UTC · Mar 11", "Client Response Received", "Partial response from James Whitfield — director IDs and Good Standing Certificate uploaded. LP schedule pending LP consent."],
+      ["14:23 UTC · Mar 11", "AI Extraction Agent", "Extracted director ID (2 directors) and Good Standing Certificate. Flagged LP confidentiality query for analyst review."],
+      ["16:05 UTC · Mar 11", "Analyst Follow-up Sent", "Ana M. clarified LP disclosure requirements and extended SLA to 19 March 2026."],
+      ["10:38 UTC · Mar 12", "Client Response Received", "James Whitfield submitted fund administrator confirmation, redacted LP schedule, and FY2024 audited financials. Portal upload issue flagged."],
+      ["10:39 UTC · Mar 12", "AI Extraction Agent", "Extracted: admin confirmation, redacted schedule, financials. Source of Funds updated to Partial. Portal issue escalated."],
+      ["11:15 UTC · Mar 12", "Analyst Follow-up Sent", "Ana M. confirmed receipt, flagged EDD source of wealth requirement for directors. 2 items remaining."],
+      ["09:00 UTC · Mar 13", "Reminder Agent", "Automated follow-up logged — 2 items still outstanding. SLA: 19 Mar 2026."]
     ],
     audit: [
       ["09:44 UTC", "System", "Created intake case and logged submission payload."],
@@ -6471,13 +6525,4 @@ renderQueue();
 
   initEditPanels();
 
-  /* ─── init ─── */
-  renderTable(CLIENTS);
-  // Re-render case workspace now that CLIENTS is available
-  if (typeof renderCase === 'function' && typeof currentCase !== 'undefined') {
-    renderCase(currentCase);
-  }
-
-  </script>
-</body>
-</html>
+  /* ─── init ──�
