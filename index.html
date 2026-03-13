@@ -2632,10 +2632,64 @@ h3{
         <div class="tab-content" id="tab-documents">
           <div class="panel">
             <div class="panel-head panel-head-spread">
-              <h2>Documents</h2>
-              <span class="badge gray">Intake Package</span>
+              <div>
+                <h2>Documents</h2>
+                <p class="panel-subtext" id="docsSubtext">Intake package · AI-parsed</p>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center;">
+                <span class="badge gray" id="docsCountBadge">0 documents</span>
+                <button class="ghost-btn" style="font-size:12px;" onclick="requestDocuments()">+ Request Documents</button>
+              </div>
             </div>
-            <div class="doc-list" id="documentsList"></div>
+
+            <!-- Upload drop zone -->
+            <div id="docUploadZone" style="border:2px dashed var(--border);border-radius:10px;padding:16px 20px;margin-bottom:16px;display:flex;align-items:center;gap:12px;cursor:pointer;background:var(--panel-2);" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'">
+              <div style="width:36px;height:36px;border-radius:8px;background:#E8F8EE;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">📎</div>
+              <div>
+                <div style="font-size:13px;font-weight:600;color:var(--text);">Drop files here or click to upload</div>
+                <div style="font-size:11px;color:var(--muted);">PDF, JPG, PNG — max 25MB per file. All uploads are logged to the case audit trail.</div>
+              </div>
+            </div>
+
+            <!-- Document grid -->
+            <div id="documentsList" style="display:flex;flex-direction:column;gap:10px;"></div>
+
+            <!-- Empty state -->
+            <div id="docsEmptyState" style="display:none;text-align:center;padding:40px 20px;">
+              <div style="font-size:32px;margin-bottom:12px;">📂</div>
+              <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px;">No documents yet</div>
+              <div style="font-size:12px;color:var(--muted);">Use the Request Documents button to send a deficiency notice, or drag and drop files above.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── DOCUMENT VIEWER MODAL ── -->
+        <div id="docViewerModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:4000;align-items:center;justify-content:center;">
+          <div style="background:#fff;border-radius:16px;width:780px;max-width:96vw;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(0,0,0,0.25);">
+            <!-- Viewer header -->
+            <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div id="dvIcon" style="width:36px;height:36px;border-radius:8px;background:#FDECEB;display:flex;align-items:center;justify-content:center;font-size:18px;">📄</div>
+                <div>
+                  <div id="dvTitle" style="font-size:15px;font-weight:700;color:var(--text);">Document</div>
+                  <div id="dvMeta" style="font-size:11px;color:var(--muted);">—</div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span id="dvStatusBadge" class="badge green">Verified</span>
+                <button onclick="closeDocViewer()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);padding:4px 8px;">✕</button>
+              </div>
+            </div>
+            <!-- Viewer body — mock document -->
+            <div style="flex:1;overflow-y:auto;padding:28px 40px;background:#F7F6F2;" id="dvBody"></div>
+            <!-- Viewer footer -->
+            <div style="padding:12px 20px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:space-between;align-items:center;flex-shrink:0;">
+              <div id="dvAiNote" style="font-size:11px;color:var(--green);display:flex;align-items:center;gap:6px;"></div>
+              <div style="display:flex;gap:8px;">
+                <button class="ghost-btn" style="font-size:12px;" onclick="closeDocViewer()">Close</button>
+                <button class="primary-btn" style="font-size:12px;" onclick="markDocVerified()">✓ Mark Verified</button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -3795,9 +3849,12 @@ const cases = [
       ["Screening status", "Human disposition required", "red"]
     ],
     documents: [
-      ["Certificate of Incorporation", "Verified", "green"],
-      ["Share Register", "Parsed · layered ownership flagged", "gold"],
-      ["Financial Statements", "Reviewed for source of funds consistency", "green"]
+      ["Certificate_of_Incorporation.pdf", "Parsed · entity name, reg. number, jurisdiction extracted · MAS-licensed entity confirmed", "Verified", "green", "Feb 2026"],
+      ["Share_Register.pdf", "Parsed · layered ownership flagged · one intermediary holding company identified in higher-risk jurisdiction", "Review", "gold", "Feb 2026"],
+      ["Financial_Statements_FY2025.pdf", "Audited financials · reviewed for source of funds consistency · EY Singapore", "Verified", "green", "Jan 2026"],
+      ["MAS_License_Confirmation.pdf", "MAS Capital Markets Services licence · confirmed active in good standing", "Verified", "green", "Mar 2026"],
+      ["Director_Passports.pdf", "Two director IDs received · AI MRZ check passed · both verified", "Verified", "green", "Feb 2026"],
+      ["Sanctions_Screening_Report.pdf", "Uncertain match on associated entity (confidence 0.61) · awaiting analyst disposition", "Review", "gold", "Mar 12, 2026"],
     ],
     ownershipNotes: "Ownership chain includes one intermediary holding company. UBOs identified, but one associated entity sits in a higher-risk jurisdiction and requires annotation in final report.",
     sanctions: "Potential sanctions match returned on associated entity. AI triage classified as uncertain; human disposition required.",
@@ -4199,7 +4256,14 @@ const cases = [
       ["BSA Officer Escalation", "Escalate to BSA Officer if SDN match confirmed", "Pending analyst disposition — escalation path identified", "gold"],
     ],
     checks: [["Screening alert", "Potential sanctions match", "red"]],
-    documents: [],
+    documents: [
+      ["Certificate_of_Incorporation_UAE.pdf", "UAE incorporation · entity name, reg. no. and activity extracted · on file", "Verified", "green", "Jan 2026"],
+      ["Trade_Finance_Agreement.pdf", "Cross-border trade finance agreement · key counterparties documented", "Verified", "green", "Jan 2026"],
+      ["UBO_Declaration.pdf", "Beneficial ownership declaration · principal UBO identified · re-confirmation requested", "Review", "gold", "Feb 2026"],
+      ["OFAC_Screening_Report.pdf", "Potential SDN match (confidence 0.78) · human disposition required · account under monitoring", "Review", "gold", "Mar 09, 2026"],
+      ["Counterparty_List.pdf", "Known counterparties documented · broader counterparty list pending", "Review", "gold", "Mar 09, 2026"],
+      ["EDD_Source_of_Funds_REQUEST.pdf", "EDD-standard source of funds verification — outstanding", "Outstanding", "red", "Requested Mar 09"],
+    ],
     ownershipNotes: "Screening in progress.",
     sanctions: "Potential sanctions match — requires analyst disposition.",
     pep: "Under review.", media: "No adverse media.",
@@ -4678,13 +4742,56 @@ function renderCase(caseObj) {
   }
 
   const documentsList = get("documentsList");
+  const docsEmpty = get("docsEmptyState");
+  const docsCount = get("docsCountBadge");
+  const docsSubtext = get("docsSubtext");
   if (documentsList) {
     documentsList.innerHTML = "";
-    (caseObj.documents || []).forEach(([name, meta, cls]) => {
-      const item = document.createElement("div");
-      item.className = "doc-item";
-      item.innerHTML = `<div class="doc-meta"><strong>${name}</strong><span>${meta}</span></div><span class="badge ${cls}">${cls==="green"?"Verified":cls==="gold"?"Review":"In Progress"}</span>`;
-      documentsList.appendChild(item);
+    const docs = caseObj.documents || [];
+    if (docsCount) docsCount.textContent = docs.length + " document" + (docs.length !== 1 ? "s" : "");
+    if (docsSubtext) docsSubtext.textContent = caseObj.queueType === "periodic" ? "Periodic refresh package · AI-parsed" : caseObj.queueType === "trigger" ? "Trigger review package · AI-parsed" : "Intake package · AI-parsed";
+    if (docsEmpty) docsEmpty.style.display = docs.length === 0 ? "block" : "none";
+
+    const docIcons = { pdf: "📄", cert: "📜", id: "🪪", financial: "📊", corporate: "🏢", ownership: "👥", screening: "🔍", other: "📋" };
+    const docTypeMap = (name) => {
+      const n = name.toLowerCase();
+      if (n.includes("certificate") || n.includes("cert") || n.includes("good standing")) return "cert";
+      if (n.includes("passport") || n.includes("id") || n.includes("license") || n.includes("driver")) return "id";
+      if (n.includes("financial") || n.includes("statement") || n.includes("w-9") || n.includes("audited") || n.includes("tax")) return "financial";
+      if (n.includes("register") || n.includes("registry") || n.includes("formation") || n.includes("incorporation") || n.includes("sedar") || n.includes("companies house") || n.includes("board")) return "corporate";
+      if (n.includes("ownership") || n.includes("operating") || n.includes("shareholder") || n.includes("ubo") || n.includes("cap table") || n.includes("lp schedule") || n.includes("attestation")) return "ownership";
+      if (n.includes("screening") || n.includes("sanctions") || n.includes("pep")) return "screening";
+      return "pdf";
+    };
+    const iconBg = { pdf:"#FDECEA", cert:"#EAF3DE", id:"#E8F0FE", financial:"#E8F8EE", corporate:"#F3EEFE", ownership:"#FFF3E0", screening:"#FDE8F5", other:"#F2F1ED" };
+
+    docs.forEach(([filename, description, statusStr, statusClass, date], idx) => {
+      const type = docTypeMap(filename);
+      const icon = docIcons[type] || "📋";
+      const bg = iconBg[type] || "#F2F1ED";
+      const statusLabel = statusClass === "green" ? "Verified" : statusClass === "red" ? "Outstanding" : statusClass === "blue" ? "Monitoring" : statusStr || "Review";
+      const badgeCls = statusClass || "gold";
+      const fileExt = filename.includes(".pdf") ? "PDF" : filename.includes(".jpg") || filename.includes(".png") ? "Image" : "PDF";
+      const fileSizeKb = Math.floor(Math.random() * 800 + 120);
+
+      const card = document.createElement("div");
+      card.style.cssText = "display:flex;align-items:center;gap:14px;padding:14px 16px;background:#fff;border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:box-shadow .15s;";
+      card.onmouseover = () => card.style.boxShadow = "0 2px 12px rgba(0,0,0,0.08)";
+      card.onmouseout = () => card.style.boxShadow = "";
+      card.onclick = () => openDocViewer(idx, filename, description, statusLabel, badgeCls, type, icon, bg, date, fileExt, fileSizeKb, caseObj);
+
+      card.innerHTML = `
+        <div style="width:44px;height:44px;border-radius:10px;background:${bg};display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">${icon}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${filename.replace(/_/g,' ').replace('.pdf','')}</div>
+          <div style="font-size:11px;color:var(--muted);">${description}</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:3px;">${fileExt} · ${fileSizeKb} KB${date ? ' · ' + date : ''}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+          <span class="badge ${badgeCls}">${statusLabel}</span>
+          <button onclick="event.stopPropagation();openDocViewer(${idx},'${filename.replace(/'/g,"\\'")}','${description.replace(/'/g,"\\'")}','${statusLabel}','${badgeCls}','${type}','${icon}','${bg}','${date||''}','${fileExt}',${fileSizeKb},window._currentCase)" class="open-link" style="font-size:11px;padding:5px 10px;">View →</button>
+        </div>`;
+      documentsList.appendChild(card);
     });
   }
 
@@ -5837,6 +5944,220 @@ window.setDashView = setDashView;
 window.openNewReviewModal = openNewReviewModal;
 window.openDecisionModal = openDecisionModal;
 window.toggleNotifications = toggleNotifications;
+
+// ══════════════════════════════════════════════════════
+// DOCUMENT VIEWER
+// ══════════════════════════════════════════════════════
+const mockDocTemplates = {
+  cert: (filename, caseObj, date) => `
+    <div style="background:#fff;border-radius:10px;padding:32px 36px;font-family:'Inter',sans-serif;max-width:680px;margin:0 auto;border:1px solid #ddd;">
+      <div style="text-align:center;border-bottom:2px solid #1E8A52;padding-bottom:20px;margin-bottom:24px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#6B7670;margin-bottom:6px;">Official Document</div>
+        <div style="font-size:22px;font-weight:800;color:#132B1E;margin-bottom:4px;">${filename.replace(/_/g,' ').replace('.pdf','')}</div>
+        <div style="font-size:13px;color:#6B7670;">${caseObj.jurisdiction || 'United Kingdom'} · Issued ${date || 'Jan 2026'}</div>
+      </div>
+      <div style="display:grid;gap:14px;">
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #eee;"><span style="font-size:12px;color:#6B7670;">Legal Entity Name</span><span style="font-size:13px;font-weight:600;">${caseObj.client}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #eee;"><span style="font-size:12px;color:#6B7670;">Registration Number</span><span style="font-size:13px;font-weight:600;">${caseObj.id.replace('CASE-2026-','REG-2019-')}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #eee;"><span style="font-size:12px;color:#6B7670;">Jurisdiction</span><span style="font-size:13px;font-weight:600;">${caseObj.jurisdiction || 'United Kingdom'}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #eee;"><span style="font-size:12px;color:#6B7670;">Date of Formation</span><span style="font-size:13px;font-weight:600;">${date ? date.replace('Mar','Jan').replace('2026','2019') : '15 January 2019'}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #eee;"><span style="font-size:12px;color:#6B7670;">Entity Status</span><span style="font-size:13px;font-weight:600;color:#1E8A52;">Active / Good Standing</span></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;"><span style="font-size:12px;color:#6B7670;">Registered Activity</span><span style="font-size:13px;font-weight:600;">${caseObj.activity || 'Commercial activities'}</span></div>
+      </div>
+      <div style="margin-top:28px;padding-top:16px;border-top:2px solid #eee;display:flex;justify-content:space-between;align-items:flex-end;">
+        <div style="font-size:10px;color:#aaa;">Document ref: ${caseObj.id}-CERT-001 · Certified copy</div>
+        <div style="text-align:right;"><div style="width:80px;height:40px;border-bottom:1px solid #333;margin-bottom:4px;"></div><div style="font-size:10px;color:#6B7670;">Registrar Signature</div></div>
+      </div>
+    </div>`,
+
+  id: (filename, caseObj, date) => `
+    <div style="max-width:500px;margin:0 auto;">
+      <div style="background:linear-gradient(135deg,#1a3a5c 0%,#2a5a8c 100%);border-radius:14px;padding:24px 28px;color:#fff;position:relative;overflow:hidden;margin-bottom:16px;">
+        <div style="position:absolute;right:-20px;top:-20px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.05);"></div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;opacity:.7;margin-bottom:16px;">PASSPORT / IDENTITY DOCUMENT</div>
+        <div style="display:flex;gap:20px;align-items:flex-start;">
+          <div style="width:70px;height:90px;background:rgba(255,255,255,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:30px;flex-shrink:0;">👤</div>
+          <div style="flex:1;">
+            <div style="font-size:18px;font-weight:800;margin-bottom:4px;">[REDACTED]</div>
+            <div style="font-size:11px;opacity:.7;margin-bottom:12px;">Name redacted for privacy · Original on file</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+              <div><div style="font-size:9px;opacity:.6;text-transform:uppercase;letter-spacing:.1em;">Nationality</div><div style="font-size:12px;font-weight:600;">${caseObj.jurisdiction?.split(' ')[0] || 'British'}</div></div>
+              <div><div style="font-size:9px;opacity:.6;text-transform:uppercase;letter-spacing:.1em;">Document Type</div><div style="font-size:12px;font-weight:600;">Passport</div></div>
+              <div><div style="font-size:9px;opacity:.6;text-transform:uppercase;letter-spacing:.1em;">Issue Date</div><div style="font-size:12px;font-weight:600;">Mar 2021</div></div>
+              <div><div style="font-size:9px;opacity:.6;text-transform:uppercase;letter-spacing:.1em;">Expiry Date</div><div style="font-size:12px;font-weight:600;">Mar 2031</div></div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.2);font-family:monospace;font-size:11px;letter-spacing:.1em;opacity:.6;">P&lt;GBR[REDACTED]&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</div>
+      </div>
+      <div style="background:#fff;border-radius:10px;padding:16px 20px;border:1px solid #ddd;">
+        <div style="font-size:12px;font-weight:700;color:#1E8A52;margin-bottom:10px;">🤖 AI Verification Summary</div>
+        <div style="display:grid;gap:6px;">
+          <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:#6B7670;">Document Authenticity</span><span style="font-weight:600;color:#1E8A52;">✓ Verified (96% confidence)</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:#6B7670;">MRZ Check</span><span style="font-weight:600;color:#1E8A52;">✓ Passed</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:#6B7670;">Expiry Status</span><span style="font-weight:600;color:#1E8A52;">✓ Valid until 2031</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:#6B7670;">Name Match vs Case</span><span style="font-weight:600;color:#1E8A52;">✓ Matched</span></div>
+        </div>
+      </div>
+    </div>`,
+
+  financial: (filename, caseObj, date) => `
+    <div style="background:#fff;border-radius:10px;padding:32px 36px;max-width:680px;margin:0 auto;border:1px solid #ddd;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid #eee;">
+        <div><div style="font-size:18px;font-weight:800;color:#132B1E;margin-bottom:4px;">${caseObj.client}</div><div style="font-size:12px;color:#6B7670;">Financial Statement · FY ${date ? date.slice(-4) || '2025' : '2025'}</div></div>
+        <div style="text-align:right;font-size:11px;color:#6B7670;">Audited · EY LLP<br/>Report ref: FS-${caseObj.id.replace('CASE-2026-','')}</div>
+      </div>
+      <table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:20px;">
+        <thead><tr style="background:#F2F1ED;"><th style="padding:8px 12px;text-align:left;font-size:11px;color:#6B7670;font-weight:600;">Item</th><th style="padding:8px 12px;text-align:right;font-size:11px;color:#6B7670;font-weight:600;">FY 2025</th><th style="padding:8px 12px;text-align:right;font-size:11px;color:#6B7670;font-weight:600;">FY 2024</th></tr></thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #eee;"><td style="padding:9px 12px;color:#6B7670;">Total Revenue</td><td style="padding:9px 12px;text-align:right;font-weight:600;">$14.2M</td><td style="padding:9px 12px;text-align:right;">$11.8M</td></tr>
+          <tr style="border-bottom:1px solid #eee;"><td style="padding:9px 12px;color:#6B7670;">Operating Expenses</td><td style="padding:9px 12px;text-align:right;font-weight:600;">$9.8M</td><td style="padding:9px 12px;text-align:right;">$8.3M</td></tr>
+          <tr style="border-bottom:1px solid #eee;"><td style="padding:9px 12px;color:#6B7670;">EBITDA</td><td style="padding:9px 12px;text-align:right;font-weight:600;color:#1E8A52;">$4.4M</td><td style="padding:9px 12px;text-align:right;color:#1E8A52;">$3.5M</td></tr>
+          <tr style="border-bottom:1px solid #eee;"><td style="padding:9px 12px;color:#6B7670;">Total Assets</td><td style="padding:9px 12px;text-align:right;font-weight:600;">$38.1M</td><td style="padding:9px 12px;text-align:right;">$31.4M</td></tr>
+          <tr style="border-bottom:1px solid #eee;"><td style="padding:9px 12px;color:#6B7670;">Total Liabilities</td><td style="padding:9px 12px;text-align:right;font-weight:600;">$12.3M</td><td style="padding:9px 12px;text-align:right;">$10.9M</td></tr>
+          <tr><td style="padding:9px 12px;color:#6B7670;">Net Equity</td><td style="padding:9px 12px;text-align:right;font-weight:700;color:#132B1E;">$25.8M</td><td style="padding:9px 12px;text-align:right;">$20.5M</td></tr>
+        </tbody>
+      </table>
+      <div style="background:#F0FBF4;border-radius:8px;padding:12px 16px;font-size:12px;color:#1E8A52;">
+        🤖 AI extracted: Revenue $14.2M · EBITDA $4.4M · Net equity $25.8M · Consistent with declared expected activity profile.
+      </div>
+    </div>`,
+
+  ownership: (filename, caseObj, date) => `
+    <div style="background:#fff;border-radius:10px;padding:28px 32px;max-width:680px;margin:0 auto;border:1px solid #ddd;">
+      <div style="margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid #eee;">
+        <div style="font-size:16px;font-weight:800;color:#132B1E;margin-bottom:2px;">${filename.replace(/_/g,' ').replace('.pdf','')}</div>
+        <div style="font-size:12px;color:#6B7670;">${caseObj.client} · ${date || 'Mar 2026'}</div>
+      </div>
+      <div style="font-size:12px;font-weight:600;color:#6B7670;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Beneficial Ownership Declaration</div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+        ${(caseObj.ubos||[{name:'[Name on file]',stake:'51%',nationality:'UK',idVerified:'Verified'}]).slice(0,3).map((u,i)=>`
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:#F7F6F2;border-radius:8px;border-left:3px solid ${i===0?'#1E8A52':'#6B7670'};">
+          <div style="width:36px;height:36px;border-radius:50%;background:${i===0?'#1E8A52':'#4A5550'};display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0;">${(u.name||'?').charAt(0)}</div>
+          <div style="flex:1;"><div style="font-size:13px;font-weight:700;">${u.name||'—'}</div><div style="font-size:11px;color:#6B7670;">${u.nationality||'—'} · ${u.title||'Beneficial Owner'}</div></div>
+          <div style="text-align:right;"><div style="font-size:16px;font-weight:800;color:#132B1E;">${u.stake||'—'}</div><div style="font-size:10px;color:#6B7670;">ownership</div></div>
+        </div>`).join('')}
+      </div>
+      <div style="font-size:11px;color:#6B7670;line-height:1.6;padding:12px 14px;background:#FFFDF0;border-radius:8px;border:1px solid #F0D68A;">
+        I, the undersigned, being a duly authorised representative of ${caseObj.client}, hereby declare that the above information is true, accurate and complete to the best of my knowledge, and I undertake to notify [Institution] immediately upon any change in beneficial ownership.
+      </div>
+      <div style="margin-top:20px;display:flex;justify-content:flex-end;gap:32px;">
+        <div style="text-align:center;"><div style="width:120px;height:40px;border-bottom:1px solid #333;margin-bottom:4px;"></div><div style="font-size:10px;color:#6B7670;">Authorised Signatory</div></div>
+        <div style="text-align:center;"><div style="width:80px;height:40px;border-bottom:1px solid #333;margin-bottom:4px;"></div><div style="font-size:10px;color:#6B7670;">Date</div></div>
+      </div>
+    </div>`,
+
+  corporate: (filename, caseObj, date) => `
+    <div style="background:#fff;border-radius:10px;padding:32px 36px;max-width:680px;margin:0 auto;border:1px solid #ddd;">
+      <div style="text-align:center;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #132B1E;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B7670;margin-bottom:6px;">Corporate Registry</div>
+        <div style="font-size:20px;font-weight:800;color:#132B1E;">${filename.replace(/_/g,' ').replace('.pdf','')}</div>
+      </div>
+      <div style="display:grid;gap:0;">
+        ${[['Entity Name', caseObj.client],['Registration No.',caseObj.id.replace('CASE-2026-','REG-2018-')],['Entity Type',caseObj.entityType||'Corporation'],['Jurisdiction',caseObj.jurisdiction||'United Kingdom'],['Date of Incorporation','12 April 2018'],['Registered Office','[Registered address on file]'],['Status','Active'],['Principal Activity',caseObj.activity||'Commercial activities'],['Directors','See attached director list'],['Share Capital','[On file]']].map(([k,v],i)=>`
+        <div style="display:flex;padding:10px 0;border-bottom:1px solid #eee;">
+          <span style="font-size:12px;color:#6B7670;width:180px;flex-shrink:0;">${k}</span>
+          <span style="font-size:13px;font-weight:600;color:${v==='Active'?'#1E8A52':'#132B1E'};">${v}</span>
+        </div>`).join('')}
+      </div>
+      <div style="margin-top:20px;background:#F0FBF4;border-radius:8px;padding:12px 16px;font-size:12px;color:#1E8A52;">
+        🤖 AI extracted: Entity name ✓ · Registration number ✓ · Jurisdiction ✓ · Incorporation date ✓ · Status Active ✓
+      </div>
+    </div>`,
+
+  screening: (filename, caseObj, date) => `
+    <div style="background:#fff;border-radius:10px;padding:28px 32px;max-width:680px;margin:0 auto;border:1px solid #ddd;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid #eee;">
+        <div><div style="font-size:16px;font-weight:800;color:#132B1E;">${filename.replace(/_/g,' ').replace('.pdf','')}</div><div style="font-size:12px;color:#6B7670;">${caseObj.client} · ${date||'Mar 2026'}</div></div>
+        <span class="badge green" style="flex-shrink:0;">All Clear</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+        ${[['OFAC SDN List','No matches returned','green'],['EU Consolidated List','No matches returned','green'],['UN Sanctions List','No matches returned','green'],['HM Treasury List','No matches returned','green'],['PEP Database','No direct PEP match','green'],['Adverse Media','No material adverse findings','green']].map(([list,result,cls])=>`
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#F7F6F2;border-radius:8px;">
+          <span style="font-size:13px;font-weight:600;">${list}</span>
+          <span style="font-size:12px;color:#1E8A52;font-weight:600;">✓ ${result}</span>
+        </div>`).join('')}
+      </div>
+      <div style="background:#F2F1ED;border-radius:8px;padding:12px 16px;font-size:12px;color:#6B7670;">
+        Screening run: ${date||'Mar 2026'} · Provider: Orchestrate Screening Engine v3.1 · Entity and all named principals screened
+      </div>
+    </div>`,
+
+  pdf: (filename, caseObj, date) => `
+    <div style="background:#fff;border-radius:10px;padding:32px 36px;max-width:680px;margin:0 auto;border:1px solid #ddd;">
+      <div style="margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid #eee;">
+        <div style="font-size:16px;font-weight:800;color:#132B1E;margin-bottom:4px;">${filename.replace(/_/g,' ').replace('.pdf','')}</div>
+        <div style="font-size:12px;color:#6B7670;">${caseObj.client} · ${date||'Mar 2026'}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;line-height:1.7;color:#3A3E3C;">
+        <p>This document forms part of the Know Your Customer (KYC) case file for <strong>${caseObj.client}</strong>. The information contained herein has been collected in accordance with the institution's AML/KYC policy and applicable regulatory requirements.</p>
+        <p>All data has been verified against primary source documentation. AI-assisted parsing was used to extract key fields, which have been reviewed and confirmed by the assigned analyst.</p>
+        <p style="color:#6B7670;font-size:11px;margin-top:16px;padding-top:12px;border-top:1px solid #eee;">Case: ${caseObj.id} · Document class: Supporting · Received: ${date||'Mar 2026'} · Status: On file</p>
+      </div>
+    </div>`
+};
+
+function openDocViewer(idx, filename, description, statusLabel, badgeCls, type, icon, bg, date, fileExt, fileSizeKb, caseObj) {
+  const modal = document.getElementById('docViewerModal');
+  if (!modal) return;
+  const c = caseObj || window._currentCase;
+
+  document.getElementById('dvTitle').textContent = filename.replace(/_/g,' ').replace('.pdf','');
+  document.getElementById('dvMeta').textContent = `${fileExt} · ${fileSizeKb} KB · ${description}`;
+  const dvIcon = document.getElementById('dvIcon');
+  if (dvIcon) { dvIcon.textContent = icon; dvIcon.style.background = bg; }
+  const dvBadge = document.getElementById('dvStatusBadge');
+  if (dvBadge) { dvBadge.className = `badge ${badgeCls}`; dvBadge.textContent = statusLabel; }
+
+  const dvAiNote = document.getElementById('dvAiNote');
+  if (dvAiNote) {
+    if (statusLabel === 'Verified') dvAiNote.innerHTML = '🤖 AI-parsed · Key fields extracted and verified against case data';
+    else if (statusLabel === 'Outstanding') dvAiNote.innerHTML = '⚠ Document requested — awaiting receipt from client';
+    else dvAiNote.innerHTML = '🤖 AI-parsed · Analyst review recommended';
+  }
+
+  const body = document.getElementById('dvBody');
+  if (body) {
+    const template = mockDocTemplates[type] || mockDocTemplates.pdf;
+    body.innerHTML = template(filename, c, date);
+  }
+
+  modal.style.display = 'flex';
+  window._currentDocIdx = idx;
+}
+
+function closeDocViewer() {
+  const modal = document.getElementById('docViewerModal');
+  if (modal) modal.style.display = 'none';
+}
+
+function markDocVerified() {
+  const c = window._currentCase;
+  const idx = window._currentDocIdx;
+  if (!c || idx === undefined || !c.documents[idx]) return;
+  c.documents[idx][2] = 'Verified'; c.documents[idx][3] = 'green';
+  const dvBadge = document.getElementById('dvStatusBadge');
+  if (dvBadge) { dvBadge.className = 'badge green'; dvBadge.textContent = 'Verified'; }
+  const ts = new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})+' UTC';
+  if (c.audit) c.audit.unshift([ts,'Ana M. (User Action)',`Document verified: ${c.documents[idx][0]}`]);
+  renderCase(c);
+  closeDocViewer();
+}
+
+function requestDocuments() {
+  const c = window._currentCase;
+  if (!c) return;
+  alert(`📬 Document request sent to client contact on file for ${c.client}.\n\nThis action has been logged to the case activity log.`);
+}
+
+document.getElementById('docViewerModal')?.addEventListener('click', e => {
+  if (e.target === document.getElementById('docViewerModal')) closeDocViewer();
+});
+
+window.openDocViewer = openDocViewer;
+window.closeDocViewer = closeDocViewer;
+window.markDocVerified = markDocVerified;
+window.requestDocuments = requestDocuments;
 
 // Nav
 document.querySelectorAll(".nav-item").forEach((btn) => {
