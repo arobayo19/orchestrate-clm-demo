@@ -2443,7 +2443,21 @@ h3{
 
       <section class="view" id="workspace-view">
 
-        <!-- Case header bar -->
+        <!-- Empty state — shown until a case is opened -->
+        <div id="workspaceEmptyState" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:16px;text-align:center;">
+          <div style="width:64px;height:64px;border-radius:16px;background:#F0FBF4;border:2px solid #C8EDDA;display:flex;align-items:center;justify-content:center;font-size:28px;">📋</div>
+          <div>
+            <div style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:6px;">No case selected</div>
+            <div style="font-size:13px;color:var(--muted);max-width:340px;line-height:1.6;">Open a case from your queue, the dashboard, or the onboarding queue to begin reviewing.</div>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:8px;">
+            <button onclick="setActiveView('my-queue')" class="open-link" style="padding:9px 18px;">Go to My Queue →</button>
+            <button onclick="setActiveView('dashboard')" class="ghost-btn" style="padding:9px 18px;">Dashboard</button>
+          </div>
+        </div>
+
+        <!-- Case content — hidden until case loaded -->
+        <div id="workspaceCaseContent" style="display:none;">
         <div class="ws-case-header">
           <div class="ws-case-header-left">
             <div class="ws-case-id-row">
@@ -3028,9 +3042,9 @@ h3{
           </div>
         </div>
 
-      </section>
+        </div><!-- /workspaceCaseContent -->
 
-      <section class="view" id="escalations-view">
+      </section>
 
         <!-- Escalations sub-tabs -->
         <div style="display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:18px;overflow-x:auto;" id="escalSubTabs">
@@ -4910,6 +4924,12 @@ function renderCase(caseObj) {
     }
   }
 
+  // Show case content, hide empty state
+  const emptyState = document.getElementById('workspaceEmptyState');
+  const caseContent = document.getElementById('workspaceCaseContent');
+  if (emptyState) emptyState.style.display = 'none';
+  if (caseContent) caseContent.style.display = 'block';
+
   // Re-init edit panels for this case
   window._currentCase = caseObj;
   renderOutreachTab(caseObj);
@@ -4924,20 +4944,21 @@ function renderCase(caseObj) {
 // ══════════════════════════════════════════════════════
 
 function renderOutreachTab(caseObj) {
+  const $ = (id) => document.getElementById(id);
   const o = caseObj.outreach || {};
-  const statusBar   = get('outreachStatusBar');
-  const statusTitle = get('outreachStatusTitle');
-  const statusDesc  = get('outreachStatusDesc');
-  const statusBadge = get('outreachStatusBadge');
-  const sentDate    = get('outreachSentDate');
-  const dueDate     = get('outreachDueDate');
-  const thread      = get('outreachThread');
-  const threadCount = get('outreachThreadCount');
-  const responseBadge = get('outreachResponseBadge');
-  const responseArea  = get('outreachResponseArea');
-  const recipient     = get('outreachRecipient');
-  const subject       = get('outreachSubject');
-  const draftBody     = get('outreachDraftBody');
+  const statusBar   = $('outreachStatusBar');
+  const statusTitle = $('outreachStatusTitle');
+  const statusDesc  = $('outreachStatusDesc');
+  const statusBadge = $('outreachStatusBadge');
+  const sentDate    = $('outreachSentDate');
+  const dueDate     = $('outreachDueDate');
+  const thread      = $('outreachThread');
+  const threadCount = $('outreachThreadCount');
+  const responseBadge = $('outreachResponseBadge');
+  const responseArea  = $('outreachResponseArea');
+  const recipient     = $('outreachRecipient');
+  const subject       = $('outreachSubject');
+  const draftBody     = $('outreachDraftBody');
 
   // Generate AI draft from outstanding checklist items
   const outstanding = (caseObj.riskCddChecklist || []).filter(([,,,c]) => c === 'red' || c === 'gold');
@@ -5019,8 +5040,8 @@ function renderOutreachTab(caseObj) {
 }
 
 function renderExtraction(fields) {
-  const el = get('outreachExtractionResults');
-  const badge = get('outreachExtractionBadge');
+  const el = document.getElementById('outreachExtractionResults');
+  const badge = document.getElementById('outreachExtractionBadge');
   if (!el || !fields.length) return;
   if (badge) badge.style.display = '';
   el.innerHTML = `
@@ -5058,7 +5079,7 @@ function sendOutreach() {
   c.pipeline = 'Awaiting Client Response';
   c.pipelineClass = 'gold';
   renderOutreachTab(c);
-  if (get('casePipeline')) { get('casePipeline').className = 'badge gold'; get('casePipeline').textContent = 'Awaiting Client Response'; }
+  const cp1 = document.getElementById('casePipeline'); if (cp1) { cp1.className = 'badge gold'; cp1.textContent = 'Awaiting Client Response'; }
   // log to activity
   if (c.activityLog) c.activityLog.unshift([new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) + ' UTC', 'Client Outreach Sent', `Email sent: "${subj}"`]);
   alert('✓ Email sent to client. Case status updated to "Awaiting Client Response".');
@@ -5076,7 +5097,7 @@ function regenerateOutreachDraft() {
 
 function processClientResponse() {
   const c = window._currentCase;
-  const input = get('simulateResponseInput')?.value?.trim();
+  const input = document.getElementById('simulateResponseInput')?.value?.trim();
   if (!c || !input) { alert('Please enter a simulated client response first.'); return; }
 
   // Simulate AI extraction based on response content
@@ -5104,9 +5125,9 @@ function processClientResponse() {
   });
   c.pipeline = 'Response Received';
   c.pipelineClass = 'green';
-  if (get('casePipeline')) { get('casePipeline').className = 'badge green'; get('casePipeline').textContent = 'Response Received'; }
+  const cp2 = document.getElementById('casePipeline'); if (cp2) { cp2.className = 'badge green'; cp2.textContent = 'Response Received'; }
   renderOutreachTab(c);
-  get('simulateResponseInput').value = '';
+  const sri = document.getElementById('simulateResponseInput'); if (sri) sri.value = '';
 }
 
 // ══════════════════════════════════════════════════════
@@ -5189,6 +5210,9 @@ function openCase(caseIdValue) {
   renderCase(found);
   setActiveView("workspace");
 }
+window.openCase = openCase;
+window.setActiveView = setActiveView;
+window.switchTab = switchTab;
 
 // Nav
 document.querySelectorAll(".nav-item").forEach((btn) => {
