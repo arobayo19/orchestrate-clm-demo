@@ -2519,6 +2519,7 @@ h3{
           <button class="tab" data-tab="ownership">Ownership</button>
           <button class="tab" data-tab="screening">Screening</button>
           <button class="tab" data-tab="risk">Risk Assessment</button>
+          <button class="tab" data-tab="checklist">CDD Checklist</button>
           <button class="tab" data-tab="activity">Activity Log</button>
           <button class="tab" data-tab="audit">Audit Trail</button>
           <button class="tab" data-tab="agents">AI Agents</button>
@@ -2735,55 +2736,7 @@ h3{
             </div>
           </div>
 
-          <!-- Row 2: CDD / Onboarding Review Checklist (shown for onboarding) -->
-          <div id="riskOnboardingSection" style="display:none;margin-bottom:14px;">
-            <div class="panel">
-              <div class="panel-head panel-head-spread">
-                <h2>CDD / EDD Review — Onboarding Checklist</h2>
-                <span class="badge blue">New Account</span>
-              </div>
-              <table class="mini-table">
-                <thead>
-                  <tr><th>Review Item</th><th>Requirement</th><th>Finding</th><th>Status</th></tr>
-                </thead>
-                <tbody id="riskCddBody"></tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Row 2b: Periodic Review — Expected vs Actual (shown for periodic) -->
-          <div id="riskPeriodicSection" style="display:none;margin-bottom:14px;">
-            <div class="panel">
-              <div class="panel-head panel-head-spread">
-                <h2>Periodic Review — Expected vs Actual (EvA)</h2>
-                <span class="badge gray">Periodic Refresh</span>
-              </div>
-              <table class="mini-table">
-                <thead>
-                  <tr><th>Review Area</th><th>Expected Profile</th><th>Actual / Observed</th><th>Variance</th><th>Action Required</th></tr>
-                </thead>
-                <tbody id="riskPeriodicBody"></tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Row 2c: Trigger Review — Change Event Analysis (shown for trigger) -->
-          <div id="riskTriggerSection" style="display:none;margin-bottom:14px;">
-            <div class="panel">
-              <div class="panel-head panel-head-spread">
-                <h2>Trigger Review — Change Event Analysis</h2>
-                <span class="badge red">Trigger Event</span>
-              </div>
-              <table class="mini-table">
-                <thead>
-                  <tr><th>Trigger Type</th><th>Details</th><th>CDD Impact</th><th>Action Required</th><th>Status</th></tr>
-                </thead>
-                <tbody id="riskTriggerBody"></tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Row 3: AI-generated EvA Summary (all types) -->
+          <!-- AI-generated Summary -->
           <div class="panel">
             <div class="panel-head panel-head-spread">
               <h2>AI Agent — Review Summary</h2>
@@ -2803,6 +2756,97 @@ h3{
             <div style="margin-top:10px;display:flex;gap:8px;justify-content:flex-end;">
               <button class="open-link" id="riskSummaryEditBtn" style="background:none;border:1px solid var(--border);color:var(--text);">Edit Draft</button>
               <button class="open-link" id="riskSummaryConfirmBtn">Confirm &amp; Attach to Case</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ── CDD CHECKLIST TAB ── -->
+        <div class="tab-content" id="tab-checklist">
+
+          <!-- Verification Progress Summary -->
+          <div class="panel" style="margin-bottom:14px;">
+            <div class="panel-head panel-head-spread">
+              <h2>Verification Progress</h2>
+              <span class="badge green" style="display:flex;align-items:center;gap:5px;">
+                <span style="width:7px;height:7px;border-radius:50%;background:#fff;display:inline-block;"></span>
+                AI Agent Active
+              </span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:4px;" id="checklistProgressGrid">
+              <!-- populated by renderCase -->
+            </div>
+          </div>
+
+          <!-- CDD Onboarding Checklist -->
+          <div id="checklistOnboardingSection" style="display:none;margin-bottom:14px;">
+            <div class="panel">
+              <div class="panel-head panel-head-spread">
+                <h2>CDD / EDD Review — Onboarding Checklist</h2>
+                <span class="badge blue" id="checklistTypeBadge">New Account</span>
+              </div>
+              <table class="mini-table">
+                <thead>
+                  <tr><th>Review Item</th><th>Requirement</th><th>Finding</th><th>Verified By</th><th>Status</th></tr>
+                </thead>
+                <tbody id="riskCddBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Periodic EvA -->
+          <div id="checklistPeriodicSection" style="display:none;margin-bottom:14px;">
+            <div class="panel">
+              <div class="panel-head panel-head-spread">
+                <h2>Periodic Review — Expected vs Actual</h2>
+                <span class="badge gray">Periodic Refresh</span>
+              </div>
+              <table class="mini-table">
+                <thead>
+                  <tr><th>Review Area</th><th>Expected Profile</th><th>Actual / Observed</th><th>Variance</th><th>Action Required</th></tr>
+                </thead>
+                <tbody id="riskPeriodicBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Trigger Event Analysis -->
+          <div id="checklistTriggerSection" style="display:none;margin-bottom:14px;">
+            <div class="panel">
+              <div class="panel-head panel-head-spread">
+                <h2>Trigger Review — Change Event Analysis</h2>
+                <span class="badge red">Trigger Event</span>
+              </div>
+              <table class="mini-table">
+                <thead>
+                  <tr><th>Trigger Type</th><th>Details</th><th>CDD Impact</th><th>Action Required</th><th>Status</th></tr>
+                </thead>
+                <tbody id="riskTriggerBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- EDD Checklist (shown for high risk / EDD cases) -->
+          <div id="checklistEddSection" style="display:none;margin-bottom:14px;">
+            <div class="panel">
+              <div class="panel-head panel-head-spread">
+                <h2>EDD Checklist</h2>
+                <div style="display:flex;gap:8px;align-items:center;">
+                  <span class="badge red">High Risk / EDD</span>
+                  <span class="badge green" style="display:flex;align-items:center;gap:4px;">
+                    <span style="width:6px;height:6px;border-radius:50%;background:#fff;display:inline-block;"></span>AI Active
+                  </span>
+                </div>
+              </div>
+              <p style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.5;">
+                Enhanced Due Diligence requirements triggered by high risk score, offshore jurisdiction, complex ownership, or unresolved screening findings. All items must be completed before the case can be approved.
+              </p>
+              <table class="mini-table">
+                <thead>
+                  <tr><th>EDD Item</th><th>Requirement</th><th>Finding</th><th>Verified By</th><th>Status</th></tr>
+                </thead>
+                <tbody id="eddChecklistBody"></tbody>
+              </table>
             </div>
           </div>
 
@@ -3141,6 +3185,16 @@ const cases = [
       ["EDD Trigger Assessment", "Determine EDD requirement", "EDD likely required — offshore jurisdiction, complex structure, pending PEP review", "red"],
     ],
     riskAiSummary: "North Harbor Ventures LP is an offshore Cayman Islands limited partnership in early-stage onboarding. The entity presents a high CDD risk profile driven by its offshore jurisdiction, complex multi-layer fund structure, and incomplete documentation package. Beneficial ownership through the GP has not yet been established — UBO declarations and director identification remain outstanding. Screening has not commenced. EDD is likely to be required pending receipt of full documentation and completion of GP look-through analysis. The case is currently paused awaiting client response. No advancement should occur until the outstanding document set is received and reviewed.",
+    eddChecklist: [
+      ["Source of Wealth", "Document and verify the source of wealth of each UBO", "UBO declarations not yet received — source of wealth pending", "red"],
+      ["Source of Funds — EDD", "Trace capital contributions to underlying source", "LP capital schedule outstanding — funds origin unverified", "red"],
+      ["GP Look-Through Analysis", "Identify all natural persons behind the General Partner", "North Harbor GP Ltd identified — director ID and UBO list pending", "red"],
+      ["Offshore Jurisdiction Review", "Assess risk of Cayman Islands incorporation and regulatory oversight", "Cayman Islands — registered with CIMA. Regulatory standing pending confirmation", "gold"],
+      ["Complex Structure Assessment", "Document rationale for multi-layer fund structure", "LP with corporate GP — structure rationale partially noted in LP agreement", "gold"],
+      ["Independent Reference Check", "Obtain independent professional reference for GP or key principals", "Not started — pending receipt of document package", "gray"],
+      ["Enhanced Screening", "Full screening of GP entity, directors, and all identified UBOs", "Not started — awaiting identity documents", "gray"],
+      ["Senior Management Approval", "EDD cases require sign-off from MLCO or BSA Officer", "Pending — EDD not yet formally triggered", "gray"],
+    ],
     activityLog: [
       ["09:44 UTC", "Application received", "Case created from client onboarding submission."],
       ["09:47 UTC", "Completeness Review Agent", "Detected missing director ID and stale address evidence."],
@@ -3231,6 +3285,16 @@ const cases = [
       ["EDD Trigger Assessment", "EDD required — adverse media + screening match", "EDD open and active. Senior approval likely required upon case resolution", "red"],
     ],
     riskAiSummary: "Solstice Exchange Ltd is a Singapore-based digital asset infrastructure provider currently under EDD review following adverse media and an unresolved screening match. Core entity identification and document verification are substantially complete. However, a potential sanctions match on an associated entity with a confidence score of 0.61 requires analyst disposition before the case can advance. Additionally, a historical regulatory inquiry has been identified in adverse media — assessed at moderate relevance pending analyst review. The ownership structure includes an intermediary holding company with a UBO in a higher-risk jurisdiction. Senior approval will likely be required upon clearance. Recommend analyst completes screening disposition and adverse media assessment before progressing.",
+    eddChecklist: [
+      ["Source of Wealth — UBOs", "Verify source of wealth for all UBOs in higher-risk jurisdictions", "UBO in higher-risk jurisdiction — source of wealth statement collected but not yet verified against third-party evidence", "gold"],
+      ["Source of Funds — EDD", "Trace operating revenue to underlying financial statements", "Operating revenue reviewed against audited financials — consistent. Cross-border flows annotated", "green"],
+      ["Sanctions Disposition", "Formally clear or escalate the potential sanctions match (confidence 0.61)", "Match pending analyst disposition — no formal clearance documented yet", "red"],
+      ["Adverse Media Disposition", "Formally assess and document the historical regulatory inquiry", "Regulatory inquiry identified — moderate relevance. Analyst disposition in progress", "red"],
+      ["Ownership Structure EDD", "Document and assess intermediary holding company in ownership chain", "Intermediary entity annotated in share register — full look-through pending", "gold"],
+      ["Correspondent / Counterparty Risk", "Review key institutional counterparties for sanctions exposure", "Not started — pending sanctions clearance on existing match", "gray"],
+      ["Senior Management Approval", "BSA Officer or MLCO sign-off required before case closure", "Escalated to BSA Officer — pending formal review", "gold"],
+      ["EDD Narrative", "Complete EDD file with rationale for approval or decline", "Draft generated by AI — pending analyst confirmation", "gold"],
+    ],
     activityLog: [
       ["08:11 UTC", "Screening Agent", "Returned uncertain match on associated entity."],
       ["08:16 UTC", "Adverse Media Agent", "Compiled regulatory inquiry references and categorized severity."],
@@ -3489,6 +3553,16 @@ const cases = [
       ["Entity Re-verification", "Sanctions alert triggers re-verification of entity incorporation and ownership details", "Certificate of Incorporation on file — current. Ownership details require re-confirmation given screening uncertainty", "Request current ownership attestation and confirm no change in UBOs", "Open"],
     ],
     riskAiSummary: "Eastern Trading Co has triggered a screening alert with a potential OFAC SDN match rated at 0.78 confidence. The match was generated on the basis of name similarity, country of incorporation (UAE), and overlapping business type (international trading). A date of birth discrepancy between the SDN entry and client records has been noted, which may indicate a false positive — however, this must be formally assessed and documented by an analyst before any disposition can be made. The account is currently under enhanced monitoring. No suspicious transaction activity has been identified in recent account history. Recommend immediate analyst review of the SDN match and formal disposition documentation. If confirmed as false positive, case can be cleared; if confirmed as true match, case must be escalated to BSA Officer for mandatory reporting review.",
+    eddChecklist: [
+      ["SDN Match Disposition", "Formally assess and document the OFAC SDN match (confidence 0.78)", "Date of birth discrepancy noted — may indicate false positive. Formal analyst disposition required", "red"],
+      ["Identity Re-verification", "Re-verify UBO and entity identity against current documents", "Certificate of Incorporation on file and current. UBO re-confirmation requested", "gold"],
+      ["Source of Funds — EDD", "Verify origin of funds given sanctions exposure", "Cross-border trading revenues — not yet re-verified under EDD standard", "red"],
+      ["Counterparty Review", "Screen key counterparties associated with flagged transactions", "Known counterparty reviewed — no flags. Broader counterparty list pending", "gold"],
+      ["Enhanced Transaction Review", "Review 12-month transaction history for suspicious patterns", "No suspicious patterns identified. Enhanced monitoring active", "green"],
+      ["Geographic Risk Assessment", "Assess risk from UAE incorporation and cross-border trade flows", "UAE jurisdiction — moderate-high risk. Trade flows to multiple jurisdictions documented", "gold"],
+      ["SAR Assessment", "Determine if a Suspicious Activity Report is required", "Pending final SDN disposition — SAR assessment on hold", "red"],
+      ["BSA Officer Escalation", "Escalate to BSA Officer if SDN match confirmed", "Pending analyst disposition — escalation path identified", "gold"],
+    ],
     checks: [["Screening alert", "Potential sanctions match", "red"]],
     documents: [],
     ownershipNotes: "Screening in progress.",
@@ -4055,9 +4129,9 @@ function renderCase(caseObj) {
   }
 
   // Show/hide correct section based on queue type
-  const onbSection  = get("riskOnboardingSection");
-  const perSection  = get("riskPeriodicSection");
-  const trigSection = get("riskTriggerSection");
+  const onbSection  = get("checklistOnboardingSection");
+  const perSection  = get("checklistPeriodicSection");
+  const trigSection = get("checklistTriggerSection");
   if (onbSection)  onbSection.style.display  = 'none';
   if (perSection)  perSection.style.display  = 'none';
   if (trigSection) trigSection.style.display = 'none';
@@ -4069,6 +4143,48 @@ function renderCase(caseObj) {
     const cddBody = get("riskCddBody");
     if (cddBody) {
       const statusMap = { green: 'Complete', gold: 'In Progress / Partial', red: 'Outstanding', gray: 'Not Started', blue: 'Pending' };
+      const verifiedByMap = { green: '🤖 AI Verified', gold: '🤖 AI — Partial', red: '⚠ Pending Human', gray: '— Not Started', blue: '🔄 In Progress' };
+
+      // Build progress summary grid
+      const grid = get("checklistProgressGrid");
+      if (grid) {
+        const total  = caseObj.riskCddChecklist.length;
+        const done   = caseObj.riskCddChecklist.filter(([,,, c]) => c === 'green').length;
+        const partial= caseObj.riskCddChecklist.filter(([,,, c]) => c === 'gold').length;
+        const outstanding = caseObj.riskCddChecklist.filter(([,,, c]) => c === 'red').length;
+        const pct = Math.round((done / total) * 100);
+        const eddCount = caseObj.eddChecklist ? caseObj.eddChecklist.length : 0;
+        const eddDone  = caseObj.eddChecklist ? caseObj.eddChecklist.filter(([,,, c]) => c === 'green').length : 0;
+        grid.innerHTML = `
+          <div style="background:#F0FBF4;border-radius:10px;padding:14px 16px;border:1px solid #C8EDDA;">
+            <div style="font-size:24px;font-weight:800;color:var(--green)">${pct}%</div>
+            <div style="font-size:12px;color:var(--green);font-weight:600;margin-top:2px">AI Verified</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px">${done} of ${total} CDD items</div>
+          </div>
+          <div style="background:#fff;border-radius:10px;padding:14px 16px;border:1px solid var(--border);">
+            <div style="font-size:24px;font-weight:800;color:#1A1E1C">${done}</div>
+            <div style="font-size:12px;color:var(--muted);font-weight:600;margin-top:2px">CDD Complete</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px">AI-verified items</div>
+          </div>
+          <div style="background:#FFFBF0;border-radius:10px;padding:14px 16px;border:1px solid #F0D080;">
+            <div style="font-size:24px;font-weight:800;color:#7A5200">${outstanding}</div>
+            <div style="font-size:12px;color:#7A5200;font-weight:600;margin-top:2px">Outstanding</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px">Human action needed</div>
+          </div>
+          ${eddCount > 0 ? `
+          <div style="background:#FFF5F5;border-radius:10px;padding:14px 16px;border:1px solid #F0C0C0;">
+            <div style="font-size:24px;font-weight:800;color:#8B0000">${eddDone}/${eddCount}</div>
+            <div style="font-size:12px;color:#8B0000;font-weight:600;margin-top:2px">EDD Items</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px">Enhanced due diligence</div>
+          </div>` : `
+          <div style="background:#fff;border-radius:10px;padding:14px 16px;border:1px solid var(--border);">
+            <div style="font-size:24px;font-weight:800;color:#1A1E1C">${partial}</div>
+            <div style="font-size:12px;color:var(--muted);font-weight:600;margin-top:2px">In Progress</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px">Partial findings</div>
+          </div>`}
+        `;
+      }
+
       cddBody.innerHTML = caseObj.riskCddChecklist.map(([item, req, finding, cls]) =>
         `<tr class="cdd-row" data-item="${item}" data-finding="${finding.replace(/"/g,"'")}" data-cls="${cls}"
           style="cursor:pointer;transition:background 0.15s;">
@@ -4080,6 +4196,9 @@ function renderCase(caseObj) {
           </td>
           <td style="color:var(--muted);font-size:12px">${req}</td>
           <td style="font-size:12px">${finding}</td>
+          <td style="font-size:12px;font-weight:500;color:${cls === 'green' ? 'var(--green)' : cls === 'gold' ? '#7A5200' : cls === 'red' ? '#8B0000' : 'var(--muted)'}">
+            ${verifiedByMap[cls] || cls}
+          </td>
           <td><span class="badge ${cls}">${statusMap[cls] || cls}</span></td>
         </tr>`
       ).join('');
@@ -4128,6 +4247,30 @@ function renderCase(caseObj) {
         </tr>`;
       }).join('');
     }
+  }
+
+  // EDD Checklist — shown for high risk or EDD-triggered cases
+  const eddSection = get("checklistEddSection");
+  const eddBody    = get("eddChecklistBody");
+  const isEdd = caseObj.eddChecklist && caseObj.eddChecklist.length > 0 &&
+    (caseObj.riskTier === 'High' || caseObj.eddTriggered === 'Yes' || caseObj.eddTriggered === 'Likely');
+
+  if (eddSection) eddSection.style.display = isEdd ? '' : 'none';
+
+  if (isEdd && eddBody) {
+    const statusMap    = { green: 'Complete', gold: 'In Progress', red: 'Outstanding', gray: 'Not Started' };
+    const verifiedByMap= { green: '🤖 AI Verified', gold: '🤖 AI — Partial', red: '⚠ Pending Human', gray: '— Not Started' };
+    eddBody.innerHTML = caseObj.eddChecklist.map(([item, req, finding, cls]) =>
+      `<tr style="transition:background 0.15s;" onmouseenter="this.style.background='#FFF5F0'" onmouseleave="this.style.background=''">
+        <td><strong>${item}</strong></td>
+        <td style="color:var(--muted);font-size:12px">${req}</td>
+        <td style="font-size:12px">${finding}</td>
+        <td style="font-size:12px;font-weight:500;color:${cls === 'green' ? 'var(--green)' : cls === 'gold' ? '#7A5200' : cls === 'red' ? '#8B0000' : 'var(--muted)'}">
+          ${verifiedByMap[cls] || cls}
+        </td>
+        <td><span class="badge ${cls}">${statusMap[cls] || cls}</span></td>
+      </tr>`
+    ).join('');
   }
 
   // AI Summary text box
