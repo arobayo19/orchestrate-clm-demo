@@ -4967,7 +4967,13 @@ function renderOutreachTab(caseObj) {
 
       // Show client tab indicator
       const outreachTab = document.querySelector('.tab[data-tab="outreach"]');
-      if (outreachTab) { outreachTab.style.position = 'relative'; outreachTab.innerHTML = 'Client Outreach <span style="background:#2BB567;color:#fff;font-size:9px;font-weight:700;border-radius:8px;padding:1px 5px;margin-left:4px;">New</span>'; }
+      if (outreachTab && !outreachTab.querySelector('.tab-new-badge')) {
+        const badge = document.createElement('span');
+        badge.className = 'tab-new-badge';
+        badge.style.cssText = 'background:#2BB567;color:#fff;font-size:9px;font-weight:700;border-radius:8px;padding:1px 5px;margin-left:4px;pointer-events:none;';
+        badge.textContent = 'New';
+        outreachTab.appendChild(badge);
+      }
     } else {
       if (statusTitle) statusTitle.textContent = '📬 Outreach Active — Awaiting Response';
       if (statusDesc) statusDesc.textContent = `Request sent to client. ${o.remindersSent || 0} reminder(s) sent.`;
@@ -5193,14 +5199,16 @@ document.querySelectorAll(".nav-item").forEach((btn) => {
   btn.addEventListener("click", () => setActiveView(btn.dataset.view));
 });
 
-// Workspace tabs
-document.querySelectorAll(".tab").forEach((tab) => {
-  tab.addEventListener("click", () => {
-    document.querySelectorAll(".tab").forEach((t) => t.classList.remove("active"));
-    document.querySelectorAll(".tab-content").forEach((c) => c.classList.remove("active"));
-    tab.classList.add("active");
-    document.getElementById(`tab-${tab.dataset.tab}`)?.classList.add("active");
-  });
+// Workspace tabs — event delegation so it survives DOM mutations
+document.addEventListener("click", (e) => {
+  const tab = e.target.closest(".tab[data-tab]");
+  if (!tab) return;
+  const targetTab = tab.dataset.tab;
+  if (!targetTab) return;
+  document.querySelectorAll(".tab").forEach((t) => t.classList.remove("active"));
+  document.querySelectorAll(".tab-content").forEach((c) => c.classList.remove("active"));
+  tab.classList.add("active");
+  document.getElementById(`tab-${targetTab}`)?.classList.add("active");
 });
 
 // Queue filters
