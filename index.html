@@ -6537,4 +6537,13 @@ renderQueue();
 
   initEditPanels();
 
-  /* ─── init ──�
+  /* ─── init ─────────────────────────────────────────── */
+  renderPriorityList();
+  renderQueue();
+  if (typeof renderTable === 'function' && typeof CLIENTS !== 'undefined') {
+    renderTable(CLIENTS);
+  }
+
+</script>
+</body>
+</html>
