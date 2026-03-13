@@ -2512,7 +2512,25 @@ h3{
           </div>
         </div>
 
-        <!-- Case tabs -->
+        <!-- Trigger Alert Banner (shown only for trigger cases) -->
+        <div id="triggerAlertBanner" style="display:none;margin:0 0 2px 0;background:#FFF8F0;border:1.5px solid #E8A838;border-radius:10px;padding:14px 18px;">
+          <div style="display:flex;align-items:flex-start;gap:12px;">
+            <div style="flex-shrink:0;width:32px;height:32px;background:#E8A838;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;">⚡</div>
+            <div style="flex:1;">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+                <span style="font-size:13px;font-weight:700;color:#7A4A00;text-transform:uppercase;letter-spacing:.05em;">Trigger Review</span>
+                <span id="triggerAlertType" style="font-size:11px;font-weight:600;background:#E8A838;color:#fff;padding:2px 8px;border-radius:20px;">—</span>
+                <span style="font-size:11px;color:#9AA49E;margin-left:auto;" id="triggerAlertDate"></span>
+              </div>
+              <p id="triggerAlertReason" style="font-size:13px;color:#5C3A00;line-height:1.6;margin:0 0 8px 0;">—</p>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span style="font-size:11px;font-weight:600;color:#7A4A00;">Focus area:</span>
+                <span id="triggerAlertFocus" style="font-size:12px;color:#5C3A00;">—</span>
+                <button onclick="document.querySelector('[data-tab=checklist]').click()" style="margin-left:auto;font-size:11px;font-weight:600;background:none;border:1.5px solid #E8A838;color:#7A4A00;border-radius:6px;padding:4px 12px;cursor:pointer;">View Checklist →</button>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="ws-tabs">
           <button class="tab active" data-tab="overview">Overview</button>
           <button class="tab" data-tab="documents">Documents</button>
@@ -4509,6 +4527,23 @@ function renderCase(caseObj) {
         ${connector}
       </div>`;
     }).join('');
+  }
+
+  // ── Trigger Alert Banner ──
+  const triggerBanner = get('triggerAlertBanner');
+  if (triggerBanner) {
+    if (caseObj.queueType === 'trigger' && caseObj.riskTriggerEvents && caseObj.riskTriggerEvents.length) {
+      const primaryTrigger = caseObj.riskTriggerEvents[0];
+      const [trigType, trigDetails, trigImpact, trigAction] = primaryTrigger;
+      triggerBanner.style.display = '';
+      const el = id => get(id);
+      if (el('triggerAlertType'))   el('triggerAlertType').textContent   = trigType;
+      if (el('triggerAlertDate'))   el('triggerAlertDate').textContent   = `Detected: ${caseObj.aging || 'Recently'} ago`;
+      if (el('triggerAlertReason')) el('triggerAlertReason').textContent = trigDetails;
+      if (el('triggerAlertFocus'))  el('triggerAlertFocus').textContent  = trigAction;
+    } else {
+      triggerBanner.style.display = 'none';
+    }
   }
 
   // Re-init edit panels for this case
