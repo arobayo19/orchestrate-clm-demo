@@ -4911,6 +4911,8 @@ function renderCase(caseObj) {
   }
 
   // Re-init edit panels for this case
+  window._currentCase = caseObj;
+  renderOutreachTab(caseObj);
   setTimeout(() => { if (typeof initEditPanels === 'function') initEditPanels(); }, 50);
 
   // Reset workspace tabs to overview
@@ -4945,7 +4947,7 @@ function renderOutreachTab(caseObj) {
 
   const aiDraft = `Dear ${caseObj.client},\n\nThank you for your onboarding submission. As part of our KYC/AML review process, we require the following additional information to proceed:\n\n${draftItems || '  • No outstanding items at this time.'}\n\nPlease respond to this email or log into the secure client portal to upload documents and provide the requested information. If you have any questions, please don't hesitate to contact your relationship manager.\n\nThis request has a response deadline of 5 business days. Failure to respond may result in a delay to your application.\n\nKind regards,\nCompliance Team — Orchestrate KYC`;
 
-  if (draftBody && !draftBody.value) draftBody.value = aiDraft;
+  if (draftBody) draftBody.value = aiDraft;
   if (recipient) recipient.textContent = o.email || `compliance-contact@${(caseObj.client||'client').toLowerCase().replace(/\s/g,'-')}.com`;
   if (subject) subject.value = o.subject || `Action Required — ${caseObj.client} — Case ${caseObj.id}`;
 
