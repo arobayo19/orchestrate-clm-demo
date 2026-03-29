@@ -993,7 +993,7 @@ button{cursor:pointer}
 
       <!-- Split: table top, profile bottom -->
       <div style="flex:1;overflow:hidden;display:flex;flex-direction:column">
-        <div style="overflow-y:auto;border-bottom:2px solid var(--border)" id="dir-table-wrap">
+        <div style="overflow-y:auto;border-bottom:2px solid var(--border)" id="dir-table-wrap" style="min-height:200px;max-height:40vh;overflow-y:auto">
           <table class="tbl" id="dir-tbl">
             <thead>
               <tr>
@@ -1016,7 +1016,7 @@ button{cursor:pointer}
           </table>
         </div>
         <!-- Profile panel -->
-        <div id="dir-profile" style="flex:1;overflow-y:auto;background:var(--bg)">
+        <div id="dir-profile" style="flex:1;overflow-y:auto;background:var(--bg);min-height:200px">
           <div style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:8px;color:var(--text-3)">
             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity=".2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
             <div style="font-size:13px;font-weight:600;color:var(--text-2)">No client selected</div>
@@ -2671,11 +2671,7 @@ function populateCvScreening(c){
             <span class="kv-l">Assessment</span><span class="kv-v">${art.assessment}</span>
           </div>
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-            <a href="${art.url}" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border:1px solid var(--border);border-radius:var(--r);font-size:11px;color:var(--accent);text-decoration:none;background:var(--surface);cursor:pointer" onclick="event.preventDefault();showToast('Source link: ${art.url}')">
-              <svg width="11" height="11" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2H2a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V8M9 1h4m0 0v4m0-4L6 8"/></svg>
-              View Source Article
-            </a>
-            <span style="font-size:10px;color:var(--text-3)">${art.url}</span>
+            <a href="${art.url}" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border:1px solid var(--border);border-radius:var(--r);font-size:11px;color:var(--accent);text-decoration:none;background:var(--surface);cursor:pointer"><svg width="11" height="11" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2H2a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V8M9 1h4m0 0v4m0-4L6 8"/></svg> View Source Article</a>
           </div>
           <div style="display:flex;gap:6px">
             <button class="btn btn-sm btn-primary" onclick="showToast('Adverse media cleared — disposition recorded. Logged to audit trail.')">Clear — Not Material</button>
@@ -2738,7 +2734,7 @@ function getDefaultAdverseMedia(c){
       results.push({
         type:'Regulatory Inquiry (Historical)',
         source:'Regulatory Database',
-        publication:`${c.jurisdiction==='UAE'?'Gulf Business':'Straits Times'} / Regulatory Gazette`,
+        publication:(c.jurisdiction==='UAE'?'Gulf Business':'Straits Times')+' / Regulatory Gazette',
         date:'Sep 12, 2021',
         url:`https://regulatorydb.${c.jurisdiction==='UAE'?'ae':'sg'}/notices/2021/example`,
         subject:c.client,
@@ -3210,7 +3206,22 @@ document.addEventListener('click',e=>{
 });
 
 /* ── Client Directory ── */
-function renderDirectory(){ filterDirectory(); }
+function renderDirectory(){
+  // Show loading state first
+  const body = document.getElementById('dir-body');
+  if(body) body.innerHTML = '<tr><td colspan="13" style="text-align:center;padding:20px;color:var(--text-3)">Loading clients...</td></tr>';
+  const ct = document.getElementById('dir-count');
+  if(ct) ct.textContent = CLIENTS.length + ' clients';
+  // Small delay to let DOM update, then render
+  setTimeout(function() {
+    try {
+      filterDirectory();
+    } catch(e) {
+      console.error('Directory render error:', e);
+      if(body) body.innerHTML = '<tr><td colspan="13" style="text-align:center;padding:20px;color:var(--red-text)">Error: ' + e.message + '</td></tr>';
+    }
+  }, 10);
+}
 
 function clearDirFilters(){
   ['dir-search','dir-f-risk','dir-f-status','dir-f-review','dir-f-jur','dir-f-cases'].forEach(id=>{
@@ -3674,8 +3685,10 @@ function showToast(msg){
 
 /* ── Init ── */
 renderNotifs();
-renderMyQueue();
-currentView='my-queue';
+setView('my-queue');
+
+// Pre-render directory data so it's ready when clicked
+try { renderDirTable(CLIENTS); } catch(e) { console.error('Dir pre-render:', e); }
 </script>
 </body>
 </html>
