@@ -453,7 +453,7 @@ button{cursor:pointer}
 
           <div id="cv-overview" class="case-tab-content active">
 
-            <!-- ① Next Best Action banner -->
+            <!-- ① Next Best Action -->
             <div id="cv-nba" style="background:#F0FDF4;border:1px solid #86EFAC;border-radius:var(--r2);padding:10px 14px;margin-bottom:12px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
               <div style="display:flex;align-items:flex-start;gap:10px">
                 <div style="width:28px;height:28px;border-radius:6px;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">
@@ -468,16 +468,19 @@ button{cursor:pointer}
               <div style="display:flex;gap:6px;flex-shrink:0" id="cv-nba-btns"></div>
             </div>
 
-            <!-- ② 3-col layout: left=entity+ownership snap, center=AI summary+outstanding, right=risk score -->
-            <div style="display:grid;grid-template-columns:1fr 1.4fr 0.8fr;gap:10px">
+            <!-- ② Case Health strip — one-line status per section -->
+            <div class="panel" style="margin-bottom:12px">
+              <div class="panel-hd"><span class="panel-title">Case Health</span><span style="font-size:11px;color:var(--text-3)">Click any section to navigate</span></div>
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0" id="cv-case-health"></div>
+            </div>
 
-              <!-- Left col -->
+            <!-- ③ Main 3-col layout -->
+            <div style="display:grid;grid-template-columns:1fr 1.4fr 0.8fr;gap:10px">
               <div style="display:flex;flex-direction:column;gap:10px">
                 <div class="panel">
                   <div class="panel-hd"><span class="panel-title">Entity Details</span><button class="btn btn-sm btn-ghost" onclick="switchCaseTab(null,'cv-business')">Edit</button></div>
                   <div class="panel-body"><div class="kv" id="cv-kv-entity"></div></div>
                 </div>
-                <!-- Mini ownership snapshot -->
                 <div class="panel">
                   <div class="panel-hd">
                     <span class="panel-title">Ownership Snapshot</span>
@@ -486,8 +489,6 @@ button{cursor:pointer}
                   <div class="panel-body" id="cv-ownership-snap"></div>
                 </div>
               </div>
-
-              <!-- Center col -->
               <div style="display:flex;flex-direction:column;gap:10px">
                 <div class="panel" style="flex:1">
                   <div class="panel-hd">
@@ -504,8 +505,6 @@ button{cursor:pointer}
                   <div class="panel-body" id="cv-outstanding"></div>
                 </div>
               </div>
-
-              <!-- Right col: risk score + drivers -->
               <div style="display:flex;flex-direction:column;gap:10px">
                 <div class="panel">
                   <div class="panel-hd"><span class="panel-title">Risk Score</span></div>
@@ -518,7 +517,6 @@ button{cursor:pointer}
                     <div style="font-size:11px;font-weight:600" id="cv-score-tier">—</div>
                   </div>
                 </div>
-                <!-- Risk drivers (expandable) -->
                 <div class="panel">
                   <div class="panel-hd" style="cursor:pointer" onclick="toggleRiskDrivers()">
                     <span class="panel-title">Risk Drivers</span>
@@ -528,15 +526,12 @@ button{cursor:pointer}
                     <div class="panel-body" style="padding:8px 10px" id="cv-risk-drivers"></div>
                   </div>
                 </div>
-                <!-- Decision readiness card -->
-                <div class="panel" id="cv-readiness-card">
+                <div class="panel">
                   <div class="panel-hd"><span class="panel-title">Decision Readiness</span></div>
                   <div class="panel-body" id="cv-readiness-detail"></div>
                 </div>
               </div>
-
             </div>
-          </div>
 
           <div id="cv-business" class="case-tab-content">
             <div class="two-col">
@@ -597,33 +592,62 @@ button{cursor:pointer}
           </div>
 
           <div id="cv-purpose" class="case-tab-content">
+            <!-- Top row: Account Purpose + Expected Activity -->
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
               <div class="panel"><div class="panel-hd"><span class="panel-title">Account Purpose</span><button class="btn btn-sm btn-ghost">Edit</button></div><div class="panel-body"><div class="kv" id="cv-kv-purpose"></div></div></div>
               <div class="panel">
                 <div class="panel-hd"><span class="panel-title">Expected Activity</span><button class="btn btn-sm btn-ghost">Edit</button></div>
-                <div class="panel-body"><div class="kv" id="cv-kv-activity"></div>
-                <!-- Activity risk flag -->
-                <div id="cv-activity-flag" style="margin-top:10px;display:none;padding:8px 10px;border-radius:var(--r);border-left:3px solid var(--amber);background:var(--amber-dim)">
-                  <div style="font-size:11px;font-weight:700;color:var(--amber-text);margin-bottom:2px">⚠ Activity Profile Flag</div>
-                  <div style="font-size:11px;color:var(--amber-text)" id="cv-activity-flag-text"></div>
+                <div class="panel-body">
+                  <div class="kv" id="cv-kv-activity"></div>
+                  <div id="cv-activity-flag" style="margin-top:10px;display:none;padding:8px 10px;border-radius:var(--r);border-left:3px solid var(--amber);background:var(--amber-dim)">
+                    <div style="font-size:11px;font-weight:700;color:var(--amber-text);margin-bottom:2px">⚠ Activity Profile Flag</div>
+                    <div style="font-size:11px;color:var(--amber-text)" id="cv-activity-flag-text"></div>
+                  </div>
                 </div>
-              </div></div>
+              </div>
               <div class="panel"><div class="panel-hd"><span class="panel-title">Source of Funds</span></div><div class="panel-body"><div class="kv" id="cv-kv-sof"></div></div></div>
               <div class="panel"><div class="panel-hd"><span class="panel-title">Geographic Activity</span></div><div class="panel-body"><div class="kv" id="cv-kv-geo"></div></div></div>
             </div>
+
+            <!-- EVA: Expected vs Actual -->
+            <div class="panel" style="margin-bottom:10px">
+              <div class="panel-hd">
+                <span class="panel-title">Expected vs. Actual Activity (EVA)</span>
+                <div style="display:flex;gap:6px;align-items:center">
+                  <span class="badge badge-gray" style="font-size:10px">Last 90 days</span>
+                  <span id="cv-eva-status" class="badge badge-green" style="font-size:10px">Within expectations</span>
+                </div>
+              </div>
+              <div class="panel-body" style="padding:0">
+                <table class="inner-tbl" id="cv-eva-table">
+                  <thead>
+                    <tr>
+                      <th>Activity Metric</th>
+                      <th>Expected (Stated)</th>
+                      <th>Actual (Observed)</th>
+                      <th>Variance</th>
+                      <th>Status</th>
+                      <th>Action Required</th>
+                    </tr>
+                  </thead>
+                  <tbody id="cv-eva-body"></tbody>
+                </table>
+              </div>
+            </div>
+
             <!-- Monitoring profile -->
             <div class="panel" style="border-left:3px solid var(--accent)">
               <div class="panel-hd" style="background:var(--green-dim)">
                 <span class="panel-title" style="color:var(--green-text)">Monitoring Profile</span>
-                <span class="badge badge-green" style="font-size:10px">Created from activity data</span>
+                <span class="badge badge-green" style="font-size:10px">Active — feeds transaction monitoring</span>
               </div>
               <div class="panel-body">
-                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px" id="cv-monitoring-profile">
-                  <div style="background:var(--surface-2);border-radius:var(--r);padding:8px 10px"><div style="font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Monthly Volume Threshold</div><div style="font-size:13px;font-weight:600" id="cv-mon-volume">—</div></div>
-                  <div style="background:var(--surface-2);border-radius:var(--r);padding:8px 10px"><div style="font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Expected Counterparties</div><div style="font-size:13px;font-weight:600" id="cv-mon-geo">—</div></div>
-                  <div style="background:var(--surface-2);border-radius:var(--r);padding:8px 10px"><div style="font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Review Trigger</div><div style="font-size:13px;font-weight:600" id="cv-mon-trigger">—</div></div>
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px">
+                  <div style="background:var(--surface-2);border-radius:var(--r);padding:8px 10px"><div style="font-size:9px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Monthly Volume Threshold</div><div style="font-size:13px;font-weight:600" id="cv-mon-volume">—</div></div>
+                  <div style="background:var(--surface-2);border-radius:var(--r);padding:8px 10px"><div style="font-size:9px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Expected Counterparties</div><div style="font-size:13px;font-weight:600" id="cv-mon-geo">—</div></div>
+                  <div style="background:var(--surface-2);border-radius:var(--r);padding:8px 10px"><div style="font-size:9px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Review Trigger</div><div style="font-size:12px;font-weight:600" id="cv-mon-trigger">—</div></div>
                 </div>
-                <div style="font-size:11px;color:var(--text-3);margin-top:8px">This profile is used by the transaction monitoring engine to set alert thresholds. Any deviation >20% will trigger a case review.</div>
+                <div style="font-size:11px;color:var(--text-3)">This profile is used by the transaction monitoring engine to set alert thresholds. Any deviation >20% will trigger a case review.</div>
               </div>
             </div>
           </div>
@@ -645,30 +669,21 @@ button{cursor:pointer}
             <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px" id="cv-scr-summary"></div>
             <!-- Entity screening -->
             <div class="panel" style="margin-bottom:10px">
-              <div class="panel-hd">
-                <span class="panel-title">Entity Screening</span>
-                <span class="badge badge-gray" style="font-size:10px">OFAC · EU · UN · HMT</span>
-              </div>
+              <div class="panel-hd"><span class="panel-title">Entity Screening</span><span class="badge badge-gray" style="font-size:10px">OFAC · EU · UN · HMT</span></div>
               <div class="panel-body" id="cv-scr-entity"></div>
             </div>
-            <!-- UBO / individual screening -->
+            <!-- UBO / individual screening table -->
             <div class="panel" style="margin-bottom:10px">
-              <div class="panel-hd">
-                <span class="panel-title">UBO & Individual Screening</span>
-                <span class="badge badge-gray" style="font-size:10px">PEP · Sanctions · Adverse Media</span>
-              </div>
+              <div class="panel-hd"><span class="panel-title">UBO & Individual Screening</span><span class="badge badge-gray" style="font-size:10px">PEP · Sanctions · Adverse Media</span></div>
               <div class="panel-body" style="padding:0">
-                <table class="inner-tbl" id="cv-scr-ubo-table">
+                <table class="inner-tbl">
                   <thead><tr><th>Name</th><th>Role</th><th>Sanctions</th><th>PEP</th><th>Adverse Media</th><th>Confidence</th><th>Disposition</th><th>Reviewer</th></tr></thead>
                   <tbody id="cv-scr-ubo-body"></tbody>
                 </table>
               </div>
             </div>
-            <!-- Match details with disposition -->
-            <div class="panel">
-              <div class="panel-hd"><span class="panel-title">Match Details & Dispositions</span></div>
-              <div class="panel-body" id="cv-scr-matches"></div>
-            </div>
+            <!-- Match details with full adverse media cards -->
+            <div id="cv-scr-matches"></div>
           </div>
 
           <div id="cv-risk" class="case-tab-content">
@@ -2154,6 +2169,9 @@ function populateCvOverview(c){
   // ── Decision Readiness ──
   updateDecisionReadiness(c);
 
+  // ── Case Health strip ──
+  updateCaseHealth(c);
+
   // ── SLA banner ──
   const slaBanner=document.getElementById('cv-sla-banner');
   if(slaBanner){
@@ -2309,6 +2327,73 @@ function updateContextualActions(c){
   el.innerHTML=actions.slice(0,5).join('');
 }
 
+function updateCaseHealth(c){
+  const el=document.getElementById('cv-case-health');
+  if(!el) return;
+  const sd=c.screeningData||{};
+  const docs=c.documents||[];
+  const ubos=c.ubos||[];
+  const issues=(c.cddChecklist||[]).filter(i=>i[3]==='issue');
+
+  // Compute status for each section
+  const sections=[
+    {
+      tab:'cv-business',label:'Business Details',icon:'🏢',
+      status:'done',
+      summary:'Entity verified · Registration confirmed',
+    },
+    {
+      tab:'cv-ownership',label:'Ownership & Control',icon:'👥',
+      status:ubos.some(u=>u.screening==='Alert')?'issue':ubos.some(u=>!u.idVerified?.startsWith('Verified')&&u.idVerified!=='Listed entity'&&u.idVerified!=='Fund admin cert.')?'review':'done',
+      summary:ubos.some(u=>u.screening==='Alert')?'Alert — sanctions match on UBO':ubos.some(u=>!u.idVerified?.startsWith('Verified')&&u.idVerified!=='Listed entity')?'UBO ID verification pending':ubos.length+' UBOs identified · All verified',
+    },
+    {
+      tab:'cv-purpose',label:'Purpose & Activity',icon:'📊',
+      status:c.activity&&/crypto|MSB/i.test(c.activity)?'review':'done',
+      summary:c.activity&&/crypto|MSB/i.test(c.activity)?'Activity flag: Crypto/MSB monitoring required':'Activity profile within expectations',
+    },
+    {
+      tab:'cv-documents',label:'Documents',icon:'📂',
+      status:docs.some(d=>d[3]==='issue')?'issue':docs.some(d=>d[3]==='review')?'review':'done',
+      summary:docs.filter(d=>d[3]==='issue').length+' outstanding · '+docs.filter(d=>d[3]==='done').length+'/'+docs.length+' verified',
+    },
+    {
+      tab:'cv-screening',label:'Screening',icon:'🔍',
+      status:sd.sanctions?.status==='Alert'?'issue':sd.pep?.status==='Review'||sd.media?.status==='Review'?'review':'done',
+      summary:sd.sanctions?.status==='Alert'?'OFAC match — BSA escalation required':sd.pep?.status==='Review'?'PEP watchlist hit — disposition pending':'All screens clear',
+    },
+    {
+      tab:'cv-risk',label:'Risk & Decision',icon:'⚖',
+      status:issues.length>0?'issue':'done',
+      summary:issues.length>0?issues.length+' item(s) blocking decision':'Risk narrative confirmed · Ready for decision',
+    },
+    {
+      tab:'cv-outreach',label:'Outreach',icon:'✉',
+      status:c.outreach?.status==='responded'?'done':c.outreach?.status==='sent'?'review':'done',
+      summary:c.outreach?.status==='responded'?'Client responded · Fields extracted':c.outreach?.status==='sent'?'Awaiting client response':'No outreach sent',
+    },
+    {
+      tab:'cv-activity',label:'Activity Log',icon:'📋',
+      status:'done',
+      summary:(c.activityLog||[]).length+' entries · Last: '+(c.activityLog?.[0]?.[0]||'—'),
+    },
+  ];
+
+  const statusBg={done:'var(--surface)',review:'var(--amber-dim)',issue:'var(--red-dim)'};
+  const statusBorder={done:'var(--border)',review:'#FCD34D',issue:'#FCA5A5'};
+  const statusIcon={done:'<span style="color:var(--green-text);font-weight:700">✓</span>',review:'<span style="color:var(--amber-text);font-weight:700">⚠</span>',issue:'<span style="color:var(--red-text);font-weight:700">✕</span>'};
+
+  el.innerHTML=sections.map((s,i)=>`
+    <div onclick="switchCaseTab(null,'${s.tab}')" style="padding:10px 12px;border-right:${i<sections.length-1?'1px solid var(--border)':'none'};border-bottom:${i>3?'none':'1px solid var(--border)'};cursor:pointer;background:${statusBg[s.status]};transition:background .1s" onmouseover="this.style.background='var(--accent-dim)'" onmouseout="this.style.background='${statusBg[s.status]}'">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
+        <span style="font-size:13px">${s.icon}</span>
+        <span style="font-size:11px;font-weight:600;color:var(--text)">${s.label}</span>
+        ${statusIcon[s.status]}
+      </div>
+      <div style="font-size:10px;color:var(--text-3);line-height:1.4">${s.summary}</div>
+    </div>`).join('');
+}
+
 function toggleRiskDrivers(){
   const body=document.getElementById('cv-risk-drivers-body');
   const toggle=document.getElementById('cv-drivers-toggle');
@@ -2348,14 +2433,86 @@ function populateCvContacts(c){
 
 function populateCvPurpose(c){
   const p=document.getElementById('cv-kv-purpose');
-  if(p) p.innerHTML=kv([['Account Purpose',c.accountPurpose||'Operating account'],['Nature of Business',c.activity||'—'],['Sector',c.activity||'—']]);
+  if(p) p.innerHTML=kv([
+    ['Account Purpose',c.accountPurpose||'Operating account'],
+    ['Nature of Business',c.activity||'—'],
+    ['Sector',c.activity?.split('/')[0]||'—'],
+  ]);
   const a=document.getElementById('cv-kv-activity');
-  if(a) a.innerHTML=kv([['Est. Monthly Deposits',c.expectedDeposits||'—'],['Transaction Volume',c.expectedVolume||'—'],['Transaction Value',c.expectedValue||'—']]);
+  if(a) a.innerHTML=kv([
+    ['Est. Monthly Deposits',c.expectedDeposits||'—'],
+    ['Transaction Volume',c.expectedVolume||'—'],
+    ['Transaction Value',c.expectedValue||'—'],
+  ]);
   const s=document.getElementById('cv-kv-sof');
-  if(s) s.innerHTML=kv([['Source of Funds',c.sourceOfFunds||'Business revenue'],['Documentation',c.sofDocs||'Audited financials']]);
+  if(s) s.innerHTML=kv([
+    ['Source of Funds',c.sourceOfFunds||'Business revenue'],
+    ['Documentation',c.sofDocs||'Audited financials'],
+  ]);
   const g=document.getElementById('cv-kv-geo');
-  if(g) g.innerHTML=kv([['International Activity',c.international||'Yes'],['Countries',c.countries||c.jurisdiction],['High-Risk Jurisdictions',c.highRiskJurisdictions||'None identified']]);
+  if(g) g.innerHTML=kv([
+    ['International Activity',c.international||'Yes'],
+    ['Countries',c.countries||c.jurisdiction],
+    ['High-Risk Jurisdictions',c.highRiskJurisdictions||'None identified'],
+  ]);
+  // Activity flag
+  const flagEl=document.getElementById('cv-activity-flag');
+  const flagText=document.getElementById('cv-activity-flag-text');
+  if(flagEl&&c.activity&&/crypto|MSB/i.test(c.activity)){
+    flagEl.style.display='block';
+    if(flagText) flagText.textContent='Crypto/MSB activity requires enhanced transaction monitoring and periodic volume verification against stated expectations.';
+  }
+  // Monitoring profile
+  const volEl=document.getElementById('cv-mon-volume');
+  const geoEl=document.getElementById('cv-mon-geo');
+  const trigEl=document.getElementById('cv-mon-trigger');
+  if(volEl) volEl.textContent=c.expectedDeposits||'—';
+  if(geoEl) geoEl.textContent=c.countries||c.jurisdiction||'—';
+  if(trigEl) trigEl.textContent='Ownership change · Volume >20% deviation · Adverse media';
+
+  // ── EVA: Expected vs Actual table ──────────────────────────────────
+  const evaBody=document.getElementById('cv-eva-body');
+  const evaStatus=document.getElementById('cv-eva-status');
+  if(!evaBody) return;
+
+  // Build EVA rows from case data
+  const eva=c.evaData||buildDefaultEVA(c);
+  let hasVariance=false;
+  evaBody.innerHTML=eva.map(row=>{
+    const varianceCls=row.status==='ok'?'var(--green-text)':row.status==='watch'?'var(--amber-text)':'var(--red-text)';
+    const statusBadge=row.status==='ok'?'badge-green':row.status==='watch'?'badge-amber':'badge-red';
+    const statusLabel=row.status==='ok'?'✓ Within range':row.status==='watch'?'⚠ Monitor':'❌ Investigate';
+    if(row.status!=='ok') hasVariance=true;
+    return `<tr>
+      <td style="font-weight:600">${row.metric}</td>
+      <td style="color:var(--text-2)">${row.expected}</td>
+      <td style="color:var(--text-2)">${row.actual}</td>
+      <td style="font-weight:600;color:${varianceCls}">${row.variance}</td>
+      <td><span class="badge ${statusBadge}" style="font-size:10px">${statusLabel}</span></td>
+      <td style="font-size:11px;color:var(--text-2)">${row.action||'—'}</td>
+    </tr>`;
+  }).join('');
+
+  if(evaStatus){
+    evaStatus.className=`badge ${hasVariance?'badge-amber':'badge-green'}`;
+    evaStatus.textContent=hasVariance?'⚠ Variance detected':'✓ Within expectations';
+  }
 }
+
+function buildDefaultEVA(c){
+  // Build realistic EVA rows from the case data
+  const isCrypto=c.activity&&/crypto|MSB/i.test(c.activity);
+  const isHighVol=c.expectedDeposits?.includes('100,000');
+  return [
+    {metric:'Monthly Deposit Volume',expected:c.expectedDeposits||'$50,001–$100,000',actual:isCrypto?'$82,400 avg':'$44,200 avg',variance:isCrypto?'Within range':'−12%',status:'ok',action:'No action required'},
+    {metric:'Transaction Count',expected:c.expectedVolume||'51–100 / month',actual:'68 transactions',variance:'Within range',status:'ok',action:'No action required'},
+    {metric:'Avg Transaction Size',expected:c.expectedValue||'$50,001–$100,000',actual:isCrypto?'$1,212':'$890',variance:'Normal for sector',status:'ok',action:'No action required'},
+    {metric:'Counterparty Jurisdictions',expected:c.countries||c.jurisdiction,actual:isCrypto?'US, Singapore, UK, Cayman':'US, UK',variance:isCrypto?'Cayman Islands noted':'—',status:isCrypto?'watch':'ok',action:isCrypto?'Review Cayman counterparty purpose':'No action required'},
+    {metric:'Cross-border Wire Activity',expected:c.international==='Yes'?'Expected':'Not expected',actual:isCrypto?'43% of volume (cross-border)':'8% of volume',variance:isCrypto?'High proportion':'Low — within expectations',status:isCrypto?'watch':'ok',action:isCrypto?'Confirm business purpose for cross-border flows':'No action required'},
+    {metric:'Cash / Crypto Settlement',expected:isCrypto?'Crypto OTC settlements':'Wire transfers only',actual:isCrypto?'OTC + spot trading confirmed':'Wire only',variance:'Consistent with stated activity',status:'ok',action:'No action required'},
+  ];
+}
+
 
 function populateCvDocuments(c){
   const docs=c.documents||[];
@@ -2389,41 +2546,45 @@ function populateCvDocuments(c){
 }
 
 function populateCvScreening(c){
+  const sd=c.screeningData||{};
+
   // Summary strip
   const sumEl=document.getElementById('cv-scr-summary');
   if(sumEl){
-    const sd=c.screeningData||{};
     const cats=[{k:'sanctions',l:'Sanctions'},{k:'pep',l:'PEP'},{k:'media',l:'Adverse Media'}];
     sumEl.innerHTML=cats.map(cat=>{
       const d=sd[cat.k]||{};
       const cls=d.status==='Clear'?'badge-green':d.status==='Alert'?'badge-red':'badge-amber';
-      return `<div class="panel"><div class="panel-body" style="padding:10px;text-align:center">
-        <span class="badge ${cls}" style="margin-bottom:6px;display:block;text-align:center">${d.status||'Pending'}</span>
-        <div style="font-size:11px;font-weight:600;color:var(--text-3)">${cat.l}</div>
-      </div></div>`;
+      const bg=d.status==='Clear'?'var(--green-dim)':d.status==='Alert'?'var(--red-dim)':'var(--amber-dim)';
+      const border=d.status==='Clear'?'#86EFAC':d.status==='Alert'?'#FCA5A5':'#FCD34D';
+      return `<div style="background:${bg};border:1px solid ${border};border-radius:var(--r2);padding:12px;text-align:center">
+        <span class="badge ${cls}" style="margin-bottom:6px;display:block;text-align:center;font-size:12px">${d.status||'Pending'}</span>
+        <div style="font-size:11px;font-weight:600;color:var(--text-2)">${cat.l}</div>
+      </div>`;
     }).join('');
   }
-  // Entity screening
+
+  // Entity screening narrative
   const eEl=document.getElementById('cv-scr-entity');
-  const sd=c.screeningData||{};
   if(eEl){
     const san=sd.sanctions||{};
-    const cls=san.status==='Clear'?'var(--green-text)':san.status==='Alert'?'var(--red-text)':'var(--amber-text)';
+    const cls=san.status==='Clear'?'badge-green':san.status==='Alert'?'badge-red':'badge-amber';
     eEl.innerHTML=`
       <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px">
-        <span class="badge ${san.status==='Clear'?'badge-green':san.status==='Alert'?'badge-red':'badge-amber'}" style="flex-shrink:0">${san.status||'Pending'}</span>
+        <span class="badge ${cls}" style="flex-shrink:0">${san.status||'Pending'}</span>
         <div style="font-size:12px;color:var(--text-2);line-height:1.6">${san.summary||'No screening data'}</div>
       </div>
       ${(san.findings||[]).map(f=>`<div style="padding:6px 10px;background:var(--red-dim);border-left:2px solid var(--red-text);border-radius:0 var(--r) var(--r) 0;font-size:11px;color:var(--red-text);margin-bottom:4px">⚠ ${f}</div>`).join('')}
       ${(san.mitigants||[]).map(m=>`<div style="padding:6px 10px;background:var(--green-dim);border-left:2px solid var(--green-text);border-radius:0 var(--r) var(--r) 0;font-size:11px;color:var(--green-text);margin-bottom:4px">✓ ${m}</div>`).join('')}`;
   }
+
   // UBO screening table
   const uboBody=document.getElementById('cv-scr-ubo-body');
   if(uboBody){
     const rows=[];
     (c.ubos||[]).forEach(u=>{
       const pepStatus=u.screening==='Review'?'Review':sd.pep?.status||'Clear';
-      const pepConf=pepStatus==='Review'?'23%':pepStatus==='Clear'?'—':'—';
+      const pepConf=pepStatus==='Review'?'23%':'—';
       const pepDisp=pepStatus==='Review'?'Pending disposition':'Cleared';
       rows.push(`<tr>
         <td style="font-weight:600">${u.name}</td>
@@ -2432,7 +2593,7 @@ function populateCvScreening(c){
         <td><span class="badge ${pepStatus==='Review'||pepStatus==='Alert'?'badge-amber':'badge-green'}" style="font-size:10px">${pepStatus==='Review'?'Low Confidence':pepStatus}</span></td>
         <td><span class="badge badge-green" style="font-size:10px">Clear</span></td>
         <td style="font-size:11px;color:var(--text-3)">${pepConf}</td>
-        <td style="font-size:11px;color:${pepDisp==='Cleared'?'var(--green-text)':'var(--amber-text)'};font-weight:600">${pepDisp}</td>
+        <td style="font-size:11px;font-weight:600;color:${pepDisp==='Cleared'?'var(--green-text)':'var(--amber-text)'}">${pepDisp}</td>
         <td style="font-size:11px;color:var(--text-3)">${pepDisp==='Cleared'?c.assignee:'Pending'}</td>
       </tr>`);
     });
@@ -2444,64 +2605,153 @@ function populateCvScreening(c){
         <td><span class="badge badge-green" style="font-size:10px">Clear</span></td>
         <td><span class="badge badge-green" style="font-size:10px">Clear</span></td>
         <td style="font-size:11px;color:var(--text-3)">—</td>
-        <td style="font-size:11px;color:var(--green-text);font-weight:600">Cleared</td>
+        <td style="font-size:11px;font-weight:600;color:var(--green-text)">Cleared</td>
         <td style="font-size:11px;color:var(--text-3)">${c.assignee}</td>
       </tr>`);
     });
     uboBody.innerHTML=rows.join('')||'<tr><td colspan="8" style="text-align:center;padding:16px;color:var(--text-3)">No individuals to screen</td></tr>';
   }
-  // Match details with disposition
+
+  // Match details — full cards with source links + adverse media details
   const matchEl=document.getElementById('cv-scr-matches');
-  if(matchEl){
-    const pepMatch=(c.ubos||[]).find(u=>u.screening==='Review');
-    const sanAlert=sd.sanctions?.status==='Alert';
-    const items=[];
-    if(pepMatch){
-      items.push(`
-        <div style="border:1px solid var(--border);border-radius:var(--r2);padding:12px;margin-bottom:8px">
-          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px">
-            <div>
-              <div style="font-size:12px;font-weight:700">PEP Watchlist Hit — ${pepMatch.name}</div>
-              <div style="font-size:11px;color:var(--text-3);margin-top:2px">Related-party name match · Low confidence</div>
-            </div>
-            <span class="badge badge-amber">Low Confidence (23%)</span>
+  if(!matchEl) return;
+
+  const matches=[];
+
+  // PEP match card
+  const pepMatch=(c.ubos||[]).find(u=>u.screening==='Review');
+  if(pepMatch){
+    matches.push(`
+      <div class="panel" style="margin-bottom:10px;border-left:3px solid var(--amber)">
+        <div class="panel-hd" style="background:var(--amber-dim)">
+          <div>
+            <div style="font-size:12px;font-weight:700;color:var(--amber-text)">PEP Watchlist Hit — ${pepMatch.name}</div>
+            <div style="font-size:11px;color:var(--amber-text);margin-top:1px">Related-party name match · Low confidence</div>
           </div>
-          <div class="kv" style="font-size:11px;margin-bottom:10px">
+          <span class="badge badge-amber">Low Confidence (23%)</span>
+        </div>
+        <div class="panel-body">
+          <div class="kv" style="font-size:11px;margin-bottom:12px">
             <span class="kv-l">Match Basis</span><span class="kv-v">Name similarity (partial match)</span>
             <span class="kv-l">Discrepancy</span><span class="kv-v">DOB mismatch — reduces true-match probability</span>
             <span class="kv-l">Government Role</span><span class="kv-v">None confirmed for named individual</span>
             <span class="kv-l">Recommendation</span><span class="kv-v">Likely false positive — review and clear</span>
           </div>
           <div style="display:flex;gap:6px">
-            <button class="btn btn-sm btn-primary" onclick="showToast('PEP disposition recorded — cleared. Logged to audit trail.')">Clear — False Positive</button>
-            <button class="btn btn-sm" onclick="showToast('Escalated to Compliance for PEP review')">Escalate to Compliance</button>
+            <button class="btn btn-sm btn-primary" onclick="showToast('PEP disposition recorded — cleared as false positive. Logged to audit trail.')">Clear — False Positive</button>
+            <button class="btn btn-sm" onclick="showToast('Escalated to Compliance for independent PEP review')">Escalate to Compliance</button>
           </div>
-        </div>`);
-    }
-    if(sanAlert){
-      items.push(`
-        <div style="border:1px solid var(--red-dim);border-radius:var(--r2);padding:12px;background:var(--red-dim);margin-bottom:8px">
-          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px">
-            <div>
-              <div style="font-size:12px;font-weight:700;color:var(--red-text)">🔴 Sanctions Match — Associated Entity</div>
-              <div style="font-size:11px;color:var(--red-text);margin-top:2px">OFAC SDN — Confidence 0.61 · Name + jurisdiction overlap</div>
-            </div>
-            <span class="badge badge-red">BSA Escalation Required</span>
+        </div>
+      </div>`);
+  }
+
+  // Adverse media cards from screeningData
+  const mediaFindings=sd.media?.findings||[];
+  const mediaArticles=c.adverseMediaArticles||getDefaultAdverseMedia(c);
+  mediaArticles.forEach(art=>{
+    const riskColor=art.severity==='high'?'var(--red-text)':art.severity==='medium'?'var(--amber-text)':'var(--text-3)';
+    const riskBg=art.severity==='high'?'var(--red-dim)':art.severity==='medium'?'var(--amber-dim)':'var(--surface-2)';
+    const riskBadgeCls=art.severity==='high'?'badge-red':art.severity==='medium'?'badge-amber':'badge-gray';
+    matches.push(`
+      <div class="panel" style="margin-bottom:10px;border-left:3px solid ${art.severity==='high'?'var(--red-text)':art.severity==='medium'?'var(--amber)':'var(--border)'}">
+        <div class="panel-hd" style="background:${riskBg}">
+          <div style="flex:1">
+            <div style="font-size:12px;font-weight:700;color:${riskColor}">${art.type} — ${art.source}</div>
+            <div style="font-size:11px;color:${riskColor};margin-top:1px">${art.date} · ${art.publication}</div>
           </div>
+          <span class="badge ${riskBadgeCls}" style="flex-shrink:0">${art.severity==='high'?'High Relevance':art.severity==='medium'?'Medium Relevance':'Low Relevance'}</span>
+        </div>
+        <div class="panel-body">
+          <div style="font-size:12px;color:var(--text-2);line-height:1.65;margin-bottom:10px"><strong>Summary:</strong> ${art.summary}</div>
           <div class="kv" style="font-size:11px;margin-bottom:10px">
-            <span class="kv-l">Match Basis</span><span class="kv-v">Name similarity, BVI jurisdiction, business type</span>
-            <span class="kv-l">DOB Available</span><span class="kv-v">No — cannot confirm or exclude</span>
-            <span class="kv-l">Required Action</span><span class="kv-v">Formal analyst disposition + BSA Officer escalation</span>
+            <span class="kv-l">Publication</span><span class="kv-v">${art.publication}</span>
+            <span class="kv-l">Date</span><span class="kv-v">${art.date}</span>
+            <span class="kv-l">Subject</span><span class="kv-v">${art.subject}</span>
+            <span class="kv-l">Direct Connection</span><span class="kv-v">${art.directConnection}</span>
+            <span class="kv-l">Assessment</span><span class="kv-v">${art.assessment}</span>
           </div>
-          <button class="btn btn-sm" style="background:var(--red-dim);border-color:var(--red-text);color:var(--red-text)" onclick="showToast('Escalated to BSA Officer · case blocked pending disposition')">Escalate to BSA Officer →</button>
-        </div>`);
-    }
-    if(!items.length){
-      items.push('<div style="font-size:12px;color:var(--green-text);padding:8px 0">✓ No matches requiring disposition</div>');
-    }
-    matchEl.innerHTML=items.join('');
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+            <a href="${art.url}" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border:1px solid var(--border);border-radius:var(--r);font-size:11px;color:var(--accent);text-decoration:none;background:var(--surface);cursor:pointer" onclick="event.preventDefault();showToast('Source link: ${art.url}')">
+              <svg width="11" height="11" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2H2a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V8M9 1h4m0 0v4m0-4L6 8"/></svg>
+              View Source Article
+            </a>
+            <span style="font-size:10px;color:var(--text-3)">${art.url}</span>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-sm btn-primary" onclick="showToast('Adverse media cleared — disposition recorded. Logged to audit trail.')">Clear — Not Material</button>
+            <button class="btn btn-sm" onclick="showToast('Adverse media flagged for Compliance review')">Flag for Review</button>
+            <button class="btn btn-sm" onclick="showToast('Adverse media escalated to MLCO')">Escalate to MLCO</button>
+          </div>
+        </div>
+      </div>`);
+  });
+
+  // Sanctions match card
+  if(sd.sanctions?.status==='Alert'){
+    matches.push(`
+      <div class="panel" style="border-left:3px solid var(--red-text);margin-bottom:10px">
+        <div class="panel-hd" style="background:var(--red-dim)">
+          <div>
+            <div style="font-size:12px;font-weight:700;color:var(--red-text)">🔴 OFAC Sanctions Match — Associated Entity</div>
+            <div style="font-size:11px;color:var(--red-text);margin-top:1px">Confidence 0.61 · Name + BVI jurisdiction + business type overlap</div>
+          </div>
+          <span class="badge badge-red" style="flex-shrink:0">BSA Escalation Required</span>
+        </div>
+        <div class="panel-body">
+          <div class="kv" style="font-size:11px;margin-bottom:12px">
+            <span class="kv-l">List</span><span class="kv-v">OFAC SDN (Specially Designated Nationals)</span>
+            <span class="kv-l">Match Basis</span><span class="kv-v">Name similarity, BVI jurisdiction, business type</span>
+            <span class="kv-l">Confidence Score</span><span class="kv-v"><strong>0.61</strong> — above 0.50 threshold, requires disposition</span>
+            <span class="kv-l">DOB Available</span><span class="kv-v">No — cannot confirm or exclude on this basis alone</span>
+            <span class="kv-l">Required Action</span><span class="kv-v">Formal analyst disposition + BSA Officer escalation before case can proceed</span>
+          </div>
+          <button class="btn btn-sm" style="background:var(--red-dim);border-color:var(--red-text);color:var(--red-text)" onclick="showToast('Escalated to BSA Officer · case blocked pending disposition · logged to audit trail')">Escalate to BSA Officer →</button>
+        </div>
+      </div>`);
+  }
+
+  if(!matches.length){
+    matchEl.innerHTML='<div style="font-size:12px;color:var(--green-text);padding:8px 0">✓ No matches requiring disposition</div>';
+  } else {
+    matchEl.innerHTML=`<div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">Match Details & Dispositions</div>`+matches.join('');
   }
 }
+
+function getDefaultAdverseMedia(c){
+  // Generate realistic adverse media entries based on the case
+  const results=[];
+  const sd=c.screeningData||{};
+  if(sd.media?.status==='Review'||(sd.media?.findings||[]).length>0){
+    results.push({
+      type:'Adverse Media',
+      source:'Web / News Search',
+      publication:'Financial Times',
+      date:'Mar 15, 2021',
+      url:'https://ft.com/content/example-article-kyc-review',
+      subject:c.client,
+      summary:`A ${c.type} operating in the ${c.activity||'financial services'} sector was referenced in a regulatory review article. The article discusses industry-wide compliance challenges and mentions several firms by name. No direct enforcement action, fine, or allegation specific to ${c.client.split(' ')[0]} was identified in the article.`,
+      directConnection:'Indirect — name mentioned in broader industry context only',
+      assessment:'Low material risk. No enforcement action, no regulatory finding, no allegation of wrongdoing. Article is industry-wide commentary.',
+      severity:'low',
+    });
+    if(c.jurisdiction==='UAE'||c.jurisdiction==='Singapore'){
+      results.push({
+        type:'Regulatory Inquiry (Historical)',
+        source:'Regulatory Database',
+        publication:`${c.jurisdiction==='UAE'?'Gulf Business':'Straits Times'} / Regulatory Gazette`,
+        date:'Sep 12, 2021',
+        url:`https://regulatorydb.${c.jurisdiction==='UAE'?'ae':'sg'}/notices/2021/example`,
+        subject:c.client,
+        summary:`A 2021 licensing review by the ${c.jurisdiction==='UAE'?'DFSA':'MAS'} included ${c.client.split(' ')[0]} in a routine compliance assessment of entities operating in the ${c.activity||'financial services'} sector. The review was concluded with no enforcement action and the entity's licence remained in good standing throughout.`,
+        directConnection:'Direct — entity named in regulatory review',
+        assessment:'Medium relevance — historical only. Matter resolved with no enforcement action. Regulatory relationship in good standing.',
+        severity:'medium',
+      });
+    }
+  }
+  return results;
+}
+
 
 function populateCvRisk(c){
   const score=c.riskScore||0;
