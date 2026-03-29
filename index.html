@@ -380,6 +380,7 @@ button{cursor:pointer}
         <span class="badge" id="cv-status">—</span>
         <span class="badge" id="cv-pipeline">—</span>
         <span class="badge" id="cv-risk">—</span>
+        <div id="cv-sla-banner" style="display:none;background:var(--red-dim);border:1px solid #FCA5A5;border-radius:var(--r);padding:3px 10px;font-size:11px;font-weight:700;color:var(--red-text)"></div>
         <div style="flex:1"></div>
         <button class="btn btn-sm" onclick="downloadReport()">Export Report</button>
         <button class="btn btn-sm btn-primary" onclick="openDecisionModal()">Submit Decision</button>
@@ -389,52 +390,62 @@ button{cursor:pointer}
         <!-- Left meta panel -->
         <div class="case-meta">
           <div class="cm-section">
-            <div style="font-size:14px;font-weight:600;margin-bottom:4px" id="cv-client">—</div>
+            <div style="font-size:14px;font-weight:600;margin-bottom:3px;line-height:1.3" id="cv-client">—</div>
             <div style="font-size:11px;color:var(--text-3)" id="cv-entity-type">—</div>
+          </div>
+          <!-- SLA — loud when overdue -->
+          <div id="cv-sla-block" class="cm-section">
+            <div class="cm-label">SLA Status</div>
+            <div class="cm-val" id="cv-sla">—</div>
+            <div class="cm-sub" id="cv-next-action" style="margin-top:3px;line-height:1.4">—</div>
           </div>
           <div class="cm-section">
             <div class="cm-label">Assigned To</div>
             <div class="cm-val" id="cv-assignee">—</div>
           </div>
-          <div class="cm-section">
-            <div class="cm-label">SLA</div>
-            <div class="cm-val" id="cv-sla">—</div>
-            <div class="cm-sub" id="cv-next-action">—</div>
+          <!-- Decision Readiness indicator (compact) -->
+          <div class="cm-section" id="cv-readiness-block">
+            <div class="cm-label" style="margin-bottom:5px">Decision Readiness</div>
+            <div id="cv-readiness-compact"></div>
           </div>
+          <!-- CDD Progress -->
           <div class="cm-section">
-            <div class="cm-label">CDD Progress</div>
-            <div style="height:5px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin-bottom:5px">
-              <div id="cv-progress-bar" style="height:100%;background:var(--accent);border-radius:99px;width:0%;transition:width .4s"></div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+              <div class="cm-label">CDD Progress</div>
+              <div style="font-size:10px;font-weight:600;color:var(--text-3)" id="cv-progress-label">0/0</div>
             </div>
-            <div style="font-size:11px;color:var(--text-3)" id="cv-progress-label">0/0 items</div>
+            <div style="height:6px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin-bottom:4px">
+              <div id="cv-progress-bar" style="height:100%;background:var(--accent);border-radius:99px;width:0%;transition:width .5s"></div>
+            </div>
           </div>
           <!-- Workflow steps -->
-          <div class="cm-section"><div class="cm-label">Workflow</div></div>
+          <div class="cm-section"><div class="cm-label">Workflow Stage</div></div>
           <div class="steps" id="cv-steps"></div>
-          <!-- Quick actions -->
+          <!-- Contextual quick actions -->
           <div style="padding:12px 14px;margin-top:auto;border-top:1px solid var(--border)">
             <div class="cm-label" style="margin-bottom:8px">Quick Actions</div>
-            <div style="display:flex;flex-direction:column;gap:5px">
-              <button class="btn btn-sm btn-ghost" style="justify-content:flex-start" onclick="switchCaseTab(null,'cv-outreach')">✉ Send Outreach</button>
-              <button class="btn btn-sm btn-ghost" style="justify-content:flex-start" onclick="requestDocs()">📎 Request Documents</button>
-              <button class="btn btn-sm btn-ghost" style="justify-content:flex-start" onclick="switchCaseTab(null,'cv-screening')">🔍 View Screening</button>
+            <div style="display:flex;flex-direction:column;gap:4px" id="cv-quick-actions">
+              <button class="btn btn-sm btn-ghost" style="justify-content:flex-start;font-size:11px" onclick="switchCaseTab(null,'cv-outreach')">✉ Send Outreach</button>
+              <button class="btn btn-sm btn-ghost" style="justify-content:flex-start;font-size:11px" onclick="requestDocs()">📎 Request Documents</button>
+              <button class="btn btn-sm btn-ghost" style="justify-content:flex-start;font-size:11px" onclick="switchCaseTab(null,'cv-screening')">🔍 View Screening</button>
+              <button class="btn btn-sm btn-ghost" style="justify-content:flex-start;font-size:11px" onclick="showToast('Escalated to Compliance team')">⬆ Escalate to Compliance</button>
             </div>
           </div>
         </div>
 
         <!-- Main case content -->
         <div class="case-content">
-          <div class="case-tab-bar">
+          <div class="case-tab-bar" id="cv-tab-bar">
             <button class="case-tab active" data-tab="cv-overview" onclick="switchCaseTab(this,'cv-overview')">Overview</button>
-            <button class="case-tab" data-tab="cv-business" onclick="switchCaseTab(this,'cv-business')">Business Details</button>
-            <button class="case-tab" data-tab="cv-ownership" onclick="switchCaseTab(this,'cv-ownership')">Ownership &amp; Control</button>
+            <button class="case-tab" data-tab="cv-business" onclick="switchCaseTab(this,'cv-business')" id="tab-btn-business">Business Details</button>
+            <button class="case-tab" data-tab="cv-ownership" onclick="switchCaseTab(this,'cv-ownership')" id="tab-btn-ownership">Ownership &amp; Control</button>
             <button class="case-tab" data-tab="cv-contacts" onclick="switchCaseTab(this,'cv-contacts')">Contacts</button>
             <button class="case-tab" data-tab="cv-purpose" onclick="switchCaseTab(this,'cv-purpose')">Purpose &amp; Activity</button>
-            <button class="case-tab" data-tab="cv-documents" onclick="switchCaseTab(this,'cv-documents')">Documents</button>
-            <button class="case-tab" data-tab="cv-screening" onclick="switchCaseTab(this,'cv-screening')">Screening</button>
-            <button class="case-tab" data-tab="cv-risk" onclick="switchCaseTab(this,'cv-risk')">Risk Assessment</button>
-            <button class="case-tab" data-tab="cv-checklist" onclick="switchCaseTab(this,'cv-checklist')">CDD Checklist</button>
-            <button class="case-tab" data-tab="cv-outreach" onclick="switchCaseTab(this,'cv-outreach')">Outreach</button>
+            <button class="case-tab" data-tab="cv-documents" onclick="switchCaseTab(this,'cv-documents')" id="tab-btn-documents">Documents</button>
+            <button class="case-tab" data-tab="cv-screening" onclick="switchCaseTab(this,'cv-screening')" id="tab-btn-screening">Screening</button>
+            <button class="case-tab" data-tab="cv-risk" onclick="switchCaseTab(this,'cv-risk')" id="tab-btn-risk">Risk Assessment</button>
+            <button class="case-tab" data-tab="cv-checklist" onclick="switchCaseTab(this,'cv-checklist')" id="tab-btn-checklist">CDD Checklist</button>
+            <button class="case-tab" data-tab="cv-outreach" onclick="switchCaseTab(this,'cv-outreach')" id="tab-btn-outreach">Outreach</button>
             <button class="case-tab" data-tab="cv-activity" onclick="switchCaseTab(this,'cv-activity')">Activity</button>
           </div>
 
@@ -442,15 +453,89 @@ button{cursor:pointer}
           <div style="flex:1;overflow-y:auto;background:var(--bg)">
 
           <div id="cv-overview" class="case-tab-content active">
-            <div class="two-col" style="align-items:stretch">
-              <div style="display:flex;flex-direction:column;gap:10px">
-                <div class="panel"><div class="panel-hd"><span class="panel-title">Entity Details</span><button class="btn btn-sm btn-ghost">Edit</button></div><div class="panel-body"><div class="kv" id="cv-kv-entity"></div></div></div>
-                <div class="panel"><div class="panel-hd"><span class="panel-title">Risk Snapshot</span></div><div class="panel-body"><div class="kv" id="cv-kv-risk"></div></div></div>
+
+            <!-- ① Next Best Action banner -->
+            <div id="cv-nba" style="background:#F0FDF4;border:1px solid #86EFAC;border-radius:var(--r2);padding:10px 14px;margin-bottom:12px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+              <div style="display:flex;align-items:flex-start;gap:10px">
+                <div style="width:28px;height:28px;border-radius:6px;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2"><path d="M8 1l1.8 3.6L14 5.4l-3 2.9.7 4.1L8 10.4l-3.7 1.9.7-4.1-3-2.9 4.2-.8L8 1z"/></svg>
+                </div>
+                <div>
+                  <div style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px">AI · Next Best Action</div>
+                  <div style="font-size:13px;font-weight:600;color:var(--text)" id="cv-nba-action">—</div>
+                  <div style="font-size:11px;color:var(--text-3);margin-top:2px" id="cv-nba-reason">—</div>
+                </div>
               </div>
+              <div style="display:flex;gap:6px;flex-shrink:0" id="cv-nba-btns"></div>
+            </div>
+
+            <!-- ② 3-col layout: left=entity+ownership snap, center=AI summary+outstanding, right=risk score -->
+            <div style="display:grid;grid-template-columns:1fr 1.4fr 0.8fr;gap:10px">
+
+              <!-- Left col -->
               <div style="display:flex;flex-direction:column;gap:10px">
-                <div class="panel" style="flex:2"><div class="panel-hd"><span class="panel-title">Case Summary</span><span class="badge badge-blue" style="font-size:10px">AI</span></div><div class="panel-body" style="font-size:12px;line-height:1.65;color:var(--text-2)" id="cv-summary"></div></div>
-                <div class="panel" style="flex:1"><div class="panel-hd"><span class="panel-title">Outstanding Items</span></div><div class="panel-body" id="cv-outstanding"></div></div>
+                <div class="panel">
+                  <div class="panel-hd"><span class="panel-title">Entity Details</span><button class="btn btn-sm btn-ghost" onclick="switchCaseTab(null,'cv-business')">Edit</button></div>
+                  <div class="panel-body"><div class="kv" id="cv-kv-entity"></div></div>
+                </div>
+                <!-- Mini ownership snapshot -->
+                <div class="panel">
+                  <div class="panel-hd">
+                    <span class="panel-title">Ownership Snapshot</span>
+                    <button class="btn btn-sm btn-ghost" onclick="switchCaseTab(null,'cv-ownership')" style="font-size:10px">Full view →</button>
+                  </div>
+                  <div class="panel-body" id="cv-ownership-snap"></div>
+                </div>
               </div>
+
+              <!-- Center col -->
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <div class="panel" style="flex:1">
+                  <div class="panel-hd">
+                    <span class="panel-title">AI Risk Memo</span>
+                    <span class="badge" style="background:#DBEAFE;color:#1D4ED8;font-size:10px">AI Generated</span>
+                  </div>
+                  <div class="panel-body" style="font-size:12px;line-height:1.7;color:var(--text-2)" id="cv-summary"></div>
+                </div>
+                <div class="panel">
+                  <div class="panel-hd">
+                    <span class="panel-title">Outstanding Items</span>
+                    <span class="badge badge-gray" id="cv-outstanding-count"></span>
+                  </div>
+                  <div class="panel-body" id="cv-outstanding"></div>
+                </div>
+              </div>
+
+              <!-- Right col: risk score + drivers -->
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <div class="panel">
+                  <div class="panel-hd"><span class="panel-title">Risk Score</span></div>
+                  <div class="panel-body" style="text-align:center;padding:14px 10px">
+                    <div style="font-size:40px;font-weight:700;letter-spacing:-.04em;line-height:1" id="cv-score-ov">—</div>
+                    <div style="font-size:11px;color:var(--text-3);margin-bottom:10px">/100</div>
+                    <div style="height:5px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin-bottom:8px">
+                      <div id="cv-score-bar-ov" style="height:100%;border-radius:99px;width:0%;transition:width .5s"></div>
+                    </div>
+                    <div style="font-size:11px;font-weight:600" id="cv-score-tier">—</div>
+                  </div>
+                </div>
+                <!-- Risk drivers (expandable) -->
+                <div class="panel">
+                  <div class="panel-hd" style="cursor:pointer" onclick="toggleRiskDrivers()">
+                    <span class="panel-title">Risk Drivers</span>
+                    <span style="font-size:11px;color:var(--accent)" id="cv-drivers-toggle">Show ▾</span>
+                  </div>
+                  <div id="cv-risk-drivers-body" style="display:none">
+                    <div class="panel-body" style="padding:8px 10px" id="cv-risk-drivers"></div>
+                  </div>
+                </div>
+                <!-- Decision readiness card -->
+                <div class="panel" id="cv-readiness-card">
+                  <div class="panel-hd"><span class="panel-title">Decision Readiness</span></div>
+                  <div class="panel-body" id="cv-readiness-detail"></div>
+                </div>
+              </div>
+
             </div>
           </div>
 
@@ -1843,18 +1928,247 @@ function switchCaseTab(btn,tabId){
 function kv(pairs){return pairs.map(([l,v])=>`<span class="kv-l">${l}</span><span class="kv-v">${v||'—'}</span>`).join('');}
 
 function populateCvOverview(c){
+  // ── Entity KV ──
   const eEl=document.getElementById('cv-kv-entity');
-  if(eEl) eEl.innerHTML=kv([['Legal Name',c.client],['Entity Type',c.entityType||'—'],['Jurisdiction',c.jurisdiction],['Industry',c.activity||'—'],['Assignee',c.assignee]]);
-  const rEl=document.getElementById('cv-kv-risk');
-  if(rEl) rEl.innerHTML=kv([['Risk Score',c.riskScore+'/100'],['Risk Tier',c.riskTier],['Pipeline',c.pipeline],['SLA',c.sla]]);
+  if(eEl) eEl.innerHTML=kv([
+    ['Legal Name',c.client],['Entity Type',c.entityType||'—'],
+    ['Jurisdiction',c.jurisdiction],['Industry',c.activity||'—'],['Assignee',c.assignee]
+  ]);
+
+  // ── AI Risk Memo ──
   const sEl=document.getElementById('cv-summary');
   if(sEl) sEl.textContent=c.riskAiSummary||'—';
+
+  // ── Outstanding Items ──
   const oEl=document.getElementById('cv-outstanding');
+  const oCtEl=document.getElementById('cv-outstanding-count');
+  const issues=(c.cddChecklist||[]).filter(i=>i[3]==='issue');
+  const reviews=(c.cddChecklist||[]).filter(i=>i[3]==='review');
+  if(oCtEl) oCtEl.textContent=(issues.length+reviews.length)+' item'+(issues.length+reviews.length!==1?'s':'');
   if(oEl){
-    const issues=(c.cddChecklist||[]).filter(i=>i[3]==='issue');
-    oEl.innerHTML=issues.length?issues.map(i=>`<div style="display:flex;align-items:flex-start;gap:7px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--red-text);font-size:11px;flex-shrink:0;margin-top:1px">✕</span><div style="font-size:12px"><strong>${i[0]}</strong><div style="color:var(--text-3);font-size:11px">${i[2]}</div></div></div>`).join(''):'<div style="font-size:12px;color:var(--green-text)">✓ No outstanding items</div>';
+    const allItems=[...issues,...reviews];
+    oEl.innerHTML=allItems.length
+      ? allItems.map(i=>`
+        <div style="display:flex;align-items:flex-start;gap:7px;padding:6px 0;border-bottom:1px solid var(--border)">
+          <span style="font-size:12px;flex-shrink:0;margin-top:1px">${i[3]==='issue'?'✕':'!'}</span>
+          <div>
+            <div style="font-size:12px;font-weight:600;color:${i[3]==='issue'?'var(--red-text)':'var(--amber-text)'}">${i[0]}</div>
+            <div style="font-size:11px;color:var(--text-3)">${i[2]}</div>
+          </div>
+        </div>`).join('')
+      : '<div style="font-size:12px;color:var(--green-text);padding:4px 0">✓ All items complete — ready for decision</div>';
   }
+
+  // ── Risk score (overview col) ──
+  const score=c.riskScore||0;
+  const scoreOv=document.getElementById('cv-score-ov');
+  const barOv=document.getElementById('cv-score-bar-ov');
+  const tierOv=document.getElementById('cv-score-tier');
+  const color=score>=70?'var(--red-text)':score>=50?'var(--amber)':'var(--green-text)';
+  if(scoreOv){scoreOv.textContent=score;scoreOv.style.color=color;}
+  if(barOv){barOv.style.width=score+'%';barOv.style.background=color;}
+  if(tierOv) tierOv.innerHTML=`<span class="badge ${c.riskClass}" style="border-radius:99px">${c.riskTier} Risk</span>`;
+
+  // ── Risk drivers breakdown ──
+  const driversEl=document.getElementById('cv-risk-drivers');
+  if(driversEl){
+    const drivers=computeRiskDrivers(c);
+    driversEl.innerHTML=drivers.map(d=>`
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);font-size:11px">
+        <span style="color:var(--text-2)">${d.label}</span>
+        <span style="font-weight:700;color:${d.pts>0?'var(--red-text)':'var(--green-text)'}">${d.pts>0?'+':''}${d.pts}</span>
+      </div>`).join('');
+  }
+
+  // ── Ownership snapshot ──
+  const ownEl=document.getElementById('cv-ownership-snap');
+  if(ownEl){
+    const ubos=c.ubos||[];
+    ownEl.innerHTML=ubos.length
+      ? ubos.map(u=>`
+        <div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border)">
+          <div style="flex:1">
+            <span style="font-size:12px;font-weight:600">${u.name}</span>
+            <span style="font-size:11px;color:var(--text-3);margin-left:5px">${u.stake}</span>
+          </div>
+          <span class="badge ${(u.idVerified&&u.idVerified.startsWith('Verified'))?'badge-green':'badge-amber'}" style="font-size:9px">${(u.idVerified&&u.idVerified.startsWith('Verified'))?'✓ Verified':'⚠ Pending'}</span>
+          ${u.screening==='Alert'?`<span class="badge badge-red" style="font-size:9px">Alert</span>`:''}
+        </div>`).join('')+
+        `<button class="btn btn-sm btn-ghost" style="margin-top:8px;font-size:11px;width:100%;justify-content:center" onclick="switchCaseTab(null,'cv-ownership')">View full ownership structure →</button>`
+      : '<div style="font-size:12px;color:var(--text-3)">No UBO data on file</div>';
+  }
+
+  // ── Next Best Action ──
+  updateNextBestAction(c);
+
+  // ── Decision Readiness ──
+  updateDecisionReadiness(c);
+
+  // ── SLA banner ──
+  const slaBanner=document.getElementById('cv-sla-banner');
+  if(slaBanner){
+    if(c.slaClass==='sla-over'){
+      slaBanner.style.display='flex';
+      slaBanner.textContent='🔴 SLA BREACHED — '+c.sla.toUpperCase();
+    } else if(c.slaClass==='sla-due'){
+      slaBanner.style.display='flex';
+      slaBanner.style.background='var(--amber-dim)';
+      slaBanner.style.borderColor='#FCD34D';
+      slaBanner.style.color='var(--amber-text)';
+      slaBanner.textContent='⚠ DUE TODAY — '+c.sla;
+    } else {
+      slaBanner.style.display='none';
+    }
+  }
+
+  // ── Tab status indicators ──
+  updateTabIndicators(c);
+
+  // ── Contextual quick actions ──
+  updateContextualActions(c);
 }
+
+function computeRiskDrivers(c){
+  const drivers=[];
+  if(c.activity&&/crypto|MSB|digital asset/i.test(c.activity)) drivers.push({label:'Crypto / MSB industry exposure',pts:20});
+  if(c.activity&&/MSB/i.test(c.activity)) drivers.push({label:'MSB classification',pts:15});
+  const pepHit=(c.ubos||[]).some(u=>u.screening==='Review'||(u.pep&&u.pep!=='No'));
+  if(pepHit) drivers.push({label:'PEP partial match on UBO',pts:10});
+  const sanctionHit=(c.screeningData?.sanctions?.status==='Alert');
+  if(sanctionHit) drivers.push({label:'Sanctions match (unresolved)',pts:25});
+  if(c.jurisdiction==='UAE'||c.jurisdiction==='Cayman Islands') drivers.push({label:'Enhanced monitoring jurisdiction',pts:12});
+  if(c.jurisdiction==='United States'||c.jurisdiction==='United Kingdom'||c.jurisdiction==='Germany') drivers.push({label:'FATF-equivalent jurisdiction',pts:-8});
+  const missingDocs=(c.documents||[]).filter(d=>d[3]==='issue').length;
+  if(missingDocs>0) drivers.push({label:`${missingDocs} document(s) outstanding`,pts:missingDocs*3});
+  const hasMLRO=c.regulatory?.AMLOfficer&&c.regulatory.AMLOfficer!=='—';
+  if(hasMLRO) drivers.push({label:'AML Officer / MLRO in place',pts:-5});
+  return drivers;
+}
+
+function updateNextBestAction(c){
+  const nbaEl=document.getElementById('cv-nba-action');
+  const nbaReason=document.getElementById('cv-nba-reason');
+  const nbaBtns=document.getElementById('cv-nba-btns');
+  if(!nbaEl) return;
+
+  // Determine the most urgent action based on case state
+  const issues=(c.cddChecklist||[]).filter(i=>i[3]==='issue');
+  const sanctionAlert=c.screeningData?.sanctions?.status==='Alert';
+  const pendingDocs=(c.documents||[]).filter(d=>d[3]==='issue');
+  const pepReview=(c.ubos||[]).some(u=>u.screening==='Review');
+  const isOverdue=c.slaClass==='sla-over';
+
+  let action='', reason='', btns='';
+
+  if(sanctionAlert){
+    action='Disposition sanctions match — escalate to BSA Officer';
+    reason='Unresolved OFAC/sanctions alert blocks case progression and triggers mandatory BSA escalation';
+    btns=`<button class="btn btn-sm btn-primary" onclick="showToast('Escalated to BSA Officer · logged to audit trail')">Escalate to BSA →</button>`;
+  } else if(isOverdue && pendingDocs.length){
+    action=`Send reminder for ${pendingDocs[0][1]}`;
+    reason=`This document is on the critical path — case is ${c.sla} and this item is blocking CDD completion`;
+    btns=`<button class="btn btn-sm btn-primary" onclick="switchCaseTab(null,'cv-outreach');showToast('Draft loaded for outstanding document request')">Send Reminder →</button><button class="btn btn-sm" onclick="switchCaseTab(null,'cv-documents')">View Docs</button>`;
+  } else if(pepReview){
+    action='Formally disposition the PEP watchlist hit on UBO';
+    reason='Low-confidence PEP match requires analyst disposition before risk narrative can be confirmed';
+    btns=`<button class="btn btn-sm btn-primary" onclick="switchCaseTab(null,'cv-screening')">Review Screening →</button>`;
+  } else if(issues.length>0){
+    action=`Complete: ${issues[0][0]}`;
+    reason=issues[0][2];
+    btns=`<button class="btn btn-sm btn-primary" onclick="switchCaseTab(null,'cv-checklist')">View Checklist →</button>`;
+  } else if((c.cddChecklist||[]).filter(i=>i[3]==='done').length===(c.cddChecklist||[]).length && (c.cddChecklist||[]).length>0){
+    action='All items complete — submit decision';
+    reason='CDD checklist is fully signed off. Review risk narrative and submit your decision.';
+    btns=`<button class="btn btn-sm btn-primary" onclick="openDecisionModal()">Submit Decision →</button>`;
+  } else {
+    action='Continue CDD review — complete outstanding checklist items';
+    reason='Work through the CDD checklist to advance the case to decision stage';
+    btns=`<button class="btn btn-sm btn-primary" onclick="switchCaseTab(null,'cv-checklist')">Go to Checklist →</button>`;
+  }
+
+  nbaEl.textContent=action;
+  nbaReason.textContent=reason;
+  nbaBtns.innerHTML=btns;
+}
+
+function updateDecisionReadiness(c){
+  const el=document.getElementById('cv-readiness-detail');
+  if(!el) return;
+  const issues=(c.cddChecklist||[]).filter(i=>i[3]==='issue');
+  const pendingUBO=(c.ubos||[]).filter(u=>!u.idVerified?.startsWith('Verified')&&u.idVerified!=='Listed entity'&&u.idVerified!=='Fund admin cert.');
+  const sanctionAlert=c.screeningData?.sanctions?.status==='Alert';
+  const blocking=[];
+  if(issues.length) blocking.push(...issues.map(i=>i[0]+' — '+i[2]));
+  if(pendingUBO.length) blocking.push(pendingUBO.map(u=>`${u.name} — ID verification pending`).join(', '));
+  if(sanctionAlert) blocking.push('Sanctions match unresolved — BSA escalation required');
+  const isReady=blocking.length===0;
+  el.innerHTML=isReady
+    ? `<div style="display:flex;align-items:center;gap:7px;padding:4px 0"><span style="font-size:16px">✅</span><div><div style="font-size:12px;font-weight:700;color:var(--green-text)">Ready for Decision</div><div style="font-size:11px;color:var(--text-3)">All required items are complete</div></div></div>`
+    : `<div style="display:flex;align-items:center;gap:7px;padding:4px 0;margin-bottom:8px"><span style="font-size:16px">⚠️</span><div style="font-size:12px;font-weight:700;color:var(--amber-text)">Not Ready — ${blocking.length} item${blocking.length!==1?'s':''} blocking</div></div>`
+      + blocking.map(b=>`<div style="display:flex;align-items:flex-start;gap:6px;font-size:11px;color:var(--text-2);padding:4px 0;border-bottom:1px solid var(--border)"><span style="color:var(--red-text);flex-shrink:0">✕</span>${b}</div>`).join('');
+  // Also update compact version in left panel
+  const compactEl=document.getElementById('cv-readiness-compact');
+  if(compactEl) compactEl.innerHTML=isReady
+    ? `<span class="badge badge-green">✓ Ready</span>`
+    : `<span class="badge badge-amber">⚠ ${blocking.length} item${blocking.length!==1?'s':''} blocking</span>`;
+}
+
+function updateTabIndicators(c){
+  const tabStatus={
+    'tab-btn-business': 'done',
+    'tab-btn-ownership': (c.ubos||[]).some(u=>u.screening==='Alert')?'issue': (c.ubos||[]).some(u=>!u.idVerified?.startsWith('Verified')&&u.idVerified!=='Listed entity'&&u.idVerified!=='Fund admin cert.')?'review':'done',
+    'tab-btn-documents': (c.documents||[]).some(d=>d[3]==='issue')?'issue':(c.documents||[]).some(d=>d[3]==='review')?'review':'done',
+    'tab-btn-screening': c.screeningData?.sanctions?.status==='Alert'||c.screeningData?.pep?.status==='Alert'?'issue':c.screeningData?.pep?.status==='Review'||c.screeningData?.media?.status==='Review'?'review':'done',
+    'tab-btn-risk': 'done',
+    'tab-btn-checklist': (c.cddChecklist||[]).some(i=>i[3]==='issue')?'issue':(c.cddChecklist||[]).some(i=>i[3]==='review')?'review':'done',
+    'tab-btn-outreach': c.outreach?.status==='responded'?'done':c.outreach?.status==='sent'?'review':null,
+  };
+  const icons={done:' <span style="font-size:9px;color:var(--green-text)">✓</span>',review:' <span style="font-size:9px;color:var(--amber-text)">⚠</span>',issue:' <span style="font-size:9px;color:var(--red-text)">✕</span>'};
+  const labels={
+    'tab-btn-business':'Business Details','tab-btn-ownership':'Ownership & Control',
+    'tab-btn-documents':'Documents','tab-btn-screening':'Screening',
+    'tab-btn-risk':'Risk Assessment','tab-btn-checklist':'CDD Checklist','tab-btn-outreach':'Outreach'
+  };
+  Object.entries(tabStatus).forEach(([id,status])=>{
+    const el=document.getElementById(id);
+    if(el&&status) el.innerHTML=labels[id]+(icons[status]||'');
+  });
+}
+
+function updateContextualActions(c){
+  const el=document.getElementById('cv-quick-actions');
+  if(!el) return;
+  const issues=(c.cddChecklist||[]).filter(i=>i[3]==='issue');
+  const pendingDocs=(c.documents||[]).filter(d=>d[3]==='issue');
+  const actions=[];
+  // Dynamic actions based on state
+  if(pendingDocs.length){
+    actions.push(`<button class="btn btn-sm btn-ghost" style="justify-content:flex-start;font-size:11px" onclick="switchCaseTab(null,'cv-outreach');showToast('Document request draft loaded')">📎 Request: ${pendingDocs[0][1].replace(/ — .*/,'').substring(0,28)}</button>`);
+  }
+  if(c.outreach?.thread?.length>0 && c.outreach?.status!=='responded'){
+    actions.push(`<button class="btn btn-sm btn-ghost" style="justify-content:flex-start;font-size:11px" onclick="switchCaseTab(null,'cv-outreach');showToast('Follow-up draft prepared')">📨 Send Follow-up Reminder</button>`);
+  }
+  if(c.screeningData?.sanctions?.status==='Alert'){
+    actions.push(`<button class="btn btn-sm" style="justify-content:flex-start;font-size:11px;background:var(--red-dim);border-color:var(--red-dim);color:var(--red-text)" onclick="showToast('Escalated to BSA Officer · logged')">⚠ Escalate to BSA Officer</button>`);
+  }
+  if(c.riskScore>=70){
+    actions.push(`<button class="btn btn-sm btn-ghost" style="justify-content:flex-start;font-size:11px" onclick="showToast('EDD workflow triggered')">🔍 Trigger EDD Review</button>`);
+  }
+  // Always available
+  actions.push(`<button class="btn btn-sm btn-ghost" style="justify-content:flex-start;font-size:11px" onclick="openDecisionModal()">📋 Submit Decision</button>`);
+  actions.push(`<button class="btn btn-sm btn-ghost" style="justify-content:flex-start;font-size:11px" onclick="showToast('Escalated to Compliance team')">⬆ Escalate to Compliance</button>`);
+  el.innerHTML=actions.slice(0,5).join('');
+}
+
+function toggleRiskDrivers(){
+  const body=document.getElementById('cv-risk-drivers-body');
+  const toggle=document.getElementById('cv-drivers-toggle');
+  if(!body) return;
+  const open=body.style.display==='none';
+  body.style.display=open?'block':'none';
+  if(toggle) toggle.textContent=open?'Hide ▴':'Show ▾';
+}
+
 
 function populateCvBusiness(c){
   const b=document.getElementById('cv-kv-biz');
