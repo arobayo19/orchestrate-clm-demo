@@ -453,8 +453,8 @@ button{cursor:pointer}
 
           <div id="cv-overview" class="case-tab-content active">
 
-            <!-- ① Next Best Action -->
-            <div id="cv-nba" style="background:#F0FDF4;border:1px solid #86EFAC;border-radius:var(--r2);padding:10px 14px;margin-bottom:12px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+            <!-- ① NBA Banner -->
+            <div id="cv-nba" style="background:#F0FDF4;border:1px solid #86EFAC;border-radius:var(--r2);padding:10px 14px;margin-bottom:14px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
               <div style="display:flex;align-items:flex-start;gap:10px">
                 <div style="width:28px;height:28px;border-radius:6px;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">
                   <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2"><path d="M8 1l1.8 3.6L14 5.4l-3 2.9.7 4.1L8 10.4l-3.7 1.9.7-4.1-3-2.9 4.2-.8L8 1z"/></svg>
@@ -468,69 +468,104 @@ button{cursor:pointer}
               <div style="display:flex;gap:6px;flex-shrink:0" id="cv-nba-btns"></div>
             </div>
 
-            <!-- ② Case Health strip — one-line status per section -->
-            <div class="panel" style="margin-bottom:12px">
-              <div class="panel-hd"><span class="panel-title">Case Health</span><span style="font-size:11px;color:var(--text-3)">Click any section to navigate</span></div>
+            <!-- ② Case Health strip -->
+            <div class="panel" style="margin-bottom:14px">
+              <div class="panel-hd"><span class="panel-title">Case Health</span><span style="font-size:11px;color:var(--text-3)">Click any section to jump</span></div>
               <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0" id="cv-case-health"></div>
             </div>
 
-            <!-- ③ Main 3-col layout -->
-            <div style="display:grid;grid-template-columns:1fr 1.4fr 0.8fr;gap:10px">
-              <div style="display:flex;flex-direction:column;gap:10px">
-                <div class="panel">
-                  <div class="panel-hd"><span class="panel-title">Entity Details</span><button class="btn btn-sm btn-ghost" onclick="switchCaseTab(null,'cv-business')">Edit</button></div>
-                  <div class="panel-body"><div class="kv" id="cv-kv-entity"></div></div>
-                </div>
-                <div class="panel">
-                  <div class="panel-hd">
-                    <span class="panel-title">Ownership Snapshot</span>
-                    <button class="btn btn-sm btn-ghost" onclick="switchCaseTab(null,'cv-ownership')" style="font-size:10px">Full view →</button>
-                  </div>
-                  <div class="panel-body" id="cv-ownership-snap"></div>
-                </div>
+            <!-- ③ TOP ROW: Entity + Risk side by side -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+              <div class="panel">
+                <div class="panel-hd"><span class="panel-title">Entity Details</span><button class="btn btn-sm btn-ghost" onclick="switchCaseTab(null,'cv-business')">Edit</button></div>
+                <div class="panel-body"><div class="kv" id="cv-kv-entity"></div></div>
               </div>
-              <div style="display:flex;flex-direction:column;gap:10px">
-                <div class="panel" style="flex:1">
-                  <div class="panel-hd">
-                    <span class="panel-title">AI Risk Memo</span>
-                    <span class="badge" style="background:#DBEAFE;color:#1D4ED8;font-size:10px">AI Generated</span>
-                  </div>
-                  <div class="panel-body" style="font-size:12px;line-height:1.7;color:var(--text-2)" id="cv-summary"></div>
-                </div>
-                <div class="panel">
-                  <div class="panel-hd">
-                    <span class="panel-title">Outstanding Items</span>
-                    <span class="badge badge-gray" id="cv-outstanding-count"></span>
-                  </div>
-                  <div class="panel-body" id="cv-outstanding"></div>
-                </div>
-              </div>
-              <div style="display:flex;flex-direction:column;gap:10px">
-                <div class="panel">
-                  <div class="panel-hd"><span class="panel-title">Risk Score</span></div>
-                  <div class="panel-body" style="text-align:center;padding:14px 10px">
-                    <div style="font-size:40px;font-weight:700;letter-spacing:-.04em;line-height:1" id="cv-score-ov">—</div>
-                    <div style="font-size:11px;color:var(--text-3);margin-bottom:10px">/100</div>
-                    <div style="height:5px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin-bottom:8px">
-                      <div id="cv-score-bar-ov" style="height:100%;border-radius:99px;width:0%;transition:width .5s"></div>
+              <div class="panel">
+                <div class="panel-hd"><span class="panel-title">Risk Snapshot</span><button class="btn btn-sm btn-ghost" onclick="switchCaseTab(null,'cv-risk')">Full assessment →</button></div>
+                <div class="panel-body">
+                  <div style="display:flex;align-items:center;gap:16px;margin-bottom:10px">
+                    <div style="text-align:center">
+                      <div style="font-size:36px;font-weight:700;letter-spacing:-.04em;line-height:1" id="cv-score-ov">—</div>
+                      <div style="font-size:10px;color:var(--text-3)">/100</div>
                     </div>
-                    <div style="font-size:11px;font-weight:600" id="cv-score-tier">—</div>
+                    <div style="flex:1">
+                      <div style="height:5px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin-bottom:6px"><div id="cv-score-bar-ov" style="height:100%;border-radius:99px;width:0%;transition:width .5s"></div></div>
+                      <div id="cv-score-tier" style="margin-bottom:8px"></div>
+                      <div class="kv" id="cv-kv-risk" style="font-size:11px"></div>
+                    </div>
                   </div>
-                </div>
-                <div class="panel">
-                  <div class="panel-hd" style="cursor:pointer" onclick="toggleRiskDrivers()">
-                    <span class="panel-title">Risk Drivers</span>
-                    <span style="font-size:11px;color:var(--accent)" id="cv-drivers-toggle">Show ▾</span>
-                  </div>
-                  <div id="cv-risk-drivers-body" style="display:none">
-                    <div class="panel-body" style="padding:8px 10px" id="cv-risk-drivers"></div>
-                  </div>
-                </div>
-                <div class="panel">
-                  <div class="panel-hd"><span class="panel-title">Decision Readiness</span></div>
-                  <div class="panel-body" id="cv-readiness-detail"></div>
+                  <div id="cv-risk-drivers-mini" style="border-top:1px solid var(--border);padding-top:8px"></div>
                 </div>
               </div>
+            </div>
+
+            <!-- ④ AI Risk Memo -->
+            <div class="panel" style="margin-bottom:10px">
+              <div class="panel-hd">
+                <span class="panel-title">AI Risk Memo</span>
+                <span class="badge" style="background:#DBEAFE;color:#1D4ED8;font-size:10px">AI Generated</span>
+              </div>
+              <div class="panel-body" style="font-size:12px;line-height:1.7;color:var(--text-2)" id="cv-summary"></div>
+            </div>
+
+            <!-- ⑤ TWO COL: Ownership + Screening -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+              <div class="panel">
+                <div class="panel-hd">
+                  <span class="panel-title">Ownership & Control</span>
+                  <button class="btn btn-sm btn-ghost" onclick="switchCaseTab(null,'cv-ownership')" style="font-size:10px">Full view →</button>
+                </div>
+                <div class="panel-body" id="cv-ownership-snap"></div>
+              </div>
+              <div class="panel">
+                <div class="panel-hd">
+                  <span class="panel-title">Screening Summary</span>
+                  <button class="btn btn-sm btn-ghost" onclick="switchCaseTab(null,'cv-screening')" style="font-size:10px">Full view →</button>
+                </div>
+                <div class="panel-body" id="cv-screening-snap"></div>
+              </div>
+            </div>
+
+            <!-- ⑥ TWO COL: Documents + Purpose -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+              <div class="panel">
+                <div class="panel-hd">
+                  <span class="panel-title">Documents</span>
+                  <button class="btn btn-sm btn-ghost" onclick="switchCaseTab(null,'cv-documents')" style="font-size:10px">Full view →</button>
+                </div>
+                <div class="panel-body" id="cv-docs-snap"></div>
+              </div>
+              <div class="panel">
+                <div class="panel-hd">
+                  <span class="panel-title">Purpose & Activity</span>
+                  <button class="btn btn-sm btn-ghost" onclick="switchCaseTab(null,'cv-purpose')" style="font-size:10px">Full view →</button>
+                </div>
+                <div class="panel-body" id="cv-purpose-snap"></div>
+              </div>
+            </div>
+
+            <!-- ⑦ Outstanding Items + Decision Readiness -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+              <div class="panel">
+                <div class="panel-hd">
+                  <span class="panel-title">Outstanding Items</span>
+                  <span class="badge badge-gray" id="cv-outstanding-count"></span>
+                </div>
+                <div class="panel-body" id="cv-outstanding"></div>
+              </div>
+              <div class="panel">
+                <div class="panel-hd"><span class="panel-title">Decision Readiness</span></div>
+                <div class="panel-body" id="cv-readiness-detail"></div>
+              </div>
+            </div>
+
+            <!-- ⑧ Recent Activity -->
+            <div class="panel" style="margin-bottom:10px">
+              <div class="panel-hd">
+                <span class="panel-title">Recent Activity</span>
+                <button class="btn btn-sm btn-ghost" onclick="switchCaseTab(null,'cv-activity')" style="font-size:10px">Full log →</button>
+              </div>
+              <div class="panel-body" id="cv-activity-snap"></div>
             </div>
 
           </div>
@@ -2096,108 +2131,151 @@ function switchCaseTab(btn,tabId){
 function kv(pairs){return pairs.map(([l,v])=>`<span class="kv-l">${l}</span><span class="kv-v">${v||'—'}</span>`).join('');}
 
 function populateCvOverview(c){
-  // ── Entity KV ──
+  // Entity KV
   const eEl=document.getElementById('cv-kv-entity');
-  if(eEl) eEl.innerHTML=kv([
-    ['Legal Name',c.client],['Entity Type',c.entityType||'—'],
-    ['Jurisdiction',c.jurisdiction],['Industry',c.activity||'—'],['Assignee',c.assignee]
-  ]);
+  if(eEl) eEl.innerHTML=kv([['Legal Name',c.client],['Entity Type',c.entityType||'—'],['Jurisdiction',c.jurisdiction],['Industry',c.activity||'—'],['Assignee',c.assignee]]);
 
-  // ── AI Risk Memo ──
-  const sEl=document.getElementById('cv-summary');
-  if(sEl) sEl.textContent=c.riskAiSummary||'—';
-
-  // ── Outstanding Items ──
-  const oEl=document.getElementById('cv-outstanding');
-  const oCtEl=document.getElementById('cv-outstanding-count');
-  const issues=(c.cddChecklist||[]).filter(i=>i[3]==='issue');
-  const reviews=(c.cddChecklist||[]).filter(i=>i[3]==='review');
-  if(oCtEl) oCtEl.textContent=(issues.length+reviews.length)+' item'+(issues.length+reviews.length!==1?'s':'');
-  if(oEl){
-    const allItems=[...issues,...reviews];
-    oEl.innerHTML=allItems.length
-      ? allItems.map(i=>`
-        <div style="display:flex;align-items:flex-start;gap:7px;padding:6px 0;border-bottom:1px solid var(--border)">
-          <span style="font-size:12px;flex-shrink:0;margin-top:1px">${i[3]==='issue'?'✕':'!'}</span>
-          <div>
-            <div style="font-size:12px;font-weight:600;color:${i[3]==='issue'?'var(--red-text)':'var(--amber-text)'}">${i[0]}</div>
-            <div style="font-size:11px;color:var(--text-3)">${i[2]}</div>
-          </div>
-        </div>`).join('')
-      : '<div style="font-size:12px;color:var(--green-text);padding:4px 0">✓ All items complete — ready for decision</div>';
-  }
-
-  // ── Risk score (overview col) ──
+  // Risk score inline
   const score=c.riskScore||0;
+  const color=score>=70?'var(--red-text)':score>=50?'var(--amber)':'var(--green-text)';
   const scoreOv=document.getElementById('cv-score-ov');
   const barOv=document.getElementById('cv-score-bar-ov');
   const tierOv=document.getElementById('cv-score-tier');
-  const color=score>=70?'var(--red-text)':score>=50?'var(--amber)':'var(--green-text)';
   if(scoreOv){scoreOv.textContent=score;scoreOv.style.color=color;}
   if(barOv){barOv.style.width=score+'%';barOv.style.background=color;}
-  if(tierOv) tierOv.innerHTML=`<span class="badge ${c.riskClass}" style="border-radius:99px">${c.riskTier} Risk</span>`;
+  if(tierOv) tierOv.innerHTML=`<span class="badge ${c.riskClass}" style="border-radius:99px;padding:2px 10px">${c.riskTier} Risk</span>`;
+  const rkv=document.getElementById('cv-kv-risk');
+  if(rkv) rkv.innerHTML=kv([['Pipeline',c.pipeline],['SLA',`<span class="${c.slaClass}">${c.sla}</span>`]]);
 
-  // ── Risk drivers breakdown ──
-  const driversEl=document.getElementById('cv-risk-drivers');
-  if(driversEl){
-    const drivers=computeRiskDrivers(c);
-    driversEl.innerHTML=drivers.map(d=>`
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);font-size:11px">
-        <span style="color:var(--text-2)">${d.label}</span>
-        <span style="font-weight:700;color:${d.pts>0?'var(--red-text)':'var(--green-text)'}">${d.pts>0?'+':''}${d.pts}</span>
-      </div>`).join('');
+  // Risk drivers mini
+  const driversMini=document.getElementById('cv-risk-drivers-mini');
+  if(driversMini){
+    const drivers=computeRiskDrivers(c).slice(0,4);
+    driversMini.innerHTML=drivers.map(d=>`<div style="display:flex;align-items:center;justify-content:space-between;font-size:11px;padding:3px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text-2)">${d.label}</span><span style="font-weight:700;color:${d.pts>0?'var(--red-text)':'var(--green-text)'}">${d.pts>0?'+':''}${d.pts}</span></div>`).join('')+
+      `<button class="btn btn-sm btn-ghost" style="margin-top:6px;font-size:10px;width:100%;justify-content:center" onclick="switchCaseTab(null,'cv-risk')">Full risk assessment →</button>`;
   }
 
-  // ── Ownership snapshot ──
+  // AI Risk Memo
+  const sEl=document.getElementById('cv-summary');
+  if(sEl) sEl.textContent=c.riskAiSummary||'—';
+
+  // Ownership snapshot
   const ownEl=document.getElementById('cv-ownership-snap');
   if(ownEl){
     const ubos=c.ubos||[];
     ownEl.innerHTML=ubos.length
       ? ubos.map(u=>`
         <div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border)">
-          <div style="flex:1">
-            <span style="font-size:12px;font-weight:600">${u.name}</span>
-            <span style="font-size:11px;color:var(--text-3);margin-left:5px">${u.stake}</span>
-          </div>
+          <div style="flex:1"><span style="font-size:12px;font-weight:600">${u.name}</span><span style="font-size:11px;color:var(--text-3);margin-left:5px">${u.stake}</span></div>
           <span class="badge ${(u.idVerified&&u.idVerified.startsWith('Verified'))?'badge-green':'badge-amber'}" style="font-size:9px">${(u.idVerified&&u.idVerified.startsWith('Verified'))?'✓ Verified':'⚠ Pending'}</span>
-          ${u.screening==='Alert'?`<span class="badge badge-red" style="font-size:9px">Alert</span>`:''}
+          ${u.screening==='Alert'?'<span class="badge badge-red" style="font-size:9px">Alert</span>':''}
+          ${u.pep==='Yes'?'<span class="badge badge-amber" style="font-size:9px">PEP</span>':''}
         </div>`).join('')+
-        `<button class="btn btn-sm btn-ghost" style="margin-top:8px;font-size:11px;width:100%;justify-content:center" onclick="switchCaseTab(null,'cv-ownership')">View full ownership structure →</button>`
+        `<div style="margin-top:8px;font-size:11px;color:var(--text-3)">${(c.controllers||[]).length} control persons identified</div>
+        <button class="btn btn-sm btn-ghost" style="margin-top:6px;font-size:10px;width:100%;justify-content:center" onclick="switchCaseTab(null,'cv-ownership')">View ownership structure →</button>`
       : '<div style="font-size:12px;color:var(--text-3)">No UBO data on file</div>';
   }
 
-  // ── Next Best Action ──
-  updateNextBestAction(c);
-
-  // ── Decision Readiness ──
-  updateDecisionReadiness(c);
-
-  // ── Case Health strip ──
-  updateCaseHealth(c);
-
-  // ── SLA banner ──
-  const slaBanner=document.getElementById('cv-sla-banner');
-  if(slaBanner){
-    if(c.slaClass==='sla-over'){
-      slaBanner.style.display='flex';
-      slaBanner.textContent='🔴 SLA BREACHED — '+c.sla.toUpperCase();
-    } else if(c.slaClass==='sla-due'){
-      slaBanner.style.display='flex';
-      slaBanner.style.background='var(--amber-dim)';
-      slaBanner.style.borderColor='#FCD34D';
-      slaBanner.style.color='var(--amber-text)';
-      slaBanner.textContent='⚠ DUE TODAY — '+c.sla;
-    } else {
-      slaBanner.style.display='none';
-    }
+  // Screening snapshot
+  const scrEl=document.getElementById('cv-screening-snap');
+  if(scrEl){
+    const sd=c.screeningData||{};
+    const cats=[{k:'sanctions',l:'Sanctions'},{k:'pep',l:'PEP'},{k:'media',l:'Adverse Media'}];
+    scrEl.innerHTML=cats.map(cat=>{
+      const d=sd[cat.k]||{};
+      const cls=d.status==='Clear'?'badge-green':d.status==='Alert'?'badge-red':'badge-amber';
+      const icon=d.status==='Clear'?'✓':d.status==='Alert'?'⚠':'!';
+      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border)">
+        <span style="font-size:12px;color:var(--text-2)">${cat.l}</span>
+        <span class="badge ${cls}" style="font-size:10px">${icon} ${d.status||'Pending'}</span>
+      </div>`;
+    }).join('')+
+    `<button class="btn btn-sm btn-ghost" style="margin-top:8px;font-size:10px;width:100%;justify-content:center" onclick="switchCaseTab(null,'cv-screening')">View screening detail →</button>`;
   }
 
-  // ── Tab status indicators ──
-  updateTabIndicators(c);
+  // Documents snapshot
+  const docsEl=document.getElementById('cv-docs-snap');
+  if(docsEl){
+    const docs=c.documents||[];
+    const verified=docs.filter(d=>d[3]==='done').length;
+    const issues=docs.filter(d=>d[3]==='issue');
+    const reviews=docs.filter(d=>d[3]==='review');
+    docsEl.innerHTML=`
+      <div style="display:flex;gap:8px;margin-bottom:10px">
+        <div style="flex:1;background:var(--green-dim);border-radius:var(--r);padding:6px 10px;text-align:center">
+          <div style="font-size:18px;font-weight:700;color:var(--green-text)">${verified}</div>
+          <div style="font-size:10px;color:var(--green-text)">Verified</div>
+        </div>
+        <div style="flex:1;background:${issues.length?'var(--red-dim)':'var(--surface-2)'};border-radius:var(--r);padding:6px 10px;text-align:center">
+          <div style="font-size:18px;font-weight:700;color:${issues.length?'var(--red-text)':'var(--text-3)'}">${issues.length}</div>
+          <div style="font-size:10px;color:${issues.length?'var(--red-text)':'var(--text-3)'}">Outstanding</div>
+        </div>
+        <div style="flex:1;background:${reviews.length?'var(--amber-dim)':'var(--surface-2)'};border-radius:var(--r);padding:6px 10px;text-align:center">
+          <div style="font-size:18px;font-weight:700;color:${reviews.length?'var(--amber-text)':'var(--text-3)'}">${reviews.length}</div>
+          <div style="font-size:10px;color:${reviews.length?'var(--amber-text)':'var(--text-3)'}">Review</div>
+        </div>
+      </div>
+      ${issues.map(d=>`<div style="font-size:11px;color:var(--red-text);padding:3px 0;border-bottom:1px solid var(--border)">✕ ${d[1]}</div>`).join('')}
+      <button class="btn btn-sm btn-ghost" style="margin-top:8px;font-size:10px;width:100%;justify-content:center" onclick="switchCaseTab(null,'cv-documents')">View all documents →</button>
+    `;
+  }
 
-  // ── Contextual quick actions ──
+  // Purpose snapshot
+  const purpEl=document.getElementById('cv-purpose-snap');
+  if(purpEl) purpEl.innerHTML=kv([
+    ['Account Purpose',c.accountPurpose||'Operating account'],
+    ['Source of Funds',c.sourceOfFunds||'Business revenue'],
+    ['Expected Deposits',c.expectedDeposits||'—'],
+    ['Transaction Volume',c.expectedVolume||'—'],
+    ['Countries',c.countries||c.jurisdiction],
+  ])+`<button class="btn btn-sm btn-ghost" style="margin-top:8px;font-size:10px;width:100%;justify-content:center" onclick="switchCaseTab(null,'cv-purpose')">View activity profile →</button>`;
+
+  // Outstanding Items
+  const oEl=document.getElementById('cv-outstanding');
+  const oCtEl=document.getElementById('cv-outstanding-count');
+  const issueItems=(c.cddChecklist||[]).filter(i=>i[3]==='issue');
+  const reviewItems=(c.cddChecklist||[]).filter(i=>i[3]==='review');
+  if(oCtEl) oCtEl.textContent=(issueItems.length+reviewItems.length)+' item'+(issueItems.length+reviewItems.length!==1?'s':'');
+  if(oEl){
+    const all=[...issueItems,...reviewItems];
+    oEl.innerHTML=all.length
+      ? all.map(i=>`<div style="display:flex;align-items:flex-start;gap:7px;padding:6px 0;border-bottom:1px solid var(--border)">
+          <span style="font-size:12px;flex-shrink:0;color:${i[3]==='issue'?'var(--red-text)':'var(--amber-text)'};margin-top:1px">${i[3]==='issue'?'✕':'!'}</span>
+          <div><div style="font-size:12px;font-weight:600;color:${i[3]==='issue'?'var(--red-text)':'var(--amber-text)'}">${i[0]}</div><div style="font-size:11px;color:var(--text-3)">${i[2]}</div></div>
+        </div>`).join('')
+      : '<div style="font-size:12px;color:var(--green-text);padding:4px 0">✓ All items complete — ready for decision</div>';
+  }
+
+  // Decision Readiness
+  updateDecisionReadiness(c);
+
+  // Recent Activity snapshot (last 3 entries)
+  const actEl=document.getElementById('cv-activity-snap');
+  if(actEl){
+    const log=c.activityLog||[];
+    actEl.innerHTML=log.slice(0,3).map(([ts,actor,action])=>`
+      <div style="display:flex;gap:10px;padding:6px 0;border-bottom:1px solid var(--border)">
+        <div style="font-family:'SF Mono','Fira Code',monospace;font-size:10px;color:var(--text-3);width:90px;flex-shrink:0;padding-top:2px">${ts}</div>
+        <div><div style="font-size:12px;font-weight:600">${action}</div><div style="font-size:11px;color:var(--text-3)">${actor}</div></div>
+      </div>`).join('')+
+      (log.length>3?`<button class="btn btn-sm btn-ghost" style="margin-top:6px;font-size:10px;width:100%;justify-content:center" onclick="switchCaseTab(null,'cv-activity')">View full activity log →</button>`:'');
+  }
+
+  // SLA banner
+  const slaBanner=document.getElementById('cv-sla-banner');
+  if(slaBanner){
+    if(c.slaClass==='sla-over'){slaBanner.style.display='flex';slaBanner.textContent='🔴 SLA BREACHED — '+c.sla.toUpperCase();}
+    else if(c.slaClass==='sla-due'){slaBanner.style.display='flex';slaBanner.style.background='var(--amber-dim)';slaBanner.style.borderColor='#FCD34D';slaBanner.style.color='var(--amber-text)';slaBanner.textContent='⚠ DUE TODAY — '+c.sla;}
+    else{slaBanner.style.display='none';}
+  }
+
+  // NBA, Case Health, Tab indicators, Quick Actions
+  updateNextBestAction(c);
+  updateCaseHealth(c);
+  updateTabIndicators(c);
   updateContextualActions(c);
 }
+
 
 function computeRiskDrivers(c){
   const drivers=[];
