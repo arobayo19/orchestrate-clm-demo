@@ -432,7 +432,7 @@ button{cursor:pointer}
               <div class="cm-label">CDD Progress</div>
               <div style="font-size:10px;font-weight:600;color:var(--text-3)" id="cv-progress-label">0/0</div>
             </div>
-            <div style="height:6px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin-bottom:4px">
+            <div style="height:3px;background:var(--border);border-radius:99px;overflow:hidden;margin-bottom:4px">
               <div id="cv-progress-bar" style="height:100%;background:var(--accent);border-radius:99px;width:0%;transition:width .5s"></div>
             </div>
           </div>
@@ -472,14 +472,14 @@ button{cursor:pointer}
           <div id="cv-overview" class="case-tab-content active">
 
             <!-- ① NBA Banner -->
-            <div id="cv-nba" style="background:var(--green-dim);border:1px solid var(--green-border);border-radius:var(--r2);padding:10px 14px;margin-bottom:14px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+            <div id="cv-nba" style="background:var(--surface-2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:var(--r2);padding:10px 14px;margin-bottom:14px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
               <div style="display:flex;align-items:flex-start;gap:10px">
-                <div style="width:28px;height:28px;border-radius:6px;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">
-                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2"><path d="M8 1l1.8 3.6L14 5.4l-3 2.9.7 4.1L8 10.4l-3.7 1.9.7-4.1-3-2.9 4.2-.8L8 1z"/></svg>
+                <div style="width:28px;height:28px;border-radius:6px;background:var(--accent-dim);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M8 1l1.8 3.6L14 5.4l-3 2.9.7 4.1L8 10.4l-3.7 1.9.7-4.1-3-2.9 4.2-.8L8 1z"/></svg>
                 </div>
                 <div>
-                  <div style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px">AI · Next Best Action</div>
-                  <div style="font-size:13px;font-weight:600;color:var(--text)" id="cv-nba-action">—</div>
+                  <div style="font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px">AI · Next Best Action</div>
+                  <div style="font-size:13px;font-weight:600;color:var(--text);line-height:1.4" id="cv-nba-action">—</div>
                   <div style="font-size:11px;color:var(--text-3);margin-top:2px" id="cv-nba-reason">—</div>
                 </div>
               </div>
@@ -503,16 +503,16 @@ button{cursor:pointer}
                 <div class="panel-body">
                   <div style="display:flex;align-items:center;gap:16px;margin-bottom:10px">
                     <div style="text-align:center">
-                      <div style="font-size:36px;font-weight:700;letter-spacing:-.04em;line-height:1" id="cv-score-ov">—</div>
+                      <div style="font-size:28px;font-weight:700;letter-spacing:-.04em;line-height:1" id="cv-score-ov">—</div>
                       <div style="font-size:10px;color:var(--text-3)">/100</div>
                     </div>
                     <div style="flex:1">
-                      <div style="height:5px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin-bottom:6px"><div id="cv-score-bar-ov" style="height:100%;border-radius:99px;width:0%;transition:width .5s"></div></div>
+                      <div style="height:4px;background:var(--border);border-radius:99px;overflow:hidden;margin-bottom:6px"><div id="cv-score-bar-ov" style="height:100%;border-radius:99px;width:0%;transition:width .5s;opacity:.8"></div></div>
                       <div id="cv-score-tier" style="margin-bottom:8px"></div>
                       <div class="kv" id="cv-kv-risk" style="font-size:11px"></div>
                     </div>
                   </div>
-                  <div id="cv-risk-drivers-mini" style="border-top:1px solid var(--border);padding-top:8px"></div>
+                  <div id="cv-risk-drivers-mini" style="border-top:1px solid var(--border);padding-top:8px;margin-top:4px"></div>
                 </div>
               </div>
             </div>
@@ -521,7 +521,7 @@ button{cursor:pointer}
             <div class="panel" style="margin-bottom:10px">
               <div class="panel-hd">
                 <span class="panel-title">AI Risk Memo</span>
-                <span class="badge" style="background:var(--blue-dim);color:var(--blue-text);font-size:10px">AI Generated</span>
+                <span class="badge" style="background:var(--surface-2);color:var(--text-3);font-size:10px;border:1px solid var(--border)">AI</span>
               </div>
               <div class="panel-body" style="font-size:12px;line-height:1.7;color:var(--text-2)" id="cv-summary"></div>
             </div>
@@ -725,7 +725,7 @@ button{cursor:pointer}
             </div>
 
             <!-- Monitoring profile -->
-            <div class="panel" style="border-left:3px solid var(--accent)">
+            <div class="panel" style="border-left:2px solid var(--border-2)">
               <div class="panel-hd" style="background:var(--green-dim)">
                 <span class="panel-title" style="color:var(--green-text)">Monitoring Profile</span>
                 <span class="badge badge-green" style="font-size:10px">Active — feeds transaction monitoring</span>
@@ -810,7 +810,7 @@ button{cursor:pointer}
             <div class="panel" style="margin-bottom:10px">
               <div class="panel-hd">
                 <span class="panel-title">AI Risk Narrative</span>
-                <span class="badge" style="background:var(--blue-dim);color:var(--blue-text);font-size:10px">AI Drafted</span>
+                <span class="badge" style="background:var(--surface-2);color:var(--text-3);font-size:10px;border:1px solid var(--border)">AI Draft</span>
                 <div style="display:flex;gap:6px;margin-left:auto">
                   <button class="btn btn-sm btn-ghost" onclick="editRiskNarrative()">Edit</button>
                   <button class="btn btn-sm btn-primary" onclick="confirmRiskNarrative()">Confirm & Attach</button>
@@ -2418,7 +2418,7 @@ function updateTabIndicators(c){
     'tab-btn-risk': (c.cddChecklist||[]).some(i=>i[3]==='issue')?'issue':(c.cddChecklist||[]).some(i=>i[3]==='review')?'review':'done',
     'tab-btn-outreach': c.outreach?.status==='responded'?'done':c.outreach?.status==='sent'?'review':null,
   };
-  const icons={done:' <span style="font-size:9px;color:var(--green-text)">✓</span>',review:' <span style="font-size:9px;color:var(--amber-text)">⚠</span>',issue:' <span style="font-size:9px;color:var(--red-text)">✕</span>'};
+  const icons={done:' <span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--accent);vertical-align:middle;margin-left:3px"></span>',review:' <span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--amber);vertical-align:middle;margin-left:3px"></span>',issue:' <span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--red-text);vertical-align:middle;margin-left:3px"></span>'};
   const labels={
     'tab-btn-business':'Business Details','tab-btn-ownership':'Ownership & Control',
     'tab-btn-documents':'Documents','tab-btn-screening':'Screening',
@@ -2463,64 +2463,48 @@ function updateCaseHealth(c){
   const ubos=c.ubos||[];
   const issues=(c.cddChecklist||[]).filter(i=>i[3]==='issue');
 
-  // Compute status for each section
   const sections=[
-    {
-      tab:'cv-business',label:'Business Details',icon:'🏢',
-      status:'done',
-      summary:'Entity verified · Registration confirmed',
-    },
-    {
-      tab:'cv-ownership',label:'Ownership & Control',icon:'👥',
+    {tab:'cv-business',label:'Business Details',icon:'🏢',status:'done',summary:'Entity verified · Registration confirmed'},
+    {tab:'cv-ownership',label:'Ownership & Control',icon:'👥',
       status:ubos.some(u=>u.screening==='Alert')?'issue':ubos.some(u=>!u.idVerified?.startsWith('Verified')&&u.idVerified!=='Listed entity'&&u.idVerified!=='Fund admin cert.')?'review':'done',
-      summary:ubos.some(u=>u.screening==='Alert')?'Alert — sanctions match on UBO':ubos.some(u=>!u.idVerified?.startsWith('Verified')&&u.idVerified!=='Listed entity')?'UBO ID verification pending':ubos.length+' UBOs identified · All verified',
-    },
-    {
-      tab:'cv-purpose',label:'Purpose & Activity',icon:'📊',
+      summary:ubos.some(u=>u.screening==='Alert')?'Alert on UBO':ubos.some(u=>!u.idVerified?.startsWith('Verified')&&u.idVerified!=='Listed entity')?'UBO ID pending':ubos.length+' UBOs · All verified'},
+    {tab:'cv-purpose',label:'Purpose & Activity',icon:'📊',
       status:c.activity&&/crypto|MSB/i.test(c.activity)?'review':'done',
-      summary:c.activity&&/crypto|MSB/i.test(c.activity)?'Activity flag: Crypto/MSB monitoring required':'Activity profile within expectations',
-    },
-    {
-      tab:'cv-documents',label:'Documents',icon:'📂',
+      summary:c.activity&&/crypto|MSB/i.test(c.activity)?'Activity flag: Crypto/MSB monitoring required':'Within expectations'},
+    {tab:'cv-documents',label:'Documents',icon:'📂',
       status:docs.some(d=>d[3]==='issue')?'issue':docs.some(d=>d[3]==='review')?'review':'done',
-      summary:docs.filter(d=>d[3]==='issue').length+' outstanding · '+docs.filter(d=>d[3]==='done').length+'/'+docs.length+' verified',
-    },
-    {
-      tab:'cv-screening',label:'Screening',icon:'🔍',
+      summary:docs.filter(d=>d[3]==='issue').length+' outstanding · '+docs.filter(d=>d[3]==='done').length+'/'+docs.length+' verified'},
+    {tab:'cv-screening',label:'Screening',icon:'🔍',
       status:sd.sanctions?.status==='Alert'?'issue':sd.pep?.status==='Review'||sd.media?.status==='Review'?'review':'done',
-      summary:sd.sanctions?.status==='Alert'?'OFAC match — BSA escalation required':sd.pep?.status==='Review'?'PEP watchlist hit — disposition pending':'All screens clear',
-    },
-    {
-      tab:'cv-risk',label:'Risk & Decision',icon:'⚖',
+      summary:sd.sanctions?.status==='Alert'?'Sanctions — escalation required':sd.pep?.status==='Review'?'PEP hit · disposition pending':'All screens clear'},
+    {tab:'cv-risk',label:'Risk & Decision',icon:'⚖',
       status:issues.length>0?'issue':'done',
-      summary:issues.length>0?issues.length+' item(s) blocking decision':'Risk narrative confirmed · Ready for decision',
-    },
-    {
-      tab:'cv-outreach',label:'Outreach',icon:'✉',
+      summary:issues.length>0?issues.length+' item(s) blocking':'Narrative confirmed · Ready'},
+    {tab:'cv-outreach',label:'Outreach',icon:'✉',
       status:c.outreach?.status==='responded'?'done':c.outreach?.status==='sent'?'review':'done',
-      summary:c.outreach?.status==='responded'?'Client responded · Fields extracted':c.outreach?.status==='sent'?'Awaiting client response':'No outreach sent',
-    },
-    {
-      tab:'cv-activity',label:'Activity Log',icon:'📋',
-      status:'done',
-      summary:(c.activityLog||[]).length+' entries · Last: '+(c.activityLog?.[0]?.[0]||'—'),
-    },
+      summary:c.outreach?.status==='responded'?'Client responded':'No outreach sent'},
+    {tab:'cv-activity',label:'Activity Log',icon:'📋',status:'done',
+      summary:(c.activityLog||[]).length+' entries · Last: '+(c.activityLog?.[0]?.[0]||'—')},
   ];
 
-  const statusBg={done:'var(--surface)',review:'var(--amber-dim)',issue:'var(--red-dim)'};
-  const statusBorder={done:'var(--border)',review:'#FCD34D',issue:'#FCA5A5'};
-  const statusIcon={done:'<span style="color:var(--green-text);font-weight:700">✓</span>',review:'<span style="color:var(--amber-text);font-weight:700">⚠</span>',issue:'<span style="color:var(--red-text);font-weight:700">✕</span>'};
+  // Status dot only — no colored backgrounds, no colored cell fills
+  // Keep it clean: white cells, small colored dot, grey summary text
+  const dotColor={done:'var(--accent)',review:'var(--amber)',issue:'var(--red-text)'};
+  const dotLabel={done:'✓',review:'⚠',issue:'✕'};
 
   el.innerHTML=sections.map((s,i)=>`
-    <div onclick="switchCaseTab(null,'${s.tab}')" style="padding:10px 12px;border-right:${i<sections.length-1?'1px solid var(--border)':'none'};border-bottom:${i>3?'none':'1px solid var(--border)'};cursor:pointer;background:${statusBg[s.status]};transition:background .1s" onmouseover="this.style.background='var(--accent-dim)'" onmouseout="this.style.background='${statusBg[s.status]}'">
-      <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
-        <span style="font-size:13px">${s.icon}</span>
+    <div onclick="switchCaseTab(null,'${s.tab}')"
+      style="padding:9px 12px;border-right:${i<sections.length-1?'1px solid var(--border)':'none'};border-bottom:${i>3?'none':'1px solid var(--border)'};cursor:pointer;background:var(--surface);transition:background .1s"
+      onmouseover="this.style.background='var(--surface-2)'"
+      onmouseout="this.style.background='var(--surface)'">
+      <div style="display:flex;align-items:center;gap:5px;margin-bottom:3px">
+        <span style="width:6px;height:6px;border-radius:50%;background:${dotColor[s.status]};flex-shrink:0;display:inline-block"></span>
         <span style="font-size:11px;font-weight:600;color:var(--text)">${s.label}</span>
-        ${statusIcon[s.status]}
       </div>
-      <div style="font-size:10px;color:var(--text-3);line-height:1.4">${s.summary}</div>
+      <div style="font-size:10px;color:var(--text-3);line-height:1.4;padding-left:11px">${s.summary}</div>
     </div>`).join('');
 }
+
 
 function toggleRiskDrivers(){
   const body=document.getElementById('cv-risk-drivers-body');
@@ -3699,7 +3683,7 @@ function buildProfileTab(tab,c){
         <div class="panel-body" style="font-size:12px;color:var(--text-2);line-height:1.65">${c.riskNarrative||'—'}</div>
       </div>
     </div>
-    ${openCases.length?`<div class="panel" style="border-left:3px solid var(--amber);margin-bottom:10px">
+    ${openCases.length?`<div class="panel" style="border:1px solid var(--border);border-left:3px solid var(--amber);margin-bottom:10px">
       <div class="panel-hd" style="background:var(--amber-dim)"><span class="panel-title" style="color:var(--amber-text)">⚡ Active Case${openCases.length>1?'s':''}</span></div>
       <div class="panel-body">${openCases.map(ch=>`<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 0">
         <div><span style="font-size:12px;font-weight:600">${ch.type}</span><span style="font-size:11px;color:var(--text-3);margin-left:8px">${ch.id} · ${ch.assignee}</span></div>
