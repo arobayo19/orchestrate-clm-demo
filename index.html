@@ -256,6 +256,9 @@ button{cursor:pointer}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 /* ── Scrollbars ── */
+.drawer-open{display:flex !important}
+.drawer-slide{animation:slideIn .22s ease-out}
+@keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:99px}
@@ -979,8 +982,7 @@ button{cursor:pointer}
 
     <!-- Client Directory -->
     <div class="view" id="view-directory" style="flex-direction:column;overflow:hidden">
-
-      <!-- Top search bar + filters -->
+      <!-- Search + filters -->
       <div style="background:var(--surface);border-bottom:1px solid var(--border);padding:12px 20px;flex-shrink:0">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
           <div>
@@ -992,77 +994,72 @@ button{cursor:pointer}
             <button class="btn btn-sm btn-primary" onclick="openNewCaseModal()">+ New Review</button>
           </div>
         </div>
-        <!-- Global search -->
         <div style="position:relative;margin-bottom:10px">
           <svg style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-3)" width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="6" r="4"/><path d="M10 10l2.5 2.5"/></svg>
           <input id="dir-search" class="tbl-filter-input" style="width:100%;padding:8px 12px 8px 30px;font-size:13px;height:36px" placeholder="Search by entity name, DBA, UBO name, account number, registration number, jurisdiction, or case ID…" oninput="filterDirectory()"/>
         </div>
-        <!-- Smart filters -->
         <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
           <span style="font-size:11px;font-weight:600;color:var(--text-3)">Filter:</span>
-          <select id="dir-f-risk" class="tbl-filter-input" onchange="filterDirectory()" style="height:28px;font-size:11px">
-            <option value="">All Risk Tiers</option>
-            <option>High</option><option>Moderate</option><option>Low</option>
-          </select>
-          <select id="dir-f-status" class="tbl-filter-input" onchange="filterDirectory()" style="height:28px;font-size:11px">
-            <option value="">All Statuses</option>
-            <option>Active</option><option>Pending</option><option>Suspended</option><option>Offboarded</option>
-          </select>
-          <select id="dir-f-review" class="tbl-filter-input" onchange="filterDirectory()" style="height:28px;font-size:11px">
-            <option value="">All Review States</option>
-            <option value="overdue">Review Overdue</option>
-            <option value="due-soon">Due Within 30 Days</option>
-          </select>
-          <select id="dir-f-jur" class="tbl-filter-input" onchange="filterDirectory()" style="height:28px;font-size:11px">
-            <option value="">All Jurisdictions</option>
-            <option>United States</option><option>United Kingdom</option><option>Cayman Islands</option>
-            <option>Singapore</option><option>Germany</option><option>UAE</option><option>Canada</option>
-          </select>
-          <select id="dir-f-cases" class="tbl-filter-input" onchange="filterDirectory()" style="height:28px;font-size:11px">
-            <option value="">All</option>
-            <option value="open">Has Open Cases</option>
-            <option value="alerts">Has Alerts</option>
-            <option value="edd">EDD Required</option>
-          </select>
+          <select id="dir-f-risk" class="tbl-filter-input" onchange="filterDirectory()" style="height:28px;font-size:11px"><option value="">All Risk Tiers</option><option>High</option><option>Moderate</option><option>Low</option></select>
+          <select id="dir-f-status" class="tbl-filter-input" onchange="filterDirectory()" style="height:28px;font-size:11px"><option value="">All Statuses</option><option>Active</option><option>Pending</option><option>Suspended</option><option>Offboarded</option></select>
+          <select id="dir-f-review" class="tbl-filter-input" onchange="filterDirectory()" style="height:28px;font-size:11px"><option value="">All Review States</option><option value="overdue">Review Overdue</option><option value="due-soon">Due Within 30 Days</option></select>
+          <select id="dir-f-jur" class="tbl-filter-input" onchange="filterDirectory()" style="height:28px;font-size:11px"><option value="">All Jurisdictions</option><option>United States</option><option>United Kingdom</option><option>Cayman Islands</option><option>Singapore</option><option>Germany</option><option>UAE</option><option>Canada</option></select>
+          <select id="dir-f-cases" class="tbl-filter-input" onchange="filterDirectory()" style="height:28px;font-size:11px"><option value="">All</option><option value="open">Has Open Cases</option><option value="alerts">Has Alerts</option><option value="edd">EDD Required</option></select>
           <button class="btn btn-sm btn-ghost" onclick="clearDirFilters()" style="font-size:11px;height:28px">Clear</button>
           <span style="margin-left:auto;font-size:11px;color:var(--text-3)" id="dir-count">8 clients</span>
         </div>
       </div>
-
-      <!-- Split: table top, profile bottom -->
-      <div style="flex:1;overflow:hidden;display:flex;flex-direction:column">
-        <div style="overflow-y:auto;border-bottom:2px solid var(--border)" id="dir-table-wrap" style="min-height:200px;max-height:40vh;overflow-y:auto">
-          <table class="tbl" id="dir-tbl">
-            <thead>
-              <tr>
-                <th style="min-width:200px">Entity</th>
-                <th>Type</th>
-                <th>Jurisdiction</th>
-                <th>Risk</th>
-                <th>Status</th>
-                <th>Lifecycle Stage</th>
-                <th>Last Review</th>
-                <th>Next Review</th>
-                <th>RM / Analyst</th>
-                <th>Accounts</th>
-                <th>Open Cases</th>
-                <th>Alerts</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody id="dir-body"></tbody>
-          </table>
-        </div>
-        <!-- Profile panel -->
-        <div id="dir-profile" style="flex:1;overflow-y:auto;background:var(--bg);min-height:200px">
-          <div style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:8px;color:var(--text-3)">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity=".2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-            <div style="font-size:13px;font-weight:600;color:var(--text-2)">No client selected</div>
-            <div style="font-size:12px">Click <em>View Profile</em> on any client above to load their full profile here.</div>
-          </div>
-        </div>
+      <!-- Full-height table -->
+      <div style="flex:1;overflow-y:auto" id="dir-table-wrap">
+        <table class="tbl" id="dir-tbl">
+          <thead>
+            <tr>
+              <th style="min-width:200px">Entity</th>
+              <th>Type</th>
+              <th>Jurisdiction</th>
+              <th>Risk</th>
+              <th>Status</th>
+              <th>Lifecycle Stage</th>
+              <th>Last Review</th>
+              <th>Next Review</th>
+              <th>RM / Analyst</th>
+              <th>Accounts</th>
+              <th>Open Cases</th>
+              <th>Alerts</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="dir-body"></tbody>
+        </table>
       </div>
     </div>
+
+    <!-- Client Profile Drawer -->
+    <div id="client-drawer-overlay" onclick="closeClientDrawer()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:400"></div>
+    <div id="client-drawer" style="display:none;position:fixed;top:0;right:0;width:780px;max-width:95vw;height:100vh;background:var(--surface);z-index:401;flex-direction:column;box-shadow:-4px 0 32px rgba(0,0,0,.15);overflow:hidden">
+      <!-- Drawer header -->
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border);flex-shrink:0">
+        <div style="display:flex;align-items:flex-start;gap:10px">
+          <div style="width:38px;height:38px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:var(--text-2);flex-shrink:0" id="drawer-avatar">A</div>
+          <div>
+            <div style="font-size:15px;font-weight:700;margin-bottom:3px" id="drawer-name">—</div>
+            <div style="font-size:11px;color:var(--text-3)" id="drawer-meta">—</div>
+            <div style="display:flex;gap:5px;margin-top:5px" id="drawer-badges"></div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+          <div id="drawer-actions"></div>
+          <button onclick="closeClientDrawer()" style="background:none;border:1px solid var(--border);border-radius:var(--r);width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-3);font-size:16px;margin-left:6px">✕</button>
+        </div>
+      </div>
+      <!-- KPI strip -->
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:0;border-bottom:1px solid var(--border);flex-shrink:0" id="drawer-kpis"></div>
+      <!-- Tab bar -->
+      <div style="display:flex;border-bottom:1px solid var(--border);padding:0 20px;overflow-x:auto;flex-shrink:0" id="drawer-tabs"></div>
+      <!-- Tab content -->
+      <div style="flex:1;overflow-y:auto;background:var(--bg);padding:16px 20px" id="drawer-content"></div>
+    </div>
+
 
     <!-- Audit Trail -->
     <div class="view" id="view-audit" style="flex-direction:column">
@@ -1538,7 +1535,7 @@ const CASES = [
 
 const CLIENTS = [
   {
-    id:'CLI-001', status:'Active', rm:'Ana M.', name:'Apex Digital LLC', type:'LLC', jurisdiction:'United States', subJurisdiction:'Delaware',
+    id:'CLI-001', status:'Active', rm:'Ana M.', lei:'—', verificationSource:'Certificate of Formation · Delaware Secretary of State', lastRegistryCheck:'Mar 10, 2026', changesSincePriorReview:['Trading name updated: "Apex Digital" added as DBA (Mar 2026)','MSB registration renewed — FinCEN filing current','No ownership changes since prior review'], parentGroup:'Standalone entity', listed:'No', subsidiaries:'None identified', name:'Apex Digital LLC', type:'LLC', jurisdiction:'United States', subJurisdiction:'Delaware',
     risk:'Moderate', kycStatus:'In Review', kycStatusClass:'badge-amber',
     formed:'July 2020', registrationNo:'DE-4492817', taxId:'EIN 83-4421789',
     address:'251 Little Falls Drive, Wilmington, DE 19808', industry:'Digital Assets / MSB',
@@ -1672,7 +1669,7 @@ const CLIENTS = [
     riskNarrative:'High risk — MAS-regulated crypto exchange with complex BVI ownership and unresolved OFAC match. BSA Officer sign-off required before case can close.',
   },
   {
-    id:'CLI-004', status:'Active', rm:'Ana M.', name:'Meridian Capital Partners', type:'Corporation', jurisdiction:'United States', subJurisdiction:'Delaware',
+    id:'CLI-004', status:'Active', rm:'Ana M.', lei:'—', verificationSource:'Delaware Annual Filing · SEC EDGAR', lastRegistryCheck:'Mar 10, 2026', changesSincePriorReview:['No material changes identified since last periodic review.','SEC Form ADV filing current — no material disclosures.'], parentGroup:'Standalone entity', listed:'No', subsidiaries:'None identified', name:'Meridian Capital Partners', type:'Corporation', jurisdiction:'United States', subJurisdiction:'Delaware',
     risk:'Moderate', kycStatus:'Active', kycStatusClass:'badge-green',
     formed:'March 2021', registrationNo:'DE-7721045', taxId:'EIN 47-2219034',
     address:'100 Park Avenue, Suite 1600, New York, NY 10017', industry:'Investment Management',
@@ -3421,12 +3418,7 @@ function renderDirTable(clients){
     </tr>`;
   }).join('')||`<tr><td colspan="13" style="text-align:center;padding:32px;color:var(--text-3)">No clients match your filters</td></tr>`;
 
-  // Recalc table height
-  const wrap=document.getElementById('dir-table-wrap');
-  if(wrap){
-    const maxH=Math.floor(window.innerHeight*0.42);
-    wrap.style.maxHeight=maxH+'px';
-  }
+  // Table is now full height - no height calc needed
 }
 
 function showClientProfile(clientId){
@@ -3437,79 +3429,80 @@ function showClientProfile(clientId){
 
   const c=CLIENTS.find(x=>x.id===clientId);
   if(!c) return;
+
   const openCases=(c.caseHistory||[]).filter(ch=>!ch.closed);
   const stage=getLifecycleStage(c);
   const alerts=getAlerts(c);
   const docsOk=(c.documents||[]).filter(d=>d.status==='done').length;
   const docsTotal=(c.documents||[]).length;
 
-  const el=document.getElementById('dir-profile');
-  el.innerHTML=`
-    <!-- Profile header -->
-    <div style="background:var(--surface);border-bottom:1px solid var(--border);padding:14px 20px">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px">
-        <div style="display:flex;align-items:flex-start;gap:10px">
-          <div style="width:40px;height:40px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:var(--text-2);flex-shrink:0">${c.name.charAt(0)}</div>
-          <div>
-            <div style="font-size:15px;font-weight:700;margin-bottom:3px">${c.name}${c.tradingName?` <span style="font-size:12px;font-weight:400;color:var(--text-3)">/ ${c.tradingName}</span>`:''}</div>
-            <div style="font-size:11px;color:var(--text-3);margin-bottom:4px">${c.type} · ${c.jurisdiction}${c.subJurisdiction&&c.subJurisdiction!==c.jurisdiction?' — '+c.subJurisdiction:''} · ${c.industry||'—'}</div>
-            <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">
-              <span class="badge ${c.kycStatusClass}">${c.kycStatus}</span>
-              ${riskBadge(c.risk)}
-              <span style="font-size:11px;font-weight:600;color:${stage.color}">● ${stage.label}</span>
-              ${alerts.map(a=>`<span class="badge ${a.type==='red'?'badge-red':'badge-amber'}" style="font-size:9px">🔴 ${a.label}</span>`).join('')}
-            </div>
-          </div>
-        </div>
-        <!-- Quick Actions -->
-        <div style="display:flex;flex-direction:column;gap:5px;align-items:flex-end;flex-shrink:0">
-          ${openCases.length?`<button class="btn btn-sm btn-primary" onclick="openCase('${openCases[0].id}')">Open Active Case →</button>`:''}
-          <div style="display:flex;gap:5px">
-            <button class="btn btn-sm" onclick="openNewCaseModal()">+ Start Review</button>
-            <button class="btn btn-sm" onclick="showToast('Trigger EDD workflow initiated')">Trigger EDD</button>
-            <button class="btn btn-sm" onclick="showToast('Document request sent')">Request Docs</button>
-          </div>
-        </div>
-      </div>
-      <!-- KPI strip -->
-      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px">
-        ${[
-          ['KYC Approved', c.kycApproved||'Pending'],
-          ['Last Review', c.lastReview||'—'],
-          ['Next Review', c.nextReview||'—'],
-          ['Cycle', c.reviewCycle||'Annual'],
-          ['Accounts', (c.accounts||[]).length],
-          ['Open Cases', openCases.length||(openCases.length===0?'0':'—')],
-          ['Documents', `${docsOk}/${docsTotal}`],
-        ].map(([l,v])=>`<div style="background:var(--surface-2);border-radius:var(--r);padding:6px 8px">
-          <div style="font-size:9px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px">${l}</div>
-          <div style="font-size:13px;font-weight:600">${v}</div>
-        </div>`).join('')}
-      </div>
-    </div>
+  // Open drawer
+  const overlay=document.getElementById('client-drawer-overlay');
+  const drawer=document.getElementById('client-drawer');
+  overlay.style.display='block';
+  drawer.style.display='flex';
+  drawer.classList.add('drawer-slide');
+  setTimeout(()=>drawer.classList.remove('drawer-slide'),300);
 
-    <!-- Profile tabs -->
-    <div style="display:flex;background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px;overflow-x:auto">
-      <button class="case-tab active" data-ptab="overview" onclick="switchProfileTab(this,'overview','${c.id}')">Overview</button>
-      <button class="case-tab" data-ptab="business" onclick="switchProfileTab(this,'business','${c.id}')">Business Details</button>
-      <button class="case-tab" data-ptab="ownership" onclick="switchProfileTab(this,'ownership','${c.id}')">Ownership &amp; Control</button>
-      <button class="case-tab" data-ptab="accounts" onclick="switchProfileTab(this,'accounts','${c.id}')">Accounts (${(c.accounts||[]).length})</button>
-      <button class="case-tab" data-ptab="cases" onclick="switchProfileTab(this,'cases','${c.id}')">Cases &amp; History (${(c.caseHistory||[]).length})</button>
-      <button class="case-tab" data-ptab="screening" onclick="switchProfileTab(this,'screening','${c.id}')">Screening</button>
-      <button class="case-tab" data-ptab="docs" onclick="switchProfileTab(this,'docs','${c.id}')">Documents (${docsOk}/${docsTotal})</button>
-      <button class="case-tab" data-ptab="regulatory" onclick="switchProfileTab(this,'regulatory','${c.id}')">Regulatory</button>
-    </div>
-    <div id="profile-tab-content" style="padding:14px 20px;background:var(--bg)">${buildProfileTab('overview',c)}</div>
-  `;
+  // Header
+  document.getElementById('drawer-avatar').textContent=c.name.charAt(0);
+  document.getElementById('drawer-name').textContent=c.name+(c.tradingName?` / ${c.tradingName}`:'');
+  document.getElementById('drawer-meta').textContent=`${c.type} · ${c.jurisdiction}${c.subJurisdiction&&c.subJurisdiction!==c.jurisdiction?' — '+c.subJurisdiction:''} · ${c.industry||'—'}`;
+  document.getElementById('drawer-badges').innerHTML=
+    `<span class="badge ${c.kycStatusClass}">${c.kycStatus}</span>${riskBadge(c.risk)}<span style="font-size:11px;font-weight:600;color:${stage.color}">● ${stage.label}</span>`+
+    alerts.map(a=>`<span class="badge ${a.type==='red'?'badge-red':'badge-amber'}" style="font-size:9px">🔴 ${a.label}</span>`).join('');
+  document.getElementById('drawer-actions').innerHTML=
+    openCases.length
+      ? `<button class="btn btn-sm btn-primary" onclick="openCase('${openCases[0].id}');closeClientDrawer()">Open Active Case →</button>`
+      : `<button class="btn btn-sm" onclick="openNewCaseModal();closeClientDrawer()">+ New Case</button>`;
+  document.getElementById('drawer-actions').innerHTML +=
+    ` <button class="btn btn-sm" onclick="showToast('Review started')">+ Start Review</button>
+      <button class="btn btn-sm" onclick="showToast('EDD triggered')">Trigger EDD</button>`;
+
+  // KPI strip
+  document.getElementById('drawer-kpis').innerHTML=
+    [['KYC Approved',c.kycApproved||'Pending'],['Last Review',c.lastReview||'—'],['Next Review',c.nextReview||'—'],
+     ['Cycle',c.reviewCycle||'Annual'],['Accounts',(c.accounts||[]).length],
+     ['Open Cases',openCases.length||'0'],['Documents',`${docsOk}/${docsTotal}`]]
+    .map(([l,v])=>`<div style="padding:8px 12px;border-right:1px solid var(--border);text-align:center">
+      <div style="font-size:9px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px">${l}</div>
+      <div style="font-size:13px;font-weight:600">${v}</div>
+    </div>`).join('');
+
+  // Tab bar
+  const drawerTabs=[
+    {id:'overview',label:'Overview'},
+    {id:'business',label:'Business Details'},
+    {id:'ownership',label:'Ownership & Control'},
+    {id:'accounts',label:`Accounts (${(c.accounts||[]).length})`},
+    {id:'cases',label:`Cases & History (${(c.caseHistory||[]).length})`},
+    {id:'screening',label:'Screening'},
+    {id:'docs',label:`Documents (${docsOk}/${docsTotal})`},
+    {id:'regulatory',label:'Regulatory'},
+  ];
+  document.getElementById('drawer-tabs').innerHTML=drawerTabs.map((t,i)=>
+    `<button class="case-tab${i===0?' active':''}" data-dtab="${t.id}" onclick="switchDrawerTab(this,'${t.id}','${c.id}')" style="padding:9px 14px">${t.label}</button>`
+  ).join('');
+
+  // Load first tab
+  document.getElementById('drawer-content').innerHTML=buildProfileTab('overview',c);
 }
 
-function switchProfileTab(btn,tab,cid){
-  document.querySelectorAll('.case-tab[data-ptab]').forEach(b=>b.classList.remove('active'));
+function closeClientDrawer(){
+  document.getElementById('client-drawer-overlay').style.display='none';
+  document.getElementById('client-drawer').style.display='none';
+  document.querySelectorAll('#dir-body tr').forEach(r=>r.style.background='');
+}
+
+function switchDrawerTab(btn,tab,cid){
+  document.querySelectorAll('#drawer-tabs .case-tab').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   const c=CLIENTS.find(x=>x.id===cid);
   if(!c) return;
-  document.getElementById('profile-tab-content').innerHTML=buildProfileTab(tab,c);
+  document.getElementById('drawer-content').innerHTML=buildProfileTab(tab,c);
 }
+
+function switchProfileTab(btn,tab,cid){ switchDrawerTab(btn,tab,cid); }
 
 function buildProfileTab(tab,c){
   if(!c) return '';
@@ -3518,228 +3511,272 @@ function buildProfileTab(tab,c){
   if(tab==='overview') return `
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
       <div class="panel"><div class="panel-hd"><span class="panel-title">KYC & Risk Status</span></div>
-        <div class="panel-body">
-          <div class="kv">
-            <span class="kv-l">KYC Status</span><span class="kv-v"><span class="badge ${c.kycStatusClass}">${c.kycStatus}</span></span>
-            <span class="kv-l">Risk Tier</span><span class="kv-v">${riskBadge(c.risk)}</span>
-            <span class="kv-l">Lifecycle Stage</span><span class="kv-v" style="color:${getLifecycleStage(c).color};font-weight:600">${getLifecycleStage(c).label}</span>
-            <span class="kv-l">Relationship Status</span><span class="kv-v" style="font-weight:600;color:${(c.status||'Active')==='Active'?'var(--green-text)':'var(--red-text)'}">${c.status||'Active'}</span>
-            <span class="kv-l">Onboarded</span><span class="kv-v">${c.onboardedDate||'—'}</span>
-            <span class="kv-l">KYC Approved</span><span class="kv-v">${c.kycApproved||'Pending'}</span>
-            <span class="kv-l">Last Review</span><span class="kv-v">${c.lastReview||'—'}</span>
-            <span class="kv-l">Next Review</span><span class="kv-v">${c.nextReview||'—'}</span>
-            <span class="kv-l">Review Cycle</span><span class="kv-v">${c.reviewCycle||'Annual'}</span>
-            <span class="kv-l">RM / Analyst</span><span class="kv-v">${c.rm||'—'}</span>
-          </div>
-        </div>
+        <div class="panel-body"><div class="kv">
+          <span class="kv-l">KYC Status</span><span class="kv-v"><span class="badge ${c.kycStatusClass}">${c.kycStatus}</span></span>
+          <span class="kv-l">Risk Tier</span><span class="kv-v">${riskBadge(c.risk)}</span>
+          <span class="kv-l">Lifecycle</span><span class="kv-v" style="color:${getLifecycleStage(c).color};font-weight:600">${getLifecycleStage(c).label}</span>
+          <span class="kv-l">Relationship</span><span class="kv-v" style="font-weight:600;color:${(c.status||'Active')==='Active'?'var(--green-text)':'var(--red-text)'}">${c.status||'Active'}</span>
+          <span class="kv-l">Onboarded</span><span class="kv-v">${c.onboardedDate||'—'}</span>
+          <span class="kv-l">KYC Approved</span><span class="kv-v">${c.kycApproved||'Pending'}</span>
+          <span class="kv-l">Next Review</span><span class="kv-v">${c.nextReview||'—'}</span>
+          <span class="kv-l">RM / Analyst</span><span class="kv-v">${c.rm||'—'}</span>
+        </div></div>
       </div>
       <div class="panel"><div class="panel-hd"><span class="panel-title">Risk Narrative</span></div>
         <div class="panel-body" style="font-size:12px;color:var(--text-2);line-height:1.65">${c.riskNarrative||'—'}</div>
       </div>
     </div>
-    ${openCases.length?`
-    <div class="panel" style="border-left:3px solid var(--amber);margin-bottom:10px">
-      <div class="panel-hd" style="background:var(--amber-dim)">
-        <span class="panel-title" style="color:var(--amber-text)">⚡ Active Case${openCases.length>1?'s':''}</span>
-      </div>
-      <div class="panel-body">
-        ${openCases.map(ch=>`<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 0">
-          <div>
-            <span style="font-size:12px;font-weight:600">${ch.type}</span>
-            <span style="font-size:11px;color:var(--text-3);margin-left:8px">${ch.id} · ${ch.assignee} · Opened ${ch.opened}</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:6px">
-            <span class="badge ${ch.statusClass}">${ch.status}</span>
-            <button class="btn btn-sm btn-primary" onclick="openCase('${ch.id}')">Open →</button>
-          </div>
-        </div>`).join('')}
-      </div>
-    </div>`:``}
+    ${openCases.length?`<div class="panel" style="border-left:3px solid var(--amber);margin-bottom:10px">
+      <div class="panel-hd" style="background:var(--amber-dim)"><span class="panel-title" style="color:var(--amber-text)">⚡ Active Case${openCases.length>1?'s':''}</span></div>
+      <div class="panel-body">${openCases.map(ch=>`<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 0">
+        <div><span style="font-size:12px;font-weight:600">${ch.type}</span><span style="font-size:11px;color:var(--text-3);margin-left:8px">${ch.id} · ${ch.assignee}</span></div>
+        <div style="display:flex;gap:6px;align-items:center"><span class="badge ${ch.statusClass}">${ch.status}</span><button class="btn btn-sm btn-primary" onclick="openCase('${ch.id}');closeClientDrawer()">Open →</button></div>
+      </div>`).join('')}</div>
+    </div>`:''}
     ${buildCaseTimeline(c,false)}
   `;
 
-  if(tab==='business') return `
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      <div class="panel"><div class="panel-hd"><span class="panel-title">Legal Identity</span><button class="btn btn-sm btn-ghost">Edit</button></div>
-        <div class="panel-body"><div class="kv">
-          ${[['Legal Name',c.name],['Trading Name / DBA',c.tradingName||'—'],['Entity Type',c.type],['Date of Formation',c.formed||'—'],['Industry / Sector',c.industry||'—'],['Website',c.website||'—']].map(([l,v])=>`<span class="kv-l">${l}</span><span class="kv-v">${v}</span>`).join('')}
-        </div></div>
-      </div>
-      <div>
-        <div class="panel" style="margin-bottom:10px"><div class="panel-hd"><span class="panel-title">Registration</span></div>
-          <div class="panel-body"><div class="kv">
-            ${[['Country of Incorp.',c.jurisdiction],['State / Province',c.subJurisdiction||'—'],['Registration No.',c.registrationNo||'—'],['Tax ID',c.taxId||'—']].map(([l,v])=>`<span class="kv-l">${l}</span><span class="kv-v">${v}</span>`).join('')}
-          </div></div>
-        </div>
-        <div class="panel"><div class="panel-hd"><span class="panel-title">Address & Contact</span></div>
-          <div class="panel-body"><div class="kv">
-            ${[['Registered Address',c.address||'—'],['Primary Contact',c.primaryContact||'—'],['Email',c.email||'—']].map(([l,v])=>`<span class="kv-l">${l}</span><span class="kv-v">${v}</span>`).join('')}
-          </div></div>
-        </div>
-      </div>
-    </div>`;
+  if(tab==='business') return buildBusinessTab(c);
 
   if(tab==='ownership') return `
     <div class="panel" style="margin-bottom:10px">
-      <div class="panel-hd"><span class="panel-title">Beneficial Owners <span style="font-weight:400;color:var(--text-3)">(≥25% threshold)</span></span></div>
-      <div class="panel-body" style="padding:0">
-        <table class="inner-tbl">
-          <thead><tr><th>Full Legal Name</th><th>Stake</th><th>Nationality</th><th>Ownership Type</th><th>ID Verified</th><th>PEP</th><th>Screening</th><th>Notes</th></tr></thead>
-          <tbody>
-            ${(c.ubos||[]).map(u=>`<tr>
-              <td style="font-weight:600">${u.name}</td>
-              <td style="font-weight:600">${u.stake}</td>
-              <td>${u.nationality||'—'}</td>
-              <td>${u.ownershipType||'Direct'}</td>
-              <td><span class="badge ${(u.idVerified&&(u.idVerified.startsWith('Verified')||u.idVerified==='Listed entity'))?'badge-green':'badge-amber'}" style="font-size:10px">${u.idVerified}</span></td>
-              <td style="font-weight:${u.pep==='Yes'?'700':'400'};color:${u.pep==='Yes'?'var(--amber-text)':'var(--text-2)'}">${u.pep||'No'}</td>
-              <td><span class="badge ${u.screening==='Clear'?'badge-green':u.screening==='Alert'?'badge-red':'badge-amber'}" style="font-size:10px">${u.screening}</span></td>
-              <td style="font-size:11px;color:var(--text-3)">${u.notes||'—'}</td>
-            </tr>`).join('')||'<tr><td colspan="8" style="text-align:center;padding:16px;color:var(--text-3)">No UBO data on file</td></tr>'}
-          </tbody>
-        </table>
-      </div>
+      <div class="panel-hd"><span class="panel-title">Beneficial Owners <span style="font-weight:400;color:var(--text-3)">(≥25%)</span></span></div>
+      <div class="panel-body" style="padding:0"><table class="inner-tbl"><thead><tr><th>Name</th><th>Stake</th><th>Nationality</th><th>Type</th><th>ID</th><th>PEP</th><th>Screening</th><th>Notes</th></tr></thead>
+        <tbody>${(c.ubos||[]).map(u=>`<tr><td style="font-weight:600">${u.name}</td><td>${u.stake}</td><td>${u.nationality||'—'}</td><td>${u.ownershipType||'Direct'}</td>
+          <td><span class="badge ${(u.idVerified&&(u.idVerified.startsWith('Verified')||u.idVerified==='Listed entity'))?'badge-green':'badge-amber'}" style="font-size:10px">${u.idVerified}</span></td>
+          <td style="font-weight:${u.pep==='Yes'?'700':'400'};color:${u.pep==='Yes'?'var(--amber-text)':'inherit'}">${u.pep||'No'}</td>
+          <td><span class="badge ${u.screening==='Clear'?'badge-green':u.screening==='Alert'?'badge-red':'badge-amber'}" style="font-size:10px">${u.screening}</span></td>
+          <td style="font-size:11px;color:var(--text-3)">${u.notes||'—'}</td></tr>`).join('')||'<tr><td colspan="8" style="text-align:center;padding:16px;color:var(--text-3)">No UBO data</td></tr>'}</tbody>
+      </table></div>
     </div>
-    <div class="panel">
-      <div class="panel-hd"><span class="panel-title">Control Persons</span></div>
-      <div class="panel-body" style="padding:0">
-        <table class="inner-tbl">
-          <thead><tr><th>Full Name</th><th>Role / Title</th><th>Nationality</th><th>ID Verified</th><th>PEP</th><th>Screening</th></tr></thead>
-          <tbody>
-            ${(c.controllers||[]).map(ct=>`<tr>
-              <td style="font-weight:600">${ct.name}</td>
-              <td>${ct.title}</td>
-              <td>${ct.nationality||'—'}</td>
-              <td><span class="badge badge-green" style="font-size:10px">${ct.idVerified}</span></td>
-              <td>${ct.pep||'No'}</td>
-              <td><span class="badge ${ct.screening==='Clear'?'badge-green':'badge-amber'}" style="font-size:10px">${ct.screening}</span></td>
-            </tr>`).join('')||'<tr><td colspan="6" style="text-align:center;padding:16px;color:var(--text-3)">No control persons on file</td></tr>'}
-          </tbody>
-        </table>
-      </div>
+    <div class="panel"><div class="panel-hd"><span class="panel-title">Control Persons</span></div>
+      <div class="panel-body" style="padding:0"><table class="inner-tbl"><thead><tr><th>Name</th><th>Title</th><th>Nationality</th><th>ID</th><th>PEP</th><th>Screening</th></tr></thead>
+        <tbody>${(c.controllers||[]).map(ct=>`<tr><td style="font-weight:600">${ct.name}</td><td>${ct.title}</td><td>${ct.nationality||'—'}</td>
+          <td><span class="badge badge-green" style="font-size:10px">${ct.idVerified}</span></td>
+          <td>${ct.pep||'No'}</td>
+          <td><span class="badge ${ct.screening==='Clear'?'badge-green':'badge-amber'}" style="font-size:10px">${ct.screening}</span></td></tr>`).join('')||'<tr><td colspan="6" style="text-align:center;padding:16px;color:var(--text-3)">No data</td></tr>'}</tbody>
+      </table></div>
     </div>
     ${c.ownershipNotes?`<div class="panel" style="margin-top:10px"><div class="panel-hd"><span class="panel-title">Ownership Notes</span></div><div class="panel-body" style="font-size:12px;color:var(--text-2);line-height:1.6">${c.ownershipNotes}</div></div>`:''}
   `;
 
   if(tab==='accounts') return `
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px">
-      ${(c.accounts||[]).map(a=>`
-      <div class="panel">
-        <div class="panel-hd">
-          <span class="panel-title">${a.type}</span>
-          <span class="badge ${a.status==='Active'?'badge-green':a.status.includes('Pending')?'badge-amber':'badge-red'}">${a.status}</span>
-        </div>
-        <div class="panel-body">
-          <div class="kv" style="font-size:12px">
-            ${[['Account ID',`<span class="mono" style="font-size:11px">${a.id}</span>`],['Currency',a.currency],['Opened',a.openedDate],['Avg Balance',a.balance],['Activity Profile',a.activity]].map(([l,v])=>`<span class="kv-l">${l}</span><span class="kv-v">${v}</span>`).join('')}
-          </div>
-        </div>
-      </div>`).join('')||'<div style="padding:32px;text-align:center;color:var(--text-3);font-size:12px">No accounts on file</div>'}
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">
+      ${(c.accounts||[]).map(a=>`<div class="panel"><div class="panel-hd"><span class="panel-title">${a.type}</span><span class="badge ${a.status==='Active'?'badge-green':a.status.includes('Pending')?'badge-amber':'badge-red'}">${a.status}</span></div>
+        <div class="panel-body"><div class="kv" style="font-size:12px">
+          <span class="kv-l">Account ID</span><span class="kv-v" style="font-family:monospace;font-size:11px">${a.id}</span>
+          <span class="kv-l">Currency</span><span class="kv-v">${a.currency}</span>
+          <span class="kv-l">Opened</span><span class="kv-v">${a.openedDate}</span>
+          <span class="kv-l">Avg Balance</span><span class="kv-v">${a.balance}</span>
+          <span class="kv-l">Activity</span><span class="kv-v">${a.activity}</span>
+        </div></div>
+      </div>`).join('')||'<div style="text-align:center;padding:32px;color:var(--text-3);font-size:12px">No accounts</div>'}
     </div>`;
 
-  if(tab==='cases') return buildCaseTimeline(c, true);
+  if(tab==='cases') return buildCaseTimeline(c,true);
 
   if(tab==='screening') return `
-    <div class="panel">
-      <div class="panel-hd"><span class="panel-title">Screening History</span></div>
-      <div class="panel-body" style="padding:0">
-        <table class="inner-tbl">
-          <thead><tr><th>Date</th><th>Type</th><th>Sanctions</th><th>PEP</th><th>Adverse Media</th><th>Outcome / Action</th></tr></thead>
-          <tbody>
-            ${(c.screeningHistory||[]).map(s=>`<tr>
-              <td style="color:var(--text-3)">${s.date}</td>
-              <td>${s.type}</td>
-              <td><span class="badge ${s.sanctions==='Clear'?'badge-green':s.sanctions.includes('Pending')?'badge-gray':'badge-red'}" style="font-size:10px">${s.sanctions}</span></td>
-              <td><span class="badge ${s.pep==='Clear'?'badge-green':s.pep.includes('Pending')?'badge-gray':'badge-amber'}" style="font-size:10px">${s.pep}</span></td>
-              <td><span class="badge ${s.media==='Clear'?'badge-green':s.media.includes('Pending')?'badge-gray':'badge-amber'}" style="font-size:10px">${s.media}</span></td>
-              <td style="font-size:11px;color:var(--text-2)">${s.action}</td>
-            </tr>`).join('')||'<tr><td colspan="6" style="text-align:center;padding:16px;color:var(--text-3)">No screening history</td></tr>'}
-          </tbody>
-        </table>
-      </div>
+    <div class="panel"><div class="panel-hd"><span class="panel-title">Screening History</span></div>
+      <div class="panel-body" style="padding:0"><table class="inner-tbl">
+        <thead><tr><th>Date</th><th>Type</th><th>Sanctions</th><th>PEP</th><th>Adverse Media</th><th>Outcome</th></tr></thead>
+        <tbody>${(c.screeningHistory||[]).map(s=>`<tr><td style="color:var(--text-3)">${s.date}</td><td>${s.type}</td>
+          <td><span class="badge ${s.sanctions==='Clear'?'badge-green':'badge-red'}" style="font-size:10px">${s.sanctions}</span></td>
+          <td><span class="badge ${s.pep==='Clear'?'badge-green':'badge-amber'}" style="font-size:10px">${s.pep}</span></td>
+          <td><span class="badge ${s.media==='Clear'?'badge-green':'badge-amber'}" style="font-size:10px">${s.media}</span></td>
+          <td style="font-size:11px;color:var(--text-2)">${s.action}</td></tr>`).join('')||'<tr><td colspan="6" style="text-align:center;padding:16px;color:var(--text-3)">No history</td></tr>'}</tbody>
+      </table></div>
     </div>`;
 
   if(tab==='docs'){
     const si={done:'✓',review:'!',issue:'✕'};
     const sb={done:'badge-green',review:'badge-amber',issue:'badge-red'};
     const sl={done:'Verified',review:'Review',issue:'Outstanding'};
-    return `
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+    return `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
         <span class="section-lbl">${(c.documents||[]).filter(d=>d.status==='done').length}/${(c.documents||[]).length} documents verified</span>
-        <button class="btn btn-sm" onclick="showToast('Document request sent')">+ Request Document</button>
+        <button class="btn btn-sm" onclick="showToast('Document request sent')">+ Request</button>
       </div>
-      ${(c.documents||[]).map(d=>`
-      <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;border:1px solid var(--border);border-radius:var(--r);margin-bottom:5px;background:var(--surface)">
-        <div style="width:22px;height:22px;border-radius:4px;background:${d.status==='done'?'var(--green-dim)':d.status==='review'?'var(--amber-dim)':'var(--red-dim)'};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:${d.status==='done'?'var(--green-text)':d.status==='review'?'var(--amber-text)':'var(--red-text)'};flex-shrink:0">${si[d.status]||'?'}</div>
+      ${(c.documents||[]).map(d=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;border:1px solid var(--border);border-radius:var(--r);margin-bottom:5px;background:var(--surface)">
+        <div style="width:22px;height:22px;border-radius:4px;background:${d.status==='done'?'var(--green-dim)':d.status==='review'?'var(--amber-dim)':'var(--red-dim)'};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:${d.status==='done'?'var(--green-text)':d.status==='review'?'var(--amber-text)':'var(--red-text)'}">${si[d.status]||'?'}</div>
         <div style="flex:1"><div style="font-size:12px;font-weight:600">${d.name}</div><div style="font-size:10px;color:var(--text-3)">${d.date}</div></div>
         <span class="badge ${sb[d.status]||'badge-gray'}" style="font-size:10px">${sl[d.status]||'—'}</span>
-      </div>`).join('')||'<div style="text-align:center;padding:24px;color:var(--text-3);font-size:12px">No documents on file</div>'}
-    `;
+      </div>`).join('')||'<div style="text-align:center;padding:24px;color:var(--text-3);font-size:12px">No documents</div>'}`;
   }
 
   if(tab==='regulatory'){
     const r=c.regulatory||{};
-    return `
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-        <div class="panel"><div class="panel-hd"><span class="panel-title">Licences & Registrations</span><span class="badge badge-gray">${(r.licences||[]).length}</span></div>
-          <div class="panel-body">
-            ${(r.licences||[]).map(l=>`<div style="border:1px solid var(--border);border-radius:var(--r);padding:8px 10px;margin-bottom:7px">
-              <div style="display:flex;justify-content:space-between;gap:6px;margin-bottom:6px">
-                <div style="font-size:12px;font-weight:600">${l.type}</div>
-                <span class="badge ${l.status==='Active'?'badge-green':'badge-amber'}" style="font-size:10px">${l.status}</span>
-              </div>
-              <div class="kv" style="font-size:11px">
-                <span class="kv-l">Authority</span><span class="kv-v">${l.authority}</span>
-                <span class="kv-l">Number</span><span class="kv-v mono" style="font-size:10px">${l.number}</span>
-                <span class="kv-l">Expiry</span><span class="kv-v">${l.expiry}</span>
-              </div>
-            </div>`).join('')||'<div style="font-size:12px;color:var(--text-3)">No licences on record</div>'}
-          </div>
+    return `<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="panel"><div class="panel-hd"><span class="panel-title">Licences & Registrations</span><span class="badge badge-gray">${(r.licences||[]).length}</span></div>
+        <div class="panel-body">${(r.licences||[]).map(l=>`<div style="border:1px solid var(--border);border-radius:var(--r);padding:10px;margin-bottom:8px">
+          <div style="display:flex;justify-content:space-between;gap:6px;margin-bottom:6px"><div style="font-size:12px;font-weight:600">${l.type}</div><span class="badge ${l.status==='Active'?'badge-green':'badge-amber'}" style="font-size:10px">${l.status}</span></div>
+          <div class="kv" style="font-size:11px"><span class="kv-l">Authority</span><span class="kv-v">${l.authority}</span><span class="kv-l">Number</span><span class="kv-v" style="font-family:monospace;font-size:10px">${l.number}</span><span class="kv-l">Expiry</span><span class="kv-v">${l.expiry}</span></div>
+        </div>`).join('')||'<div style="font-size:12px;color:var(--text-3)">No licences</div>'}</div>
+      </div>
+      <div>
+        <div class="panel" style="margin-bottom:10px"><div class="panel-hd"><span class="panel-title">AML & Compliance</span></div>
+          <div class="panel-body"><div class="kv"><span class="kv-l">AMLCO / MLRO</span><span class="kv-v">${r.AMLOfficer||'—'}</span><span class="kv-l">FATF Category</span><span class="kv-v">${r.fatfCategory||'—'}</span></div></div>
         </div>
-        <div>
-          <div class="panel" style="margin-bottom:10px"><div class="panel-hd"><span class="panel-title">AML & Compliance</span></div>
-            <div class="panel-body"><div class="kv">
-              <span class="kv-l">AMLCO / MLRO</span><span class="kv-v">${r.AMLOfficer||'—'}</span>
-              <span class="kv-l">FATF Category</span><span class="kv-v">${r.fatfCategory||'—'}</span>
-            </div></div>
-          </div>
-          <div class="panel"><div class="panel-hd"><span class="panel-title">Regulatory Notes</span></div>
-            <div class="panel-body" style="font-size:12px;color:var(--text-2);line-height:1.65">${r.regulatoryNotes||'—'}</div>
-          </div>
+        <div class="panel"><div class="panel-hd"><span class="panel-title">Regulatory Notes</span></div>
+          <div class="panel-body" style="font-size:12px;color:var(--text-2);line-height:1.65">${r.regulatoryNotes||'—'}</div>
         </div>
-      </div>`;
+      </div>
+    </div>`;
   }
   return '';
 }
 
-function buildCaseTimeline(c, showAll){
-  const cases = showAll
-    ? (c.caseHistory||[])
-    : (c.caseHistory||[]).filter(ch=>ch.closed).slice(0,4);
-  if(!cases.length) return '<div style="font-size:12px;color:var(--text-3);padding:8px 0">No case history</div>';
+function buildBusinessTab(c){
+  // All fields from the spec
+  const reg=c.regulatory||{};
+  const licences=reg.licences||[];
+  const primaryLicence=licences[0]||{};
+
   return `
-    <div>
-      <div class="section-lbl" style="margin-bottom:10px">${showAll?'Full Case History':'Recent Case History'}</div>
-      <div style="position:relative">
-        <div style="position:absolute;left:9px;top:6px;bottom:6px;width:1px;background:var(--border)"></div>
-        <div style="display:flex;flex-direction:column;gap:0">
-          ${cases.map((ch,i)=>`
-          <div style="display:flex;gap:12px;padding-bottom:${i<cases.length-1?'14px':'0'}">
-            <div style="width:19px;height:19px;border-radius:50%;background:${ch.closed?'var(--green)':'var(--accent)'};display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;flex-shrink:0;position:relative;z-index:1;margin-top:2px">${ch.closed?'✓':'→'}</div>
-            <div style="flex:1">
-              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:6px;margin-bottom:2px">
-                <span style="font-size:12px;font-weight:600">${ch.type}</span>
-                <span class="badge ${ch.statusClass}" style="font-size:10px">${ch.status}</span>
-              </div>
-              <div style="font-size:11px;color:var(--text-3)"><span class="mono" style="font-size:10px">${ch.id}</span> · ${ch.opened}${ch.closed?' → '+ch.closed:' → Present'} · ${ch.assignee}</div>
-              ${ch.outcome?`<div style="font-size:11px;color:var(--text-2);background:var(--surface);border:1px solid var(--border);border-left:2px solid var(--green);border-radius:0 3px 3px 0;padding:4px 8px;margin-top:3px">${ch.outcome}</div>`:''}
-              ${!ch.closed?`<button class="btn btn-sm btn-primary" style="margin-top:5px" onclick="openCase('${ch.id}')">Open Case →</button>`:''}
-            </div>
-          </div>`).join('')}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+
+      <!-- Legal Identity -->
+      <div class="panel">
+        <div class="panel-hd"><span class="panel-title">Legal Identity</span><button class="btn btn-sm btn-ghost">Edit</button></div>
+        <div class="panel-body">
+          <div class="kv">
+            <span class="kv-l">Legal Name</span><span class="kv-v" style="font-weight:700">${c.name}</span>
+            <span class="kv-l">Trading Name / DBA</span><span class="kv-v">${c.tradingName||'—'}</span>
+            <span class="kv-l">Legal Form</span><span class="kv-v">${c.type}</span>
+            <span class="kv-l">Incorporation Date</span><span class="kv-v">${c.formed||'—'}</span>
+            <span class="kv-l">Business Description</span><span class="kv-v">${c.industry||'—'}</span>
+            <span class="kv-l">Customer Segment</span><span class="kv-v">${c.type==='Limited Partnership'?'Institutional — Fund':'Institutional — Corporate'}</span>
+          </div>
         </div>
       </div>
-    </div>`;
+
+      <!-- Registration -->
+      <div class="panel">
+        <div class="panel-hd"><span class="panel-title">Registration & Tax</span><button class="btn btn-sm btn-ghost">Edit</button></div>
+        <div class="panel-body">
+          <div class="kv">
+            <span class="kv-l">Country of Incorporation</span><span class="kv-v">${c.jurisdiction}</span>
+            <span class="kv-l">State / Province</span><span class="kv-v">${c.subJurisdiction||'—'}</span>
+            <span class="kv-l">Registration Number</span><span class="kv-v" style="font-family:monospace;font-size:11px">${c.registrationNo||'—'}</span>
+            <span class="kv-l">Tax ID</span><span class="kv-v" style="font-family:monospace;font-size:11px">${c.taxId||'—'}</span>
+            <span class="kv-l">LEI</span><span class="kv-v" style="font-family:monospace;font-size:11px">${c.lei||'—'}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Addresses -->
+      <div class="panel">
+        <div class="panel-hd"><span class="panel-title">Registered & Operating Addresses</span><button class="btn btn-sm btn-ghost">Edit</button></div>
+        <div class="panel-body">
+          <div style="margin-bottom:10px">
+            <div style="font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Registered Address</div>
+            <div style="font-size:12px;color:var(--text-2);line-height:1.5">${c.address||'—'}</div>
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Operating Address</div>
+            <div style="font-size:12px;color:var(--text-2);line-height:1.5">${c.operatingAddress||c.address||'Same as registered'}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Digital & Contact -->
+      <div class="panel">
+        <div class="panel-hd"><span class="panel-title">Web & Contact</span><button class="btn btn-sm btn-ghost">Edit</button></div>
+        <div class="panel-body">
+          <div class="kv">
+            <span class="kv-l">Website / Domain</span><span class="kv-v">${c.website||'—'}</span>
+            <span class="kv-l">Primary Email</span><span class="kv-v">${c.email||'—'}</span>
+            <span class="kv-l">Primary Contact</span><span class="kv-v">${c.primaryContact||'—'}</span>
+            <span class="kv-l">Countries of Operation</span><span class="kv-v">${c.countries||c.jurisdiction}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Regulatory Classification -->
+    <div class="panel" style="margin-bottom:10px">
+      <div class="panel-hd"><span class="panel-title">Regulatory Classification & Licences</span></div>
+      <div class="panel-body">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:${licences.length?'12px':'0'}">
+          <div style="background:var(--surface-2);border-radius:var(--r);padding:8px 10px">
+            <div style="font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Regulatory Classification</div>
+            <div style="font-size:12px;font-weight:600">${reg.fatfCategory||'—'}</div>
+          </div>
+          <div style="background:var(--surface-2);border-radius:var(--r);padding:8px 10px">
+            <div style="font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">AMLCO / MLRO</div>
+            <div style="font-size:12px;font-weight:600">${reg.AMLOfficer||'—'}</div>
+          </div>
+          <div style="background:var(--surface-2);border-radius:var(--r);padding:8px 10px">
+            <div style="font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Licences on File</div>
+            <div style="font-size:12px;font-weight:600">${licences.length} licence${licences.length!==1?'s':''}</div>
+          </div>
+        </div>
+        ${licences.length?`<table class="inner-tbl"><thead><tr><th>Licence Type</th><th>Regulator / Authority</th><th>Number</th><th>Status</th><th>Expiry</th></tr></thead>
+        <tbody>${licences.map(l=>`<tr><td style="font-weight:600">${l.type}</td><td>${l.authority}</td><td style="font-family:monospace;font-size:10px">${l.number}</td><td><span class="badge ${l.status==='Active'?'badge-green':'badge-amber'}" style="font-size:10px">${l.status}</span></td><td>${l.expiry}</td></tr>`).join('')}</tbody>
+        </table>`:'<div style="font-size:12px;color:var(--text-3)">No licences on record</div>'}
+      </div>
+    </div>
+
+    <!-- Corporate Structure -->
+    <div class="panel" style="margin-bottom:10px">
+      <div class="panel-hd"><span class="panel-title">Corporate Structure & Group</span><button class="btn btn-sm btn-ghost">Edit</button></div>
+      <div class="panel-body">
+        <div class="kv">
+          <span class="kv-l">Parent / Group</span><span class="kv-v">${c.parentGroup||'Standalone entity — no identified group structure'}</span>
+          <span class="kv-l">Listed Entity</span><span class="kv-v">${c.listed||'No'}</span>
+          <span class="kv-l">Subsidiaries</span><span class="kv-v">${c.subsidiaries||'None identified'}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Verification & Change Log -->
+    <div class="panel">
+      <div class="panel-hd"><span class="panel-title">Verification & Change Tracking</span></div>
+      <div class="panel-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div>
+            <div class="kv">
+              <span class="kv-l">Verification Source</span><span class="kv-v">${c.verificationSource||'Certificate of Incorporation · Company Registry'}</span>
+              <span class="kv-l">Last Registry Check</span><span class="kv-v">${c.lastRegistryCheck||c.lastReview||'—'}</span>
+              <span class="kv-l">Verified By</span><span class="kv-v">${c.rm||'Ana M.'}</span>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Changes Since Prior Review</div>
+            ${(c.changesSincePriorReview||['No material changes identified since last periodic review.']).map(ch=>`<div style="font-size:12px;color:var(--text-2);padding:4px 0;border-bottom:1px solid var(--border)">${ch}</div>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
 }
+
+function buildCaseTimeline(c, showAll){
+  const cases = showAll ? (c.caseHistory||[]) : (c.caseHistory||[]).filter(ch=>ch.closed).slice(0,4);
+  if(!cases.length && !showAll) return '<div style="font-size:12px;color:var(--text-3);padding:8px 0">No closed case history</div>';
+  if(!cases.length) return '<div style="font-size:12px;color:var(--text-3);padding:8px 0">No case history</div>';
+  return `
+    <div class="section-lbl" style="margin-bottom:10px">${showAll?'Full Case History':'Recent Case History'}</div>
+    <div style="position:relative">
+      <div style="position:absolute;left:9px;top:6px;bottom:6px;width:1px;background:var(--border)"></div>
+      <div style="display:flex;flex-direction:column;gap:0">
+        ${cases.map((ch,i)=>`
+        <div style="display:flex;gap:12px;padding-bottom:${i<cases.length-1?'14px':'0'}">
+          <div style="width:19px;height:19px;border-radius:50%;background:${ch.closed?'var(--accent)':'var(--amber)'};display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;flex-shrink:0;position:relative;z-index:1;margin-top:2px">${ch.closed?'✓':'→'}</div>
+          <div style="flex:1">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:6px;margin-bottom:2px">
+              <span style="font-size:12px;font-weight:600">${ch.type}</span>
+              <span class="badge ${ch.statusClass}" style="font-size:10px">${ch.status}</span>
+            </div>
+            <div style="font-size:11px;color:var(--text-3)"><span style="font-family:monospace;font-size:10px">${ch.id}</span> · ${ch.opened}${ch.closed?' → '+ch.closed:' → Present'} · ${ch.assignee}</div>
+            ${ch.outcome?`<div style="font-size:11px;color:var(--text-2);background:var(--surface);border:1px solid var(--border);border-left:2px solid var(--accent);border-radius:0 3px 3px 0;padding:4px 8px;margin-top:3px">${ch.outcome}</div>`:''}
+            ${!ch.closed?`<button class="btn btn-sm btn-primary" style="margin-top:5px" onclick="openCase('${ch.id}');closeClientDrawer()">Open Case →</button>`:''}
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>
+  `;
+}
+
 
 /* ── Audit Trail ── */
 function renderAudit(){
@@ -3763,6 +3800,14 @@ function showToast(msg){
   t.textContent=msg;t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),3000);
 }
+
+/* ── Keyboard shortcuts ── */
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    closeClientDrawer();
+    if(document.getElementById('case-view').classList.contains('open')) closeCaseView();
+  }
+});
 
 /* ── Init ── */
 renderNotifs();
