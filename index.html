@@ -575,11 +575,44 @@ button{cursor:pointer}
 
 
           <div id="cv-business" class="case-tab-content">
-            <div class="two-col">
-              <div class="panel"><div class="panel-hd"><span class="panel-title">Legal Identity</span><button class="btn btn-sm btn-ghost">Edit</button></div><div class="panel-body"><div class="kv" id="cv-kv-biz"></div></div></div>
-              <div class="panel"><div class="panel-hd"><span class="panel-title">Registered Address</span></div><div class="panel-body"><div class="kv" id="cv-kv-addr"></div></div></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+              <div class="panel">
+                <div class="panel-hd"><span class="panel-title">Legal Identity</span><button class="btn btn-sm btn-ghost">Edit</button></div>
+                <div class="panel-body"><div class="kv" id="cv-biz-identity"></div></div>
+              </div>
+              <div class="panel">
+                <div class="panel-hd"><span class="panel-title">Registration & Tax</span><button class="btn btn-sm btn-ghost">Edit</button></div>
+                <div class="panel-body"><div class="kv" id="cv-biz-registration"></div></div>
+              </div>
+              <div class="panel">
+                <div class="panel-hd"><span class="panel-title">Registered & Operating Addresses</span><button class="btn btn-sm btn-ghost">Edit</button></div>
+                <div class="panel-body" id="cv-biz-address"></div>
+              </div>
+              <div class="panel">
+                <div class="panel-hd"><span class="panel-title">Web, Contact & Operations</span><button class="btn btn-sm btn-ghost">Edit</button></div>
+                <div class="panel-body"><div class="kv" id="cv-biz-contact"></div></div>
+              </div>
+              <div class="panel">
+                <div class="panel-hd"><span class="panel-title">Business Profile</span><button class="btn btn-sm btn-ghost">Edit</button></div>
+                <div class="panel-body"><div class="kv" id="cv-biz-profile"></div></div>
+              </div>
+              <div class="panel">
+                <div class="panel-hd"><span class="panel-title">Relationship & RM</span><button class="btn btn-sm btn-ghost">Edit</button></div>
+                <div class="panel-body"><div class="kv" id="cv-biz-relationship"></div></div>
+              </div>
             </div>
-            <div class="panel"><div class="panel-hd"><span class="panel-title">Registration Details</span></div><div class="panel-body"><div class="kv" id="cv-kv-reg" style="grid-template-columns:160px 1fr"></div></div></div>
+            <div class="panel" style="margin-bottom:10px">
+              <div class="panel-hd"><span class="panel-title">Regulatory Classification & Licences</span></div>
+              <div class="panel-body" id="cv-biz-regulatory"></div>
+            </div>
+            <div class="panel" style="margin-bottom:10px">
+              <div class="panel-hd"><span class="panel-title">Corporate Structure & Group</span><button class="btn btn-sm btn-ghost">Edit</button></div>
+              <div class="panel-body"><div class="kv" id="cv-biz-structure"></div></div>
+            </div>
+            <div class="panel">
+              <div class="panel-hd"><span class="panel-title">Verification & Change Tracking</span></div>
+              <div class="panel-body" id="cv-biz-verification"></div>
+            </div>
           </div>
 
           <div id="cv-ownership" class="case-tab-content">
@@ -1535,7 +1568,7 @@ const CASES = [
 
 const CLIENTS = [
   {
-    id:'CLI-001', status:'Active', rm:'Ana M.', lei:'—', verificationSource:'Certificate of Formation · Delaware Secretary of State', lastRegistryCheck:'Mar 10, 2026', changesSincePriorReview:['Trading name updated: "Apex Digital" added as DBA (Mar 2026)','MSB registration renewed — FinCEN filing current','No ownership changes since prior review'], parentGroup:'Standalone entity', listed:'No', subsidiaries:'None identified', name:'Apex Digital LLC', type:'LLC', jurisdiction:'United States', subJurisdiction:'Delaware',
+    id:'CLI-001', status:'Active', rm:'Ana M.', lei:'LEI-PENDING-001', priorNames:'None', goodStanding:'Active — Confirmed Mar 2026', naics:'523130 — Commodity Contracts Dealing', annualRevenue:'$2M – $5M', employees:'12–25', businessDescription:'Delaware-registered cryptocurrency exchange and OTC desk providing institutional digital asset trading and custody services to qualified investors.', authorizedCapital:'5,000 units', shareStructure:'Member-managed LLC — no issued shares', otherBankingRelationships:'Silvergate Bank (closed), Signature Bank (closed), Current: Metropolitan Commercial Bank', operatingAddress:'251 Little Falls Drive, Wilmington, DE 19808', countries:'United States, Singapore, United Kingdom', verificationSource:'Certificate of Formation · Delaware Secretary of State', lastRegistryCheck:'Mar 10, 2026', changesSincePriorReview:['Trading name updated: "Apex Digital" added as DBA (Mar 2026)','MSB registration renewed — FinCEN filing current','No ownership changes since prior review'], parentGroup:'Standalone entity', listed:'No', subsidiaries:'None identified', name:'Apex Digital LLC', type:'LLC', jurisdiction:'United States', subJurisdiction:'Delaware',
     risk:'Moderate', kycStatus:'In Review', kycStatusClass:'badge-amber',
     formed:'July 2020', registrationNo:'DE-4492817', taxId:'EIN 83-4421789',
     address:'251 Little Falls Drive, Wilmington, DE 19808', industry:'Digital Assets / MSB',
@@ -1584,7 +1617,7 @@ const CLIENTS = [
     riskNarrative:'Moderate risk — domestic US MSB. Elevated by crypto sector and OTC activity but partially mitigated by FinCEN registration, AML officer in place, and consistent activity profile over 5 years.',
   },
   {
-    id:'CLI-002', status:'Active', rm:'Tom K.', name:'North Harbor Ventures LP', type:'Limited Partnership', jurisdiction:'Cayman Islands', subJurisdiction:'Grand Cayman',
+    id:'CLI-002', status:'Active', rm:'Tom K.', lei:'—', priorNames:'None', goodStanding:'Active — Confirmed Jan 2026', naics:'523910 — Miscellaneous Financial Investment', annualRevenue:'$10M – $50M', employees:'3–5 (GP entity)', businessDescription:'Cayman Islands domiciled limited partnership formed for institutional private equity investments across North American technology sectors.', authorizedCapital:'$100M committed', shareStructure:'LP structure — GP holds 1%, LPs hold 99%', otherBankingRelationships:'Butterfield Bank (Cayman), HSBC Private Banking', operatingAddress:'PO Box 309, Ugland House, Grand Cayman, KY1-1104', countries:'Cayman Islands, United States, Canada', name:'North Harbor Ventures LP', type:'Limited Partnership', jurisdiction:'Cayman Islands', subJurisdiction:'Grand Cayman',
     risk:'High', kycStatus:'In Review', kycStatusClass:'badge-amber',
     formed:'January 2022', registrationNo:'KY-2022-04817', taxId:'N/A (exempt)',
     address:'One Nexus Way, Camana Bay, Grand Cayman KY1-9005', industry:'Private Equity / Fund',
@@ -1624,7 +1657,7 @@ const CLIENTS = [
     riskNarrative:'High risk — Cayman Islands domiciled fund with layered LP ownership. EDD required. Monitoring for source of wealth completion and MLCO sign-off.',
   },
   {
-    id:'CLI-003', status:'Active', rm:'Ana M.', name:'Solstice Exchange Ltd', type:'Corporation', jurisdiction:'Singapore', subJurisdiction:'Singapore',
+    id:'CLI-003', status:'Active', rm:'Ana M.', lei:'PENDING', naics:'523210', annualRevenue:'$5M–$15M', employees:'20–50', businessDescription:'Singapore cryptocurrency exchange, MAS licensed.', parentGroup:'Solstice Group Holdings (BVI)', listed:'No', subsidiaries:'None identified', countries:'Singapore, UAE', priorNames:'None', goodStanding:'Active', verificationSource:'ACRA', lastRegistryCheck:'Jan 2026', changesSincePriorReview:['EDD opened Mar 2026'], lei:'PENDING', priorNames:'None', goodStanding:'Active — MAS Confirmed', naics:'523210 — Securities & Commodity Exchanges', annualRevenue:'$5M – $15M', employees:'20–50', businessDescription:'Singapore-incorporated cryptocurrency exchange licensed under MAS. Operates spot and derivatives trading for institutional clients.', authorizedCapital:'SGD 1,000,000', shareStructure:'Wholly owned by Solstice Group Holdings', otherBankingRelationships:'DBS Bank Singapore, Standard Chartered Singapore', operatingAddress:'1 Raffles Place, #40-01, Singapore 048616', countries:'Singapore, UAE, Hong Kong', verificationSource:'MAS Entity Register · ACRA', lastRegistryCheck:'Jan 10, 2026', changesSincePriorReview:['EDD case opened Mar 2026 — pending BSA sign-off'], parentGroup:'Solstice Group Holdings (BVI)', listed:'No', subsidiaries:'None identified', name:'Solstice Exchange Ltd', type:'Corporation', jurisdiction:'Singapore', subJurisdiction:'Singapore',
     risk:'High', kycStatus:'EDD Review', kycStatusClass:'badge-red',
     formed:'September 2018', registrationNo:'SG-201832441K', taxId:'TIN 201832441K',
     address:'1 Raffles Place, #40-01 One Raffles Place, Singapore 048616', industry:'Digital Assets / MAS-licensed Exchange',
@@ -1669,7 +1702,7 @@ const CLIENTS = [
     riskNarrative:'High risk — MAS-regulated crypto exchange with complex BVI ownership and unresolved OFAC match. BSA Officer sign-off required before case can close.',
   },
   {
-    id:'CLI-004', status:'Active', rm:'Ana M.', lei:'—', verificationSource:'Delaware Annual Filing · SEC EDGAR', lastRegistryCheck:'Mar 10, 2026', changesSincePriorReview:['No material changes identified since last periodic review.','SEC Form ADV filing current — no material disclosures.'], parentGroup:'Standalone entity', listed:'No', subsidiaries:'None identified', name:'Meridian Capital Partners', type:'Corporation', jurisdiction:'United States', subJurisdiction:'Delaware',
+    id:'CLI-004', status:'Active', rm:'Ana M.', lei:'213800YJKV4GBP0YOM53', priorNames:'Meridian Capital LLC (prior to 2019 restructure)', goodStanding:'Active — Confirmed Mar 2026', naics:'523920 — Portfolio Management', annualRevenue:'$3M – $8M', employees:'8–15', businessDescription:'Delaware-incorporated registered investment adviser managing separately managed accounts and co-investment vehicles for family offices and institutional investors.', authorizedCapital:'No par value — 1,000 authorized shares', shareStructure:'Corporation — privately held', otherBankingRelationships:'JP Morgan Private Bank, Wells Fargo Advisors', operatingAddress:'1209 Orange Street, Wilmington, DE 19801', countries:'United States', verificationSource:'Delaware Annual Filing · SEC EDGAR', lastRegistryCheck:'Mar 10, 2026', changesSincePriorReview:['No material changes identified since last periodic review.','SEC Form ADV filing current — no material disclosures.'], parentGroup:'Standalone entity', listed:'No', subsidiaries:'None identified', name:'Meridian Capital Partners', type:'Corporation', jurisdiction:'United States', subJurisdiction:'Delaware',
     risk:'Moderate', kycStatus:'Active', kycStatusClass:'badge-green',
     formed:'March 2021', registrationNo:'DE-7721045', taxId:'EIN 47-2219034',
     address:'100 Park Avenue, Suite 1600, New York, NY 10017', industry:'Investment Management',
@@ -2483,22 +2516,145 @@ function toggleRiskDrivers(){
 
 
 function populateCvBusiness(c){
-  const b=document.getElementById('cv-kv-biz');
-  if(b) b.innerHTML=kv([['Legal Name',c.client],['Trading Name',c.tradingName||'—'],['Entity Type',c.entityType||'—'],['Date of Formation',c.formed||'—'],['Industry',c.activity||'—']]);
-  const a=document.getElementById('cv-kv-addr');
-  if(a) a.innerHTML=kv([['Registered',c.address||c.jurisdiction||'—'],['Operating',c.operatingAddress||c.address||'—']]);
-  const r=document.getElementById('cv-kv-reg');
-  if(r) r.innerHTML=kv([['Country of Incorporation',c.jurisdiction],['State / Province',c.subJurisdiction||'—'],['Registration Number',c.registrationNo||'—'],['Tax ID',c.taxId||'—']]);
+  const reg = c.regulatory||{};
+  const licences = reg.licences||[];
+
+  // ── Legal Identity ───────────────────────────────────────────────
+  const idEl = document.getElementById('cv-biz-identity');
+  if(idEl) idEl.innerHTML = kv([
+    ['Legal Name',         `<strong>${c.client}</strong>`],
+    ['Trading Name / DBA', c.tradingName||'—'],
+    ['Prior Names',        c.priorNames||'None on record'],
+    ['Legal Form',         c.entityType||c.type||'—'],
+    ['Incorporation Date', c.formed||'—'],
+    ['Customer Segment',   c.type==='Limited Partnership'?'Institutional — Fund':'Institutional — Corporate'],
+    ['Nature of Business', c.industry||'—'],
+  ]);
+
+  // ── Registration & Tax ───────────────────────────────────────────
+  const regEl = document.getElementById('cv-biz-registration');
+  if(regEl) regEl.innerHTML = kv([
+    ['Country of Incorporation', c.jurisdiction],
+    ['State / Province',         c.subJurisdiction||'—'],
+    ['Registration Number',      `<span style="font-family:monospace;font-size:11px">${c.registrationNo||'—'}</span>`],
+    ['Date of Registration',     c.formed||'—'],
+    ['Good Standing',            c.goodStanding||'Active — Confirmed'],
+    ['Tax ID / EIN',             `<span style="font-family:monospace;font-size:11px">${c.taxId||'—'}</span>`],
+    ['LEI',                      `<span style="font-family:monospace;font-size:11px">${c.lei||'Not registered'}</span>`],
+    ['NAICS / SIC Code',         c.naics||'523130 — Commodity Contracts Dealing'],
+  ]);
+
+  // ── Addresses ────────────────────────────────────────────────────
+  const addrEl = document.getElementById('cv-biz-address');
+  if(addrEl) addrEl.innerHTML = `
+    <div style="margin-bottom:12px">
+      <div style="font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Registered Address</div>
+      <div style="font-size:12px;color:var(--text-2);line-height:1.55">${c.address||'—'}</div>
+    </div>
+    <div>
+      <div style="font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Operating Address</div>
+      <div style="font-size:12px;color:var(--text-2);line-height:1.55">${c.operatingAddress||c.address||'Same as registered address'}</div>
+    </div>`;
+
+  // ── Web, Contact & Operations ────────────────────────────────────
+  const contactEl = document.getElementById('cv-biz-contact');
+  if(contactEl) contactEl.innerHTML = kv([
+    ['Website / Domain',       c.website||'—'],
+    ['Primary Email',          c.email||'—'],
+    ['Primary Contact',        c.primaryContact||'—'],
+    ['Countries of Operation', c.countries||c.jurisdiction],
+    ['Other Banking Rels.',    c.otherBankingRelationships||'Not disclosed'],
+  ]);
+
+  // ── Business Profile ─────────────────────────────────────────────
+  const profileEl = document.getElementById('cv-biz-profile');
+  if(profileEl) profileEl.innerHTML = kv([
+    ['Annual Revenue Range',  c.annualRevenue||'—'],
+    ['No. of Employees',      c.employees||'—'],
+    ['NAICS / Industry',      c.naics||'523130'],
+    ['Business Description',  c.businessDescription||c.industry||'—'],
+    ['Customer Since',        c.onboardedDate||'—'],
+  ]);
+
+  // ── Relationship & RM ────────────────────────────────────────────
+  const relEl = document.getElementById('cv-biz-relationship');
+  if(relEl) relEl.innerHTML = kv([
+    ['Relationship Manager',  c.rm||'—'],
+    ['KYC Analyst',           c.assignee||c.rm||'—'],
+    ['Relationship Status',   `<span style="font-weight:600;color:${(c.status||'Active')==='Active'?'var(--green-text)':'var(--red-text)'}">${c.status||'Active'}</span>`],
+    ['Review Cycle',          c.reviewCycle||'Annual'],
+    ['Last Review',           c.lastReview||'—'],
+    ['Next Review',           c.nextReview||'—'],
+  ]);
+
+  // ── Regulatory Classification & Licences ─────────────────────────
+  const regClassEl = document.getElementById('cv-biz-regulatory');
+  if(regClassEl){
+    regClassEl.innerHTML = `
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:${licences.length?'12':'0'}px">
+        <div style="background:var(--surface-2);border-radius:var(--r);padding:8px 10px">
+          <div style="font-size:9px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Regulatory Classification</div>
+          <div style="font-size:12px;font-weight:600">${reg.fatfCategory||'—'}</div>
+        </div>
+        <div style="background:var(--surface-2);border-radius:var(--r);padding:8px 10px">
+          <div style="font-size:9px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">AMLCO / MLRO</div>
+          <div style="font-size:12px;font-weight:600">${reg.AMLOfficer||'—'}</div>
+        </div>
+        <div style="background:var(--surface-2);border-radius:var(--r);padding:8px 10px">
+          <div style="font-size:9px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Licences on File</div>
+          <div style="font-size:12px;font-weight:600">${licences.length} licence${licences.length!==1?'s':''}</div>
+        </div>
+      </div>
+      ${licences.length?`
+      <table class="inner-tbl">
+        <thead><tr><th>Licence Type</th><th>Regulator / Authority</th><th>Licence Number</th><th>Status</th><th>Expiry Date</th></tr></thead>
+        <tbody>${licences.map(l=>`
+          <tr>
+            <td style="font-weight:600">${l.type}</td>
+            <td>${l.authority}</td>
+            <td style="font-family:monospace;font-size:10px">${l.number}</td>
+            <td><span class="badge ${l.status==='Active'?'badge-green':'badge-amber'}" style="font-size:10px">${l.status}</span></td>
+            <td>${l.expiry}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`:'<div style="font-size:12px;color:var(--text-3)">No licences on record</div>'}
+    `;
+  }
+
+  // ── Corporate Structure ──────────────────────────────────────────
+  const structEl = document.getElementById('cv-biz-structure');
+  if(structEl) structEl.innerHTML = kv([
+    ['Parent / Group',         c.parentGroup||'Standalone entity — no identified group structure'],
+    ['Listed Entity',          c.listed||'No'],
+    ['Subsidiaries',           c.subsidiaries||'None identified'],
+    ['Authorized Capital',     c.authorizedCapital||'—'],
+    ['Share Structure',        c.shareStructure||'—'],
+  ]);
+
+  // ── Verification & Change Tracking ───────────────────────────────
+  const verEl = document.getElementById('cv-biz-verification');
+  if(verEl){
+    const changes = c.changesSincePriorReview||['No material changes identified since last periodic review.'];
+    verEl.innerHTML = `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div>
+          <div class="kv">
+            <span class="kv-l">Verification Source</span><span class="kv-v">${c.verificationSource||'Certificate of Incorporation · Company Registry'}</span>
+            <span class="kv-l">Last Registry Check</span><span class="kv-v">${c.lastRegistryCheck||c.lastReview||'—'}</span>
+            <span class="kv-l">Verified By</span><span class="kv-v">${c.rm||'Ana M.'}</span>
+            <span class="kv-l">Good Standing Confirmed</span><span class="kv-v"><span style="color:var(--green-text);font-weight:600">${c.goodStanding||'Active — Confirmed'}</span></span>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Changes Since Prior Review</div>
+          ${changes.map(ch=>`<div style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-2);padding:5px 0;border-bottom:1px solid var(--border)">
+            <span style="color:var(--accent);flex-shrink:0;font-weight:600;margin-top:1px">→</span>${ch}
+          </div>`).join('')}
+        </div>
+      </div>`;
+  }
 }
 
-function populateCvOwnership(c){
-  const ub=document.getElementById('cv-ubo-body');
-  if(ub) ub.innerHTML=(c.ubos||[]).map(u=>`<tr><td style="font-weight:600">${u.name}</td><td>${u.dob||'—'}</td><td>${u.nationality||'—'}</td><td style="font-weight:600">${u.stake}</td><td>${u.ownershipType||'Direct'}</td><td><span class="badge ${(u.idVerified&&(u.idVerified.startsWith('Verified')||u.idVerified==='Listed entity'))?'badge-green':'badge-amber'}" style="font-size:10px">${u.idVerified}</span></td><td>${u.pep||'No'}</td><td><span class="badge ${u.screening==='Clear'?'badge-green':u.screening==='Alert'?'badge-red':'badge-amber'}" style="font-size:10px">${u.screening}</span></td></tr>`).join('')||'<tr><td colspan="8" style="text-align:center;padding:16px;color:var(--text-3)">No UBO data</td></tr>';
-  const cb=document.getElementById('cv-ctrl-body');
-  if(cb) cb.innerHTML=(c.controllers||[]).map(ct=>`<tr><td style="font-weight:600">${ct.name}</td><td>${ct.dob||'—'}</td><td>${ct.nationality||'—'}</td><td>${ct.title}</td><td>${ct.country||c.jurisdiction}</td><td><span class="badge badge-green" style="font-size:10px">${ct.idVerified}</span></td><td>${ct.pep||'No'}</td><td><span class="badge ${ct.screening==='Clear'?'badge-green':'badge-amber'}" style="font-size:10px">${ct.screening}</span></td></tr>`).join('')||'<tr><td colspan="8" style="text-align:center;padding:16px;color:var(--text-3)">No data</td></tr>';
-  const n=document.getElementById('cv-own-notes');
-  if(n) n.textContent=c.ownershipNotes||'—';
-}
 
 function populateCvContacts(c){
   const p=document.getElementById('cv-kv-contact-p');
@@ -3625,130 +3781,104 @@ function buildProfileTab(tab,c){
 }
 
 function buildBusinessTab(c){
-  // All fields from the spec
   const reg=c.regulatory||{};
   const licences=reg.licences||[];
-  const primaryLicence=licences[0]||{};
-
+  const changes=c.changesSincePriorReview||['No material changes identified since last periodic review.'];
   return `
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-
-      <!-- Legal Identity -->
-      <div class="panel">
-        <div class="panel-hd"><span class="panel-title">Legal Identity</span><button class="btn btn-sm btn-ghost">Edit</button></div>
+      <div class="panel"><div class="panel-hd"><span class="panel-title">Legal Identity</span><button class="btn btn-sm btn-ghost">Edit</button></div>
+        <div class="panel-body"><div class="kv">
+          <span class="kv-l">Legal Name</span><span class="kv-v" style="font-weight:700">${c.name}</span>
+          <span class="kv-l">Trading Name / DBA</span><span class="kv-v">${c.tradingName||'—'}</span>
+          <span class="kv-l">Prior Names</span><span class="kv-v">${c.priorNames||'None on record'}</span>
+          <span class="kv-l">Legal Form</span><span class="kv-v">${c.type}</span>
+          <span class="kv-l">Incorporation Date</span><span class="kv-v">${c.formed||'—'}</span>
+          <span class="kv-l">Customer Segment</span><span class="kv-v">${c.type==='Limited Partnership'?'Institutional — Fund':'Institutional — Corporate'}</span>
+          <span class="kv-l">Nature of Business</span><span class="kv-v">${c.businessDescription||c.industry||'—'}</span>
+        </div></div>
+      </div>
+      <div class="panel"><div class="panel-hd"><span class="panel-title">Registration & Tax</span><button class="btn btn-sm btn-ghost">Edit</button></div>
+        <div class="panel-body"><div class="kv">
+          <span class="kv-l">Country of Incorporation</span><span class="kv-v">${c.jurisdiction}</span>
+          <span class="kv-l">State / Province</span><span class="kv-v">${c.subJurisdiction||'—'}</span>
+          <span class="kv-l">Registration Number</span><span class="kv-v" style="font-family:monospace;font-size:11px">${c.registrationNo||'—'}</span>
+          <span class="kv-l">Good Standing</span><span class="kv-v" style="color:var(--green-text);font-weight:600">${c.goodStanding||'Active'}</span>
+          <span class="kv-l">Tax ID / EIN</span><span class="kv-v" style="font-family:monospace;font-size:11px">${c.taxId||'—'}</span>
+          <span class="kv-l">LEI</span><span class="kv-v" style="font-family:monospace;font-size:11px">${c.lei||'Not registered'}</span>
+          <span class="kv-l">NAICS / SIC</span><span class="kv-v">${c.naics||'—'}</span>
+        </div></div>
+      </div>
+      <div class="panel"><div class="panel-hd"><span class="panel-title">Addresses</span><button class="btn btn-sm btn-ghost">Edit</button></div>
         <div class="panel-body">
-          <div class="kv">
-            <span class="kv-l">Legal Name</span><span class="kv-v" style="font-weight:700">${c.name}</span>
-            <span class="kv-l">Trading Name / DBA</span><span class="kv-v">${c.tradingName||'—'}</span>
-            <span class="kv-l">Legal Form</span><span class="kv-v">${c.type}</span>
-            <span class="kv-l">Incorporation Date</span><span class="kv-v">${c.formed||'—'}</span>
-            <span class="kv-l">Business Description</span><span class="kv-v">${c.industry||'—'}</span>
-            <span class="kv-l">Customer Segment</span><span class="kv-v">${c.type==='Limited Partnership'?'Institutional — Fund':'Institutional — Corporate'}</span>
-          </div>
+          <div style="margin-bottom:10px"><div style="font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Registered</div><div style="font-size:12px;color:var(--text-2);line-height:1.5">${c.address||'—'}</div></div>
+          <div><div style="font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Operating</div><div style="font-size:12px;color:var(--text-2);line-height:1.5">${c.operatingAddress||c.address||'Same as registered'}</div></div>
         </div>
       </div>
-
-      <!-- Registration -->
-      <div class="panel">
-        <div class="panel-hd"><span class="panel-title">Registration & Tax</span><button class="btn btn-sm btn-ghost">Edit</button></div>
-        <div class="panel-body">
-          <div class="kv">
-            <span class="kv-l">Country of Incorporation</span><span class="kv-v">${c.jurisdiction}</span>
-            <span class="kv-l">State / Province</span><span class="kv-v">${c.subJurisdiction||'—'}</span>
-            <span class="kv-l">Registration Number</span><span class="kv-v" style="font-family:monospace;font-size:11px">${c.registrationNo||'—'}</span>
-            <span class="kv-l">Tax ID</span><span class="kv-v" style="font-family:monospace;font-size:11px">${c.taxId||'—'}</span>
-            <span class="kv-l">LEI</span><span class="kv-v" style="font-family:monospace;font-size:11px">${c.lei||'—'}</span>
-          </div>
-        </div>
+      <div class="panel"><div class="panel-hd"><span class="panel-title">Web, Contact & Operations</span><button class="btn btn-sm btn-ghost">Edit</button></div>
+        <div class="panel-body"><div class="kv">
+          <span class="kv-l">Website</span><span class="kv-v">${c.website||'—'}</span>
+          <span class="kv-l">Email</span><span class="kv-v">${c.email||'—'}</span>
+          <span class="kv-l">Primary Contact</span><span class="kv-v">${c.primaryContact||'—'}</span>
+          <span class="kv-l">Countries of Operation</span><span class="kv-v">${c.countries||c.jurisdiction}</span>
+          <span class="kv-l">Other Banking Rels.</span><span class="kv-v">${c.otherBankingRelationships||'Not disclosed'}</span>
+        </div></div>
       </div>
-
-      <!-- Addresses -->
-      <div class="panel">
-        <div class="panel-hd"><span class="panel-title">Registered & Operating Addresses</span><button class="btn btn-sm btn-ghost">Edit</button></div>
-        <div class="panel-body">
-          <div style="margin-bottom:10px">
-            <div style="font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Registered Address</div>
-            <div style="font-size:12px;color:var(--text-2);line-height:1.5">${c.address||'—'}</div>
-          </div>
-          <div>
-            <div style="font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Operating Address</div>
-            <div style="font-size:12px;color:var(--text-2);line-height:1.5">${c.operatingAddress||c.address||'Same as registered'}</div>
-          </div>
-        </div>
+      <div class="panel"><div class="panel-hd"><span class="panel-title">Business Profile</span><button class="btn btn-sm btn-ghost">Edit</button></div>
+        <div class="panel-body"><div class="kv">
+          <span class="kv-l">Annual Revenue</span><span class="kv-v">${c.annualRevenue||'—'}</span>
+          <span class="kv-l">Employees</span><span class="kv-v">${c.employees||'—'}</span>
+          <span class="kv-l">Customer Since</span><span class="kv-v">${c.onboardedDate||'—'}</span>
+        </div></div>
       </div>
-
-      <!-- Digital & Contact -->
-      <div class="panel">
-        <div class="panel-hd"><span class="panel-title">Web & Contact</span><button class="btn btn-sm btn-ghost">Edit</button></div>
-        <div class="panel-body">
-          <div class="kv">
-            <span class="kv-l">Website / Domain</span><span class="kv-v">${c.website||'—'}</span>
-            <span class="kv-l">Primary Email</span><span class="kv-v">${c.email||'—'}</span>
-            <span class="kv-l">Primary Contact</span><span class="kv-v">${c.primaryContact||'—'}</span>
-            <span class="kv-l">Countries of Operation</span><span class="kv-v">${c.countries||c.jurisdiction}</span>
-          </div>
-        </div>
+      <div class="panel"><div class="panel-hd"><span class="panel-title">Relationship</span></div>
+        <div class="panel-body"><div class="kv">
+          <span class="kv-l">RM / Analyst</span><span class="kv-v">${c.rm||'—'}</span>
+          <span class="kv-l">Status</span><span class="kv-v" style="font-weight:600;color:${(c.status||'Active')==='Active'?'var(--green-text)':'var(--red-text)'}">${c.status||'Active'}</span>
+          <span class="kv-l">Review Cycle</span><span class="kv-v">${c.reviewCycle||'Annual'}</span>
+          <span class="kv-l">Last Review</span><span class="kv-v">${c.lastReview||'—'}</span>
+          <span class="kv-l">Next Review</span><span class="kv-v">${c.nextReview||'—'}</span>
+        </div></div>
       </div>
-
     </div>
 
-    <!-- Regulatory Classification -->
     <div class="panel" style="margin-bottom:10px">
       <div class="panel-hd"><span class="panel-title">Regulatory Classification & Licences</span></div>
       <div class="panel-body">
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:${licences.length?'12px':'0'}">
-          <div style="background:var(--surface-2);border-radius:var(--r);padding:8px 10px">
-            <div style="font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Regulatory Classification</div>
-            <div style="font-size:12px;font-weight:600">${reg.fatfCategory||'—'}</div>
-          </div>
-          <div style="background:var(--surface-2);border-radius:var(--r);padding:8px 10px">
-            <div style="font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">AMLCO / MLRO</div>
-            <div style="font-size:12px;font-weight:600">${reg.AMLOfficer||'—'}</div>
-          </div>
-          <div style="background:var(--surface-2);border-radius:var(--r);padding:8px 10px">
-            <div style="font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Licences on File</div>
-            <div style="font-size:12px;font-weight:600">${licences.length} licence${licences.length!==1?'s':''}</div>
-          </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:${licences.length?'12':'0'}px">
+          <div style="background:var(--surface-2);border-radius:var(--r);padding:8px 10px"><div style="font-size:9px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Reg. Classification</div><div style="font-size:12px;font-weight:600">${reg.fatfCategory||'—'}</div></div>
+          <div style="background:var(--surface-2);border-radius:var(--r);padding:8px 10px"><div style="font-size:9px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">AMLCO / MLRO</div><div style="font-size:12px;font-weight:600">${reg.AMLOfficer||'—'}</div></div>
+          <div style="background:var(--surface-2);border-radius:var(--r);padding:8px 10px"><div style="font-size:9px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Licences on File</div><div style="font-size:12px;font-weight:600">${licences.length} licence${licences.length!==1?'s':''}</div></div>
         </div>
-        ${licences.length?`<table class="inner-tbl"><thead><tr><th>Licence Type</th><th>Regulator / Authority</th><th>Number</th><th>Status</th><th>Expiry</th></tr></thead>
-        <tbody>${licences.map(l=>`<tr><td style="font-weight:600">${l.type}</td><td>${l.authority}</td><td style="font-family:monospace;font-size:10px">${l.number}</td><td><span class="badge ${l.status==='Active'?'badge-green':'badge-amber'}" style="font-size:10px">${l.status}</span></td><td>${l.expiry}</td></tr>`).join('')}</tbody>
-        </table>`:'<div style="font-size:12px;color:var(--text-3)">No licences on record</div>'}
+        ${licences.length?`<table class="inner-tbl"><thead><tr><th>Licence Type</th><th>Regulator</th><th>Number</th><th>Status</th><th>Expiry</th></tr></thead>
+        <tbody>${licences.map(l=>`<tr><td style="font-weight:600">${l.type}</td><td>${l.authority}</td><td style="font-family:monospace;font-size:10px">${l.number}</td><td><span class="badge ${l.status==='Active'?'badge-green':'badge-amber'}" style="font-size:10px">${l.status}</span></td><td>${l.expiry}</td></tr>`).join('')}</tbody></table>`:'<div style="font-size:12px;color:var(--text-3)">No licences on record</div>'}
       </div>
     </div>
 
-    <!-- Corporate Structure -->
-    <div class="panel" style="margin-bottom:10px">
-      <div class="panel-hd"><span class="panel-title">Corporate Structure & Group</span><button class="btn btn-sm btn-ghost">Edit</button></div>
-      <div class="panel-body">
-        <div class="kv">
-          <span class="kv-l">Parent / Group</span><span class="kv-v">${c.parentGroup||'Standalone entity — no identified group structure'}</span>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="panel"><div class="panel-hd"><span class="panel-title">Corporate Structure & Group</span><button class="btn btn-sm btn-ghost">Edit</button></div>
+        <div class="panel-body"><div class="kv">
+          <span class="kv-l">Parent / Group</span><span class="kv-v">${c.parentGroup||'Standalone entity'}</span>
           <span class="kv-l">Listed Entity</span><span class="kv-v">${c.listed||'No'}</span>
           <span class="kv-l">Subsidiaries</span><span class="kv-v">${c.subsidiaries||'None identified'}</span>
-        </div>
+          <span class="kv-l">Authorized Capital</span><span class="kv-v">${c.authorizedCapital||'—'}</span>
+          <span class="kv-l">Share Structure</span><span class="kv-v">${c.shareStructure||'—'}</span>
+        </div></div>
       </div>
-    </div>
-
-    <!-- Verification & Change Log -->
-    <div class="panel">
-      <div class="panel-hd"><span class="panel-title">Verification & Change Tracking</span></div>
-      <div class="panel-body">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-          <div>
-            <div class="kv">
-              <span class="kv-l">Verification Source</span><span class="kv-v">${c.verificationSource||'Certificate of Incorporation · Company Registry'}</span>
-              <span class="kv-l">Last Registry Check</span><span class="kv-v">${c.lastRegistryCheck||c.lastReview||'—'}</span>
-              <span class="kv-l">Verified By</span><span class="kv-v">${c.rm||'Ana M.'}</span>
-            </div>
+      <div class="panel"><div class="panel-hd"><span class="panel-title">Verification & Change Tracking</span></div>
+        <div class="panel-body">
+          <div class="kv" style="margin-bottom:10px">
+            <span class="kv-l">Verification Source</span><span class="kv-v">${c.verificationSource||'Company Registry'}</span>
+            <span class="kv-l">Last Registry Check</span><span class="kv-v">${c.lastRegistryCheck||c.lastReview||'—'}</span>
+            <span class="kv-l">Verified By</span><span class="kv-v">${c.rm||'Ana M.'}</span>
           </div>
-          <div>
-            <div style="font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Changes Since Prior Review</div>
-            ${(c.changesSincePriorReview||['No material changes identified since last periodic review.']).map(ch=>`<div style="font-size:12px;color:var(--text-2);padding:4px 0;border-bottom:1px solid var(--border)">${ch}</div>`).join('')}
-          </div>
+          <div style="font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Changes Since Prior Review</div>
+          ${changes.map(ch=>`<div style="display:flex;gap:6px;font-size:12px;color:var(--text-2);padding:4px 0;border-bottom:1px solid var(--border)"><span style="color:var(--accent);flex-shrink:0;font-weight:600">→</span>${ch}</div>`).join('')}
         </div>
       </div>
     </div>
   `;
 }
+
 
 function buildCaseTimeline(c, showAll){
   const cases = showAll ? (c.caseHistory||[]) : (c.caseHistory||[]).filter(ch=>ch.closed).slice(0,4);
