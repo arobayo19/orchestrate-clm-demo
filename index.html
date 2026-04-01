@@ -8,43 +8,41 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#F4F5F7;
+  --bg:#F8F9FA;
   --surface:#FFFFFF;
-  --surface-2:#F8F9FA;
-  --border:#E1E4E8;
-  --border-2:#C9CDD2;
-  --text:#1A1D23;
-  --text-2:#5A6072;
-  --text-3:#8C92A0;
-  --accent:#16A34A;
-  --accent-dim:#DCFCE7;
-  --accent-text:#15803D;
-  --hover:#F0FDF4;
-  --accent-border:#86EFAC;
-  --accent-hover:#15803D;
-  --green:#006644;
-  --green-dim:#DCFCE7;
-  --green-text:#15803D;
-  --green-border:#86EFAC;
-  --red:#BF2600;
-  --red-dim:#FEE2E2;
-  --red-text:#DC2626;
-  --red-border:#FCA5A5;
-  --amber:#F59E0B;
+  --surface-2:#F1F3F5;
+  --surface-3:#E9ECEF;
+  --border:#DEE2E6;
+  --border-2:#CED4DA;
+  --text:#212529;
+  --text-2:#495057;
+  --text-3:#868E96;
+  --accent:#2D6A4F;
+  --accent-dim:#D8EDDF;
+  --accent-text:#1B4332;
+  --accent-hover:#1B4332;
+  --accent-border:#74C69D;
+  --green-dim:#D8EDDF;
+  --green-text:#1B4332;
+  --green-border:#74C69D;
+  --red:#C0392B;
+  --red-dim:#FDECEA;
+  --red-text:#C0392B;
+  --red-border:#F5A49A;
+  --amber:#B45309;
   --amber-dim:#FEF3C7;
   --amber-text:#92400E;
-  --amber-border:#FCD34D;
-  --blue-dim:#DBEAFE;
+  --amber-border:#D97706;
+  --blue-dim:#EFF6FF;
   --blue-text:#1D4ED8;
-  --blue-border:#93C5FD;
-  --sidebar:#1A1D23;
+  --sidebar:#1B4332;
   --sidebar-w:220px;
   --topbar-h:48px;
   --r:4px;
   --r2:6px;
   --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
   --font-mono:'SF Mono','Fira Code','Consolas','Courier New',monospace;
-  --shadow-sm:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --shadow-sm:0 1px 3px rgba(0,0,0,.06);
   --shadow-md:0 4px 16px rgba(0,0,0,.08);
   --shadow-lg:0 8px 32px rgba(0,0,0,.12);
 }
@@ -61,7 +59,7 @@ button{cursor:pointer}
 
 /* ── Sidebar ── */
 .sb-brand{padding:14px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.08)}
-.sb-logo{width:26px;height:26px;background:var(--accent);border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sb-logo{width:26px;height:26px;background:#3D8B62;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .sb-logo svg{width:14px;height:14px;fill:#fff}
 .sb-name{font-size:14px;font-weight:600;color:#fff;letter-spacing:-.01em}
 .sb-name span{font-size:10px;font-weight:400;color:rgba(255,255,255,.4);display:block;letter-spacing:.04em;text-transform:uppercase;margin-top:1px}
@@ -82,9 +80,9 @@ button{cursor:pointer}
 /* ── Topbar ── */
 .tb-title{font-size:14px;font-weight:600;color:var(--text)}
 .tb-right{display:flex;align-items:center;gap:6px}
-.btn{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:var(--r);font-size:12px;font-weight:500;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;transition:background .1s;white-space:nowrap;line-height:1.4}
-.btn:hover{background:var(--surface-2)}
-.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:var(--r);font-size:12px;font-weight:500;border:1px solid var(--border-2);background:var(--surface);color:var(--text);cursor:pointer;transition:background .1s;white-space:nowrap;line-height:1.4}
+.btn:hover{background:#F8F9FA}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
 .btn-primary:hover{background:var(--accent-hover)}
 .btn-sm{padding:3px 8px;font-size:11px}
 .btn-ghost{border-color:transparent;background:transparent}
@@ -97,7 +95,7 @@ button{cursor:pointer}
 .search-results{display:none;position:absolute;top:34px;left:0;width:300px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);box-shadow:var(--shadow-md);z-index:200;overflow:hidden;max-height:280px;overflow-y:auto}
 .sr-item{padding:8px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
 .sr-item:last-child{border-bottom:none}
-.sr-item:hover{background:var(--surface-2)}
+.sr-item:hover{background:transparent}
 
 /* ── Views ── */
 .view{display:none;flex:1;overflow:hidden;flex-direction:column}
@@ -125,18 +123,18 @@ button{cursor:pointer}
 .tbl-filter-input{padding:4px 8px;border:1px solid var(--border);border-radius:var(--r);font-size:12px;background:var(--surface-2);outline:none;color:var(--text)}
 .tbl-filter-input:focus{border-color:var(--accent)}
 .tbl{width:100%;border-collapse:collapse}
-.tbl th{font-size:11px;font-weight:600;color:var(--text-2);text-transform:uppercase;letter-spacing:.05em;padding:7px 12px;text-align:left;border-bottom:2px solid var(--border);background:var(--surface-2);white-space:nowrap;position:sticky;top:0;z-index:2}
+.tbl th{font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em;padding:7px 12px;text-align:left;border-bottom:1px solid var(--border);background:var(--surface-2);white-space:nowrap;position:sticky;top:0;z-index:2}
 .tbl th:first-child{padding-left:16px}
-.tbl td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:middle;font-size:12px}
+.tbl td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:middle;font-size:12px}
 .tbl td:first-child{padding-left:16px}
 .tbl tbody tr{cursor:pointer;transition:background .08s}
-.tbl tbody tr:hover td{background:#F0FDF4}
+.tbl tbody tr:hover td{background:var(--accent-dim)}
 .tbl tbody tr:last-child td{border-bottom:none}
 .tbl-client{font-weight:600;color:var(--text);font-size:13px}
 .tbl-id{font-family:var(--font-mono);font-size:10px;color:var(--text-3);margin-top:1px}
-.sla-ok{color:var(--green-text);font-weight:600}
+.sla-ok{color:var(--accent);font-weight:600}
 .sla-due{color:var(--amber);font-weight:600}
-.sla-over{color:var(--red-text);font-weight:600}
+.sla-over{color:var(--red-text);font-weight:700}
 
 /* ── Dashboard ── */
 .dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;margin-bottom:16px}
@@ -163,8 +161,8 @@ button{cursor:pointer}
 .steps{display:flex;flex-direction:column;gap:0}
 .step-item{display:flex;align-items:flex-start;gap:10px;padding:8px 14px;border-bottom:1px solid var(--border)}
 .step-dot{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;margin-top:1px}
-.step-dot.done{background:var(--green);color:#fff}
-.step-dot.active{background:var(--accent);color:#fff}
+.step-dot.done{background:var(--accent);color:#fff}
+.step-dot.active{background:var(--text);color:#fff}
 .step-dot.pending{background:var(--surface-2);border:1px solid var(--border-2);color:var(--text-3)}
 .step-label{font-size:12px;font-weight:500;color:var(--text-2);padding-top:2px}
 .step-label.active{color:var(--text);font-weight:600}
@@ -263,7 +261,7 @@ button{cursor:pointer}
 .dv-overlay.open{display:flex}
 .dv-inner{background:var(--surface);border-radius:var(--r2);box-shadow:var(--shadow-lg);width:720px;max-width:96vw;max-height:88vh;display:flex;flex-direction:column}
 .dv-hd{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.dv-body{flex:1;overflow-y:auto;padding:24px 32px;background:#F8F9FA}
+.dv-body{flex:1;overflow-y:auto;padding:24px 32px;background:var(--surface-2)}
 .dv-ft{padding:10px 16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 
 /* ── Toast ── */
@@ -279,7 +277,7 @@ button{cursor:pointer}
 ::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:99px}
 
 /* ── Notif panel ── */
-.notif-panel{display:none;position:absolute;top:6px;right:0;width:300px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);box-shadow:var(--shadow-md);z-index:300}
+.notif-panel{display:none;position:absolute;top:6px;right:0;width:300px;background:var(--surface);border:1px solid var(--border-2);border-radius:var(--r2);box-shadow:var(--shadow-lg);z-index:300}
 .notif-item{display:flex;align-items:flex-start;gap:8px;padding:9px 12px;cursor:pointer;border-bottom:1px solid var(--border)}
 .notif-item:last-child{border-bottom:none}
 .notif-item:hover{background:var(--surface-2)}
@@ -491,11 +489,7 @@ button{cursor:pointer}
               <!-- populated by populateCvOverview -->
             </div>
 
-            <!-- ③ Case Health strip -->
-            <div class="panel" style="margin-bottom:14px">
-              <div class="panel-hd"><span class="panel-title">Case Health</span><span style="font-size:11px;color:var(--text-3)">Click any section to jump</span></div>
-              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0" id="cv-case-health"></div>
-            </div>
+
 
             <!-- ③ TOP ROW: Entity + Risk side by side -->
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
@@ -2189,13 +2183,15 @@ function populateCvOverview(c){
   // ── Key dates strip ──────────────────────────────────────────────
   const datesEl=document.getElementById('cv-dates-strip');
   if(datesEl){
-    const dateItems=[
-      {label:'Onboarded',    value: c.onboardedDate||'—'},
-      {label:'Last Review',  value: c.lastReview||'—'},
-      {label:'Next Review',  value: c.nextReview||'—'},
-      {label:'Review Cycle', value: c.reviewCycle||'Annual'},
-      {label:'KYC Approved', value: c.kycApproved||'Pending'},
-      {label:'Due Date',     value: c.sla, highlight: c.slaClass},
+    // Pull client record for dates not on the case object
+  const clientRec = typeof CLIENTS !== 'undefined' ? CLIENTS.find(cl=>cl.name===c.client)||{} : {};
+  const dateItems=[
+      {label:'Onboarded',      value: clientRec.onboardedDate||c.onboardedDate||'—'},
+      {label:'KYC Approved',   value: clientRec.kycApproved||c.kycApproved||'—'},
+      {label:'Last Review',    value: clientRec.lastReview||c.lastReview||'—'},
+      {label:'Next Review',    value: clientRec.nextReview||c.nextReview||'—'},
+      {label:'Review Cycle',   value: clientRec.reviewCycle||c.reviewCycle||'Annual'},
+      {label:'Case Due',       value: c.sla, highlight: c.slaClass},
     ];
     datesEl.innerHTML=dateItems.map((d,i)=>`
       <div style="padding:10px 14px;border-right:${i<5?'1px solid var(--border)':'none'}">
@@ -2216,7 +2212,7 @@ function populateCvOverview(c){
   const tierOv=document.getElementById('cv-score-tier');
   if(scoreOv){scoreOv.textContent=score;scoreOv.style.color=color;}
   if(barOv){barOv.style.width=score+'%';barOv.style.background=color;}
-  if(tierOv) tierOv.innerHTML=`<span class="badge ${c.riskClass}" style="border-radius:99px;padding:2px 10px">${c.riskTier} Risk</span>`;
+  if(tierOv) tierOv.innerHTML=`<span style="background:var(--text);padding:2px 10px;border-radius:99px;font-size:11px;font-weight:600;color:#fff">${c.riskTier}</span>`;
   const rkv=document.getElementById('cv-kv-risk');
   if(rkv) rkv.innerHTML=kv([['Pipeline',c.pipeline],['SLA',`<span class="${c.slaClass}">${c.sla}</span>`]]);
 
@@ -3021,7 +3017,7 @@ function populateCvRisk(c){
   const tierEl=document.getElementById('cv-score-tier-full');
   if(sEl){sEl.textContent=score;sEl.style.color=color;}
   if(bEl){bEl.style.width=score+'%';bEl.style.background=color;}
-  if(tierEl) tierEl.innerHTML=`<span class="badge ${c.riskClass}" style="border-radius:99px;padding:3px 12px">${c.riskTier} Risk</span>`;
+  if(tierEl) tierEl.innerHTML=`<span style="background:var(--text);padding:3px 12px;border-radius:99px;font-size:11px;font-weight:600;color:#fff">${c.riskTier} Risk</span>`;
 
   // Risk drivers table
   const drBody=document.getElementById('cv-risk-drivers-body');
