@@ -486,7 +486,12 @@ button{cursor:pointer}
               <div style="display:flex;gap:6px;flex-shrink:0" id="cv-nba-btns"></div>
             </div>
 
-            <!-- ② Case Health strip -->
+            <!-- ② Key dates strip -->
+            <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);margin-bottom:10px;overflow:hidden" id="cv-dates-strip">
+              <!-- populated by populateCvOverview -->
+            </div>
+
+            <!-- ③ Case Health strip -->
             <div class="panel" style="margin-bottom:14px">
               <div class="panel-hd"><span class="panel-title">Case Health</span><span style="font-size:11px;color:var(--text-3)">Click any section to jump</span></div>
               <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0" id="cv-case-health"></div>
@@ -1988,11 +1993,11 @@ document.querySelectorAll('.nav-item[data-view]').forEach(btn=>{
 
 /* ── Risk badge ── */
 function riskBadge(tier){
-  return `<span style="font-size:12px;color:var(--text-2)">${tier}</span>`;
+  return `<span style="display:inline-block;font-size:11px;font-weight:500;color:var(--text-2);border:1px solid var(--border);border-radius:3px;padding:2px 8px">${tier}</span>`;
 }
 
 function statusBadge(status, statusClass){
-  return `<span style="font-size:12px;color:var(--text-2)">${status}</span>`;
+  return `<span style="display:inline-block;font-size:11px;font-weight:500;color:var(--text);border:1px solid var(--border-2);border-radius:3px;padding:2px 8px;white-space:nowrap">${status}</span>`;
 }
 
 /* ── Queue renders ── */
@@ -2118,8 +2123,8 @@ function openCase(caseId){
   document.getElementById('cv-sla').innerHTML=`<span class="${c.slaClass}" style="font-weight:600">${c.sla}</span>`;
   document.getElementById('cv-next-action').textContent=c.nextAction;
   const sb=document.getElementById('cv-status'); sb.className=""; sb.style.cssText="font-size:11px;font-weight:600;padding:2px 8px;border-radius:3px;"; const isUrgent=c.status==='Screening Alert'||c.status==='Pending Human Review'; sb.style.color=isUrgent?'var(--red-text)':(c.slaClass==='sla-over'?'var(--amber-text)':'var(--text-2)'); sb.style.background=isUrgent?'var(--red-dim)':(c.slaClass==='sla-over'?'var(--amber-dim)':' var(--surface-2)'); sb.style.border='1px solid var(--border)'; sb.textContent=c.status;
-  const pb=document.getElementById('cv-pipeline'); pb.style.cssText='font-size:11px;font-weight:400;color:var(--text-3)'; pb.textContent=c.pipeline;
-  const rb=document.getElementById('cv-risk'); rb.style.cssText='font-size:11px;color:var(--text-2)'; rb.textContent=c.riskTier+' Risk';
+  const pb=document.getElementById('cv-pipeline'); pb.style.cssText='font-size:11px;font-weight:400;color:var(--text-3);border:1px solid var(--border);border-radius:3px;padding:2px 8px'; pb.textContent=c.pipeline;
+  const rb=document.getElementById('cv-risk'); rb.style.cssText='font-size:11px;font-weight:400;color:var(--text-2);border:1px solid var(--border);border-radius:3px;padding:2px 8px'; rb.textContent=c.riskTier+' Risk';
   // Progress
   const done=(c.cddChecklist||[]).filter(i=>i[3]==='done').length;
   const total=(c.cddChecklist||[]).length;
@@ -2181,6 +2186,24 @@ function switchCaseTab(btn,tabId){
 function kv(pairs){return pairs.map(([l,v])=>`<span class="kv-l">${l}</span><span class="kv-v">${v||'—'}</span>`).join('');}
 
 function populateCvOverview(c){
+  // ── Key dates strip ──────────────────────────────────────────────
+  const datesEl=document.getElementById('cv-dates-strip');
+  if(datesEl){
+    const dateItems=[
+      {label:'Onboarded',    value: c.onboardedDate||'—'},
+      {label:'Last Review',  value: c.lastReview||'—'},
+      {label:'Next Review',  value: c.nextReview||'—'},
+      {label:'Review Cycle', value: c.reviewCycle||'Annual'},
+      {label:'KYC Approved', value: c.kycApproved||'Pending'},
+      {label:'Due Date',     value: c.sla, highlight: c.slaClass},
+    ];
+    datesEl.innerHTML=dateItems.map((d,i)=>`
+      <div style="padding:10px 14px;border-right:${i<5?'1px solid var(--border)':'none'}">
+        <div style="font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px">${d.label}</div>
+        <div style="font-size:13px;font-weight:600;color:${d.highlight==='sla-over'?'var(--red-text)':d.highlight==='sla-due'?'var(--amber)':'var(--text)'}">${d.value}</div>
+      </div>`).join('');
+  }
+
   // Entity KV
   const eEl=document.getElementById('cv-kv-entity');
   if(eEl) eEl.innerHTML=kv([['Legal Name',c.client],['Entity Type',c.entityType||'—'],['Jurisdiction',c.jurisdiction],['Industry',c.activity||'—'],['Assignee',c.assignee]]);
@@ -2421,7 +2444,7 @@ function updateTabIndicators(c){
     'tab-btn-risk': (c.cddChecklist||[]).some(i=>i[3]==='issue')?'issue':(c.cddChecklist||[]).some(i=>i[3]==='review')?'review':'done',
     'tab-btn-outreach': c.outreach?.status==='responded'?'done':c.outreach?.status==='sent'?'review':null,
   };
-  const icons={done:' <span style="font-size:9px;color:var(--text-3)">✓</span>',review:' <span style="font-size:9px;color:var(--text-3)">—</span>',issue:' <span style="font-size:9px;color:var(--text-3)">!</span>'};
+  const icons={done:' <span style="font-size:8px;font-weight:600;color:var(--accent);border:1px solid var(--accent);border-radius:2px;padding:0 4px;vertical-align:middle">OK</span>',review:' <span style="font-size:8px;font-weight:600;color:var(--amber-text);border:1px solid var(--amber);border-radius:2px;padding:0 4px;vertical-align:middle">!</span>',issue:' <span style="font-size:8px;font-weight:600;color:var(--red-text);border:1px solid var(--red-text);border-radius:2px;padding:0 4px;vertical-align:middle">!</span>'};
   const labels={
     'tab-btn-business':'Business Details','tab-btn-ownership':'Ownership & Control',
     'tab-btn-documents':'Documents','tab-btn-screening':'Screening',
@@ -2492,16 +2515,20 @@ function updateCaseHealth(c){
 
   // Status dot only — no colored backgrounds, no colored cell fills
   // Keep it clean: white cells, small colored dot, grey summary text
-  const statusChar={done:'✓',review:'—',issue:'!'};
+  const statusPill={
+    done:`<span style="font-size:9px;font-weight:600;color:var(--accent);border:1px solid var(--accent);border-radius:2px;padding:1px 5px">OK</span>`,
+    review:`<span style="font-size:9px;font-weight:600;color:var(--amber-text);border:1px solid var(--amber);border-radius:2px;padding:1px 5px">REVIEW</span>`,
+    issue:`<span style="font-size:9px;font-weight:600;color:var(--red-text);border:1px solid var(--red-text);border-radius:2px;padding:1px 5px">ACTION</span>`
+  };
 
   el.innerHTML=sections.map((s,i)=>`
     <div onclick="switchCaseTab(null,'${s.tab}')"
       style="padding:9px 12px;border-right:${i<sections.length-1?'1px solid var(--border)':'none'};border-bottom:${i>3?'none':'1px solid var(--border)'};cursor:pointer;background:var(--surface);transition:background .1s"
       onmouseover="this.style.background='var(--surface-2)'"
       onmouseout="this.style.background='var(--surface)'">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px">
         <span style="font-size:11px;font-weight:600;color:var(--text)">${s.label}</span>
-        <span style="font-size:10px;color:var(--text-3)">${statusChar[s.status]}</span>
+        ${statusPill[s.status]}
       </div>
       <div style="font-size:10px;color:var(--text-3);line-height:1.4">${s.summary}</div>
     </div>`).join('');
